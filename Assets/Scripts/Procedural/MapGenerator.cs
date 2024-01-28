@@ -35,7 +35,8 @@ public class MapGenerator : MonoBehaviour{
         /// Config de ColorMap y NoObjects
         /// </summary>
         NoObjectsWithDisplay,
-        All
+        All,
+        Cartoon
     };
     public DrawMode drawMode;
 
@@ -54,6 +55,8 @@ public class MapGenerator : MonoBehaviour{
     const float sizePerBlock = 0.5f;
     //Altura entre cada celda
     const float heightPerBlock = 0.5f;
+    
+    public float heightMultiplayer = 100f;
 
     /// <summary>
     ///  El factor de escala del ruido generado.Un valor mayor producirá un ruido con detalles más finos
@@ -153,7 +156,7 @@ public class MapGenerator : MonoBehaviour{
                         cellMap[x, y] = new Cell();
                         cellMap[x, y].type = currentRegion;
                         cellMap[x, y].noise = currentHeight;
-                        cellMap[x, y].Height = heightPerBlock * currentHeight * 100;
+                        cellMap[x, y].Height = heightPerBlock * currentHeight * heightMultiplayer;
 
                         break;
                     }
@@ -230,6 +233,10 @@ public class MapGenerator : MonoBehaviour{
                 ObjectsGenerator.GenerateObjects(mapSize, chunkSize, heightPerBlock, cellMap, map3D, objects);
                 display.ActiveMap(true);
                 break;
+            case DrawMode.Cartoon:
+                GenerateMapByChunks_Cartoon();
+                display.ActiveMap(false);
+                break;
         }                     
     }
 
@@ -241,10 +248,26 @@ public class MapGenerator : MonoBehaviour{
             for (int x = 0; x < numChunks; x++){
                 Vector2 chunkPos= new Vector2(x, y);
                 if(!map3D.ContainsKey(chunkPos)){
-                    map3D[chunkPos] = new Chunk(chunkPos,cellMap,heightPerBlock, sizePerBlock,chunkSize, gameObjectMap3D.transform);
+                    map3D[chunkPos] = new Chunk(chunkPos,cellMap,heightPerBlock, sizePerBlock,chunkSize, gameObjectMap3D.transform,false);
                 }
                 else{
                     map3D[chunkPos].GenerateTerrainMesh(cellMap,sizePerBlock,chunkSize);
+                }
+            }
+        }
+    }
+    void GenerateMapByChunks_Cartoon(){
+        int numChunks = mapSize / chunkSize;
+        if (mapSize % chunkSize != 0) numChunks++;
+
+        for (int y = 0; y < numChunks; y++){
+            for (int x = 0; x < numChunks; x++){
+                Vector2 chunkPos = new Vector2(x, y);
+                if (!map3D.ContainsKey(chunkPos)){
+                    map3D[chunkPos] = new Chunk(chunkPos, cellMap, heightPerBlock, sizePerBlock, chunkSize, gameObjectMap3D.transform,true);
+                }
+                else{
+                    map3D[chunkPos].GenerateTerrainMesh_Cartoon(cellMap, sizePerBlock, chunkSize);
                 }
             }
         }

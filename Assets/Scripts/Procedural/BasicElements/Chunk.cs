@@ -57,7 +57,7 @@ public class Chunk{
     GameObject edges;
     public GameObject objectsGenerated;
 
-    public Chunk(Vector2 posMap, Cell[,] mapaCells, float heightPerBlock,float sizePerBlock, int chunkSize, Transform parent){
+    public Chunk(Vector2 posMap, Cell[,] mapaCells, float heightPerBlock,float sizePerBlock, int chunkSize, Transform parent,bool cartoon){
         this.posMap = posMap;
 
         //Generamos los GameObjects
@@ -82,13 +82,15 @@ public class Chunk{
         edges.AddComponent<MeshRenderer>().material = edgesMaterial;
 
         //Generamos la maya
-        GenerateTerrainMesh(mapaCells,sizePerBlock,chunkSize);
-        
+        if (!cartoon) GenerateTerrainMesh(mapaCells, sizePerBlock, chunkSize);
+        else GenerateTerrainMesh_Cartoon(mapaCells, sizePerBlock, chunkSize);
+
+
         floor.AddComponent<MeshCollider>();
         edges.AddComponent<MeshCollider>();
 
-        //GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
-        //GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
+        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
+        GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
     }
 
     /// <summary>
@@ -97,6 +99,13 @@ public class Chunk{
     public void GenerateTerrainMesh(Cell[,] mapaCells,float sizePerBlock,int chunkSize){
         MeshGenerator.GenerateTerrainMeshChunk(mapaCells, posMap, floor, sizePerBlock,chunkSize);
         MeshGenerator.DrawEdgesChunk(mapaCells, posMap, edges, sizePerBlock,chunkSize);
+    }
+
+    /// <summary>
+    /// Genera la maya del chunk
+    /// </summary>
+    public void GenerateTerrainMesh_Cartoon(Cell[,] mapaCells, float sizePerBlock, int chunkSize){
+        MeshGenerator.GenerateTerrainMeshChunk_Cartoon(mapaCells, posMap, floor, sizePerBlock, chunkSize);
     }
 
     public void setParent(Transform parent){

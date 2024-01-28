@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Mesh;
 
 /// <summary>
 /// Generador de Mallas
@@ -200,5 +201,54 @@ public static class MeshGenerator{
 
         var render = edges.GetComponent<MeshRenderer>();
         DrawTextureChunk(mapaCells,pos,render, chunkSize);
+    }
+
+
+    public static void AddTriangle(List<int> triangles, ref int triangleIndex,int a, int b, int c)
+    {
+        triangles[triangleIndex] = a;
+        triangles[triangleIndex + 1] = b;
+        triangles[triangleIndex + 2] = c;
+        triangleIndex += 3;
+    }
+
+
+    public static void GenerateTerrainMeshChunk_Cartoon(Cell[,] mapaCells, Vector2 pos, GameObject chunkObject, float sizePerBlock, int chunkSize){
+        int size = mapaCells.GetLength(0);
+        float topLeftX = (size - 1) / -2f;
+        float topLeftZ = (size - 1) / -2f;
+
+        Mesh BaseMesh = new Mesh();
+        List<Vector3> vertices = new List<Vector3>(new Vector3[size * size]);//Almacenar los vertices y triangulos de la malla
+        List<int> triangles = new List<int>(new int[(size - 1) * (size - 1) * 6]);
+        List<Vector2> uvs = new List<Vector2>(new Vector2[size * size]); //coordenadas de textura
+
+        int vertexIndex = 0;
+        int triangleIndex = 0;
+        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + 1) * chunkSize && y < size; y++){
+            for (int x = (int)pos.x * chunkSize; x < (int)(pos.x + 1) * chunkSize && x < size; x++){
+
+                vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
+                uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
+
+                if (x < size - 1 && y < size - 1){
+                    AddTriangle(triangles,ref triangleIndex, vertexIndex, vertexIndex + size + 1, vertexIndex + size);
+                    AddTriangle(triangles,ref triangleIndex, vertexIndex + size + 1, vertexIndex, vertexIndex + 1);
+                }
+
+                vertexIndex++;
+            }
+        }
+
+        BaseMesh.vertices = vertices.ToArray();// se le asignan los vertices a la malla q hemos creado
+        BaseMesh.triangles = triangles.ToArray();// y los triangulos q forman dichos vertices
+        BaseMesh.uv = uvs.ToArray();
+        BaseMesh.RecalculateNormals();//para que la iluminación y sombreado en la malla se calculen correctamente
+
+        MeshFilter meshFilter = chunkObject.GetComponent<MeshFilter>();//Renderizar la malla
+        meshFilter.mesh = BaseMesh;
+
+        var renderer = chunkObject.GetComponent<MeshRenderer>();
+        DrawTextureChunk(mapaCells, pos, renderer, chunkSize);
     }
 }
