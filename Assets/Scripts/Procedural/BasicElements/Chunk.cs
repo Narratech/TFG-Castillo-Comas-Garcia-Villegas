@@ -57,7 +57,7 @@ public class Chunk{
     GameObject edges;
     public GameObject objectsGenerated;
 
-    public Chunk(Vector2 posMap, Cell[,] mapaCells, float heightPerBlock,float sizePerBlock, int chunkSize, Transform parent,bool cartoon){
+    public Chunk(Vector2 posMap, Cell[,] mapaCells, float sizePerBlock, int chunkSize, Transform parent,bool cartoon,int levelOfDetail){
         this.posMap = posMap;
 
         //Generamos los GameObjects
@@ -83,7 +83,7 @@ public class Chunk{
 
         //Generamos la maya
         if (!cartoon) GenerateTerrainMesh(mapaCells, sizePerBlock, chunkSize);
-        else GenerateTerrainMesh_Cartoon(mapaCells, sizePerBlock, chunkSize);
+        else GenerateTerrainMesh_Cartoon(mapaCells, levelOfDetail, chunkSize);
 
 
         floor.AddComponent<MeshCollider>();
@@ -104,8 +104,8 @@ public class Chunk{
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh_Cartoon(Cell[,] mapaCells, float sizePerBlock, int chunkSize){
-        MeshGenerator.GenerateTerrainMeshChunk_Cartoon(mapaCells, posMap, floor, sizePerBlock, chunkSize);
+    public void GenerateTerrainMesh_Cartoon(Cell[,] mapaCells, int levelOfDetail, int chunkSize){
+        MeshGenerator.GenerateTerrainMeshChunk_Cartoon(mapaCells, posMap, floor, levelOfDetail, chunkSize);
     }
 
     public void setParent(Transform parent){

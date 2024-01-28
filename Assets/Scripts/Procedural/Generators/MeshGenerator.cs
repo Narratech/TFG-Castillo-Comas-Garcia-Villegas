@@ -204,8 +204,7 @@ public static class MeshGenerator{
     }
 
 
-    public static void AddTriangle(List<int> triangles, ref int triangleIndex,int a, int b, int c)
-    {
+    public static void AddTriangle(List<int> triangles, ref int triangleIndex,int a, int b, int c){
         triangles[triangleIndex] = a;
         triangles[triangleIndex + 1] = b;
         triangles[triangleIndex + 2] = c;
@@ -213,29 +212,32 @@ public static class MeshGenerator{
     }
 
 
-    public static void GenerateTerrainMeshChunk_Cartoon(Cell[,] mapaCells, Vector2 pos, GameObject chunkObject, float sizePerBlock, int chunkSize){
+    public static void GenerateTerrainMeshChunk_Cartoon(Cell[,] mapaCells, Vector2 pos, GameObject chunkObject, int levelOfDetails, int chunkSize){
         int size = mapaCells.GetLength(0);
         float topLeftX = (size - 1) / -2f;
         float topLeftZ = (size - 1) / -2f;
 
+        int meshSimplificationIncrement = (levelOfDetails == 0) ? 1 : levelOfDetails * 2;
+        int verticesPerLine = (size - 1) / meshSimplificationIncrement + 1;
+
         Mesh BaseMesh = new Mesh();
-        List<Vector3> vertices = new List<Vector3>(new Vector3[size * size]);//Almacenar los vertices y triangulos de la malla
-        List<int> triangles = new List<int>(new int[(size - 1) * (size - 1) * 6]);
-        List<Vector2> uvs = new List<Vector2>(new Vector2[size * size]); //coordenadas de textura
+        List<Vector3> vertices = new List<Vector3>(new Vector3[verticesPerLine * verticesPerLine]);//Almacenar los vertices y triangulos de la malla
+        List<int> triangles = new List<int>(new int[6 * (verticesPerLine - 1) * (verticesPerLine - 1) ]);
+        List<Vector2> uvs = new List<Vector2>(new Vector2[verticesPerLine * verticesPerLine]); //coordenadas de textura
 
         int vertexIndex = 0;
         int triangleIndex = 0;
-        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + 1) * chunkSize && y < size; y++){
-            for (int x = (int)pos.x * chunkSize; x < (int)(pos.x + 1) * chunkSize && x < size; x++){
-
+        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + 1) * chunkSize && y < size; y+= meshSimplificationIncrement){
+            for (int x = (int)pos.x * chunkSize; x < (int)(pos.x + 1) * chunkSize && x < size; x+= meshSimplificationIncrement){
+               
                 vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
                 uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
 
-                if (x < size - 1 && y < size - 1){
-                    AddTriangle(triangles,ref triangleIndex, vertexIndex, vertexIndex + size + 1, vertexIndex + size);
-                    AddTriangle(triangles,ref triangleIndex, vertexIndex + size + 1, vertexIndex, vertexIndex + 1);
-                }
-
+               
+                Debug.Log(y+" "+x+" "+(triangleIndex+6));
+                AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + verticesPerLine + 1, vertexIndex + verticesPerLine);
+                AddTriangle(triangles, ref triangleIndex, vertexIndex + verticesPerLine + 1, vertexIndex, vertexIndex + 1);
+               
                 vertexIndex++;
             }
         }
