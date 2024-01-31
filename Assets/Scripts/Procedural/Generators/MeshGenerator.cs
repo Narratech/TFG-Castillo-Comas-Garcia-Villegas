@@ -217,30 +217,45 @@ public static class MeshGenerator{
         float topLeftX = (size - 1) / -2f;
         float topLeftZ = (size - 1) / -2f;
 
-        int meshSimplificationIncrement = (levelOfDetails == 0) ? 1 : levelOfDetails * 2;
-        int verticesPerLine = (chunkSize - 1) / meshSimplificationIncrement + 1;
-        int triangle = (verticesPerLine - 1) * (verticesPerLine - 1) * 6;
+        int meshSimplificationIncrement = levelOfDetails;
+
+        int triangle = (chunkSize - 1) * (chunkSize - 1) * 6;
 
         Mesh BaseMesh = new Mesh();
-        List<Vector3> vertices = new List<Vector3>(new Vector3[verticesPerLine * verticesPerLine]);//Almacenar los vertices y triangulos de la malla
+        List<Vector3> vertices = new List<Vector3>(new Vector3[chunkSize * chunkSize]);//Almacenar los vertices y triangulos de la malla
         List<int> triangles = new List<int>(new int[triangle]);
-        List<Vector2> uvs = new List<Vector2>(new Vector2[verticesPerLine * verticesPerLine]); //coordenadas de textura
+        List<Vector2> uvs = new List<Vector2>(new Vector2[chunkSize * chunkSize]); //coordenadas de textura
         Debug.Log("vertices Count: " + vertices.Count + " triangles Count: " + triangles.Count + " uvs Count: " + uvs.Count);
         int vertexIndex = 0;
         int triangleIndex = 0;
-        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + meshSimplificationIncrement) * chunkSize && y < size; y+= meshSimplificationIncrement){
-            for (int x = (int)pos.x * chunkSize; x < (int)(pos.x + meshSimplificationIncrement) * chunkSize && x < size; x+= meshSimplificationIncrement){
+        for (int y = (int)pos.y * chunkSize * meshSimplificationIncrement; y < (int)(pos.y + 1) * (chunkSize) && y < size; y += meshSimplificationIncrement)
+        {
+            for (int x = (int)pos.x * chunkSize * meshSimplificationIncrement; x < (int)(pos.x + 1) * (chunkSize) && x < size; x += meshSimplificationIncrement)
+            {
                
                 vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
                 uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
                
-                if (x < size - 1 && y < size - 1){
-                    Debug.Log(y + " " + x + " " + (triangleIndex + 6));
-                    AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + verticesPerLine + 1, vertexIndex + verticesPerLine);
-                    AddTriangle(triangles, ref triangleIndex, vertexIndex + verticesPerLine + 1, vertexIndex, vertexIndex + 1);
+                if (x < size - meshSimplificationIncrement && y < size - meshSimplificationIncrement)
+                {
+                    int currentChunkSize = (int)(((float)chunkSize / (float)meshSimplificationIncrement) + 0.5f);
+                    Debug.Log("-----------------------------------------------------------");
+                    Debug.Log(vertexIndex + " \\\t----    " + (vertexIndex + currentChunkSize));
+                    Debug.Log((vertexIndex + 1) + "\t----   \\ " + (vertexIndex + currentChunkSize + 1));
+                    /*
+                           vertexIndex     ----   vertexIndex + currentChunkSize
+                                                                 
+                                |                               |
+                                |                               |
+                                                                 
+                          vertexIndex + 1  ----  vertexIndex + currentChunkSize + 1
+                     */
+                    AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + currentChunkSize + 1, vertexIndex + currentChunkSize);
+                    AddTriangle(triangles, ref triangleIndex, vertexIndex + currentChunkSize + 1, vertexIndex, vertexIndex + 1);
                 }
                 vertexIndex++;
             }
+            Debug.Log("============================================================");
         }
 
         BaseMesh.vertices = vertices.ToArray();// se le asignan los vertices a la malla q hemos creado

@@ -55,7 +55,7 @@ public class MapGenerator : MonoBehaviour{
     const float sizePerBlock = 0.5f;
 
 
-    [Range(0, 6)]
+    [Range(1, 10)]
     public int levelOfDetail;
 
     /// <summary>
