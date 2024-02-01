@@ -235,8 +235,8 @@ public static class MeshGenerator{
                
                 vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
                 uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
-               
-                if (x < size - meshSimplificationIncrement && y < size - meshSimplificationIncrement)
+
+                if (x < size  && y < size - meshSimplificationIncrement)
                 {
                     int currentChunkSize = (int)(((float)chunkSize / (float)meshSimplificationIncrement) + 0.5f);
                     Debug.Log("-----------------------------------------------------------");
@@ -253,6 +253,7 @@ public static class MeshGenerator{
                     AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + currentChunkSize + 1, vertexIndex + currentChunkSize);
                     AddTriangle(triangles, ref triangleIndex, vertexIndex + currentChunkSize + 1, vertexIndex, vertexIndex + 1);
                 }
+               
                 vertexIndex++;
             }
             Debug.Log("============================================================");

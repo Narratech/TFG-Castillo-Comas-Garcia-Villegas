@@ -57,19 +57,26 @@ public class Chunk{
     GameObject edges;
     public GameObject objectsGenerated;
 
+    void generateEdgesGameObject(){
+        edges = new GameObject("Edges " + posMap);
+        edges.transform.SetParent(chunk.transform);
+
+        Material edgesMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        edges.AddComponent<MeshFilter>();
+        edges.AddComponent<MeshRenderer>().material = edgesMaterial;
+    }
+
     public Chunk(Vector2 posMap, Cell[,] mapaCells, float sizePerBlock, int chunkSize, Transform parent,bool cartoon,int levelOfDetail){
         this.posMap = posMap;
 
         //Generamos los GameObjects
         chunk = new GameObject("Chunk " + posMap);
         floor = new GameObject("Suelo " + posMap);
-        edges = new GameObject("Edges " + posMap);
         objectsGenerated = new GameObject("Objectos " + posMap);
 
         //Establecemos la jerarquia de padres
         setParent(parent);
         floor.transform.SetParent(chunk.transform);
-        edges.transform.SetParent(chunk.transform);
         objectsGenerated.transform.SetParent(chunk.transform);
 
         //Creamos los respectivos materiales para cada malla
@@ -77,20 +84,17 @@ public class Chunk{
         floor.AddComponent<MeshFilter>();
         floor.AddComponent<MeshRenderer>().material = sueloMaterial;
 
-        Material edgesMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        edges.AddComponent<MeshFilter>();
-        edges.AddComponent<MeshRenderer>().material = edgesMaterial;
-
         //Generamos la maya
-        if (!cartoon) GenerateTerrainMesh(mapaCells, sizePerBlock, chunkSize);
+        if (!cartoon) {
+            generateEdgesGameObject();
+            GenerateTerrainMesh(mapaCells, sizePerBlock, chunkSize);
+            edges.AddComponent<MeshCollider>();
+            GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
+        }
         else GenerateTerrainMesh_Cartoon(mapaCells, levelOfDetail, chunkSize);
 
-
         floor.AddComponent<MeshCollider>();
-        edges.AddComponent<MeshCollider>();
-
-        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
-        GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
+        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic); 
     }
 
     /// <summary>

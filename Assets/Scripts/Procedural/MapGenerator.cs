@@ -38,6 +38,7 @@ public class MapGenerator : MonoBehaviour{
         All,
         Cartoon
     };
+
     public DrawMode drawMode;
 
     /// <summary>
@@ -50,7 +51,7 @@ public class MapGenerator : MonoBehaviour{
     public int mapSize;
 
     //TAMAÑO DEL CHUNK (En caso de que se cambie, es probable de k no se genere bien la malla del mapa debido al limite de creacion de vertices de unity por malla)
-    const int chunkSize = 50;
+    public const int chunkSize = 50;
     //TAMAÑO DE CADA CELDA (En caso de modificacion posible solapacion de vertices)
     const float sizePerBlock = 0.5f;
 
@@ -123,6 +124,12 @@ public class MapGenerator : MonoBehaviour{
     Cell[,] cellMap;
     //Sistema de chunks para la generacion del mallado del mapa
     Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
+
+    public Dictionary<Vector2, Chunk> Map3D
+    {
+        get { return map3D; }
+        set { map3D = value; }
+    }
 
     private void Awake(){
         clean = true;
