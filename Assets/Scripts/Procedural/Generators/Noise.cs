@@ -17,8 +17,9 @@ public static  class Noise {
     /// <param name="persistance">La persistencia controla la amplitud de cada octava. Un valor más bajo reducirá el efecto de las octavas posteriores de las octavas posteriores</param>
     /// <param name="lacunarity">El lacunaridad controla la frecuencia de cada octava. Un valor más alto aumentará la frecuencia</param>
     /// <param name="offset">La posición inicial del ruido generado</param>
+    /// <param name="chunkCoords">HAY Q PONER PARA K SIRVE</param>
     /// <returns></returns>
-    public static float[,] GenerateNoiseMap(int size,int seed,float noiseScale,int octaves, float persistance, float lacunarity,Vector2 offset){
+    public static float[,] GenerateNoiseMap(int size,int seed,float noiseScale,int octaves, float persistance, float lacunarity,Vector2 offset, Vector2Int chunkCoords){
         if (noiseScale <= 0) noiseScale = 0.0001f;
         float[,] noiseMap= new float[size,size];
         // Crear una instancia de Random con la semilla proporcionada
@@ -36,6 +37,8 @@ public static  class Noise {
 
         float halfWidth = size/ 2f;
         float halfHeight = size/ 2f;
+        offset.x = chunkCoords.x * size;
+        offset.y = chunkCoords.y * size;
         // Generar el ruido por octavas
         for (int y = 0; y < size; y++){
             for (int x = 0; x < size; x++){
@@ -44,8 +47,11 @@ public static  class Noise {
                 float noiseHeight = 0;
                 // Calcular la altura del ruido para cada octava
                 for (int i = 0; i < octaves; i++){
-                    float smpleX = (x-halfWidth) / noiseScale * frequency + octaveOffsets[i].x;
+                    float smpleX = (x - halfWidth) / noiseScale * frequency + octaveOffsets[i].x;
                     float smpleY = (y - halfHeight)/ noiseScale * frequency + octaveOffsets[i].y;
+
+                    chunkCoords.x++; chunkCoords.y++;
+
                     // Obtener el valor de ruido Perlin y ajustarlo al rango [-1, 1]
                     float perlinValue = Mathf.PerlinNoise(smpleX, smpleY)* 2-1;
                     noiseHeight += perlinValue * amplitude;

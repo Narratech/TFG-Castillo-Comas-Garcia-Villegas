@@ -106,6 +106,7 @@ public class MapGenerator : MonoBehaviour{
     ///  Generar el mapa con forma de isla
     /// </summary>
     public bool useFallOff = false;
+    float[,] fallOffMap = null;
     /// <summary>
     ///  Cuando se realize un cambio des de el editor, auto actualizar el mapa
     /// </summary>
@@ -120,8 +121,6 @@ public class MapGenerator : MonoBehaviour{
 
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
-    //Matriz que guarda toda la informacion del mapa generado
-    Cell[,] cellMap;
     //Sistema de chunks para la generacion del mallado del mapa
     Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
 
@@ -148,24 +147,106 @@ public class MapGenerator : MonoBehaviour{
     /// </summary>
     public void GenerateMap(){
         //generar el falloff si se ha activado en la configuracion
-        float[,] fallOffMap = new float[mapSize,mapSize];
-        if (useFallOff) fallOffMap = Noise.GenerateFalloffMap(mapSize);
+        if (useFallOff) {
+            fallOffMap = new float[mapSize, mapSize];
+            fallOffMap = Noise.GenerateFalloffMap(mapSize); 
+        }
 
-        //Generar el mapa de ruido
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapSize,seed,noiseScale,octaves,persistance,lacunarity,offset);
+        cleanMaps();
 
-        cellMap = new Cell[mapSize, mapSize];       
-        Color[] colorMap = new Color[mapSize * mapSize];    
-        
+        MapDisplay display = GetComponent<MapDisplay>();        
+        switch (drawMode){
+            case DrawMode.NoiseMap:
+                float[,] noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset, new Vector2Int(0,0));
+                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(noiseMap));
+                display.ActiveMap(true);
+                break;
+            case DrawMode.ColorMap:
+                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, mapSize));
+                display.ActiveMap(true);
+                Debug.Log("Color Map 2D generado");
+                break;
+            case DrawMode.FallOff:
+                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(Noise.GenerateFalloffMap(mapSize)));
+                display.ActiveMap(true);
+                break;
+            case DrawMode.NoObjects:
+                generateChunks_Minecraft();
+                display.ActiveMap(false);
+                break;
+            case DrawMode.Objects:
+                generateChunks_Minecraft();
+                //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
+                display.ActiveMap(false);
+                break;
+            case DrawMode.NoObjectsWithDisplay:
+                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, mapSize));
+                generateChunks_Minecraft();
+                display.ActiveMap(true);
+                break;
+            case DrawMode.All:
+                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, mapSize));
+                generateChunks_Minecraft();
+                //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
+                display.ActiveMap(true);
+                break;
+            case DrawMode.Cartoon:
+                generateChunks_LowPoly();
+                display.ActiveMap(false);
+            break;
+        }                     
+    }
+    /// <summary>
+    /// Se usa para generar el mapa 2D a color
+    /// </summary>
+    /// <param name="fallOffMap"></param>
+    /// <returns></returns>
+    Color[] generateColorMap()
+    {
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset, new Vector2Int(0, 0));
+        Color[] colorMap = new Color[mapSize * mapSize];
+
         //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < mapSize; y++){
-            for (int x = 0; x < mapSize; x++){
-                if(useFallOff) noiseMap[x,y]=Mathf.Clamp01( noiseMap[x,y] - fallOffMap[x,y]);// calculo del nuevo noise con respecto al falloff
+        for (int y = 0; y < mapSize; y++)
+        {
+            for (int x = 0; x < mapSize; x++)
+            {
+
+                if (useFallOff) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
                 float currentHeight = noiseMap[x, y];
+
+                foreach (var currentRegion in regions)
+                {
+                    //recorremos y miramos que tipo de terreno se ha generado
+                    if (currentHeight <= currentRegion.height)
+                    {
+                        colorMap[y * mapSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
+                        break;
+                    }
+                }
+            }
+        }
+        return colorMap;
+    }
+
+    public Cell[,] generateChunk(Vector2Int chunkCoord){
+        //Generar el mapa de ruido
+        float[,] noiseMap = Noise.GenerateNoiseMap(chunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, chunkCoord);
+
+        Cell[,] cellMap = new Cell[chunkSize, chunkSize];
+        Color[] colorMap = new Color[chunkSize * chunkSize];
+
+        //Nos guardamos y vemos toda la informacion del mapa generado
+        for (int y = 0; y < chunkSize; y++){
+            for (int x = 0; x < chunkSize; x++){
+
+                if (useFallOff) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
+                float currentHeight = noiseMap[x, y];
+
                 foreach (var currentRegion in regions){
                     //recorremos y miramos que tipo de terreno se ha generado
                     if (currentHeight <= currentRegion.height){
-                        colorMap[y* mapSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
+                        colorMap[y * chunkSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
                         //Nos guardamos el estado de la celda que se ha generado
                         cellMap[x, y] = new Cell();
                         cellMap[x, y].type = currentRegion;
@@ -177,22 +258,59 @@ public class MapGenerator : MonoBehaviour{
                 }
             }
         }
-        //Si yo creo un mapa y lo actualizo, la basura se va quedando ahi pero desactivada(SOLO FUERA DE EJECUCION),
-        //en ejecucion se elimina el mapa anterior
-        if (clean){
+        return cellMap;
+    }
+
+    void generateChunks_LowPoly(){
+        int numChunks = mapSize / chunkSize;
+        if (mapSize % chunkSize != 0) numChunks++;
+
+        for (int y = 0; y < numChunks; y++){
+            for (int x = 0; x < numChunks; x++){
+                Vector2Int chunkPos = new Vector2Int(x, y);
+                map3D[chunkPos] = new Chunk(this,chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, levelOfDetail);
+            }
+        }
+    }
+    void generateChunks_Minecraft()
+    {
+        int numChunks = mapSize / chunkSize;
+        if (mapSize % chunkSize != 0) numChunks++;
+
+        for (int y = 0; y < numChunks; y++)
+        {
+            for (int x = 0; x < numChunks; x++)
+            {
+                Vector2Int chunkPos = new Vector2Int(x, y);
+                map3D[chunkPos] = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, levelOfDetail);
+            }
+        }
+    }
+
+    /// <summary>
+    ///  Si yo creo un mapa y lo actualizo, la basura se va quedando ahi pero desactivada(SOLO FUERA DE EJECUCION),
+    ///  en ejecucion se elimina el mapa anterior
+    /// </summary>
+    void cleanMaps()
+    {
+        if (clean)
+        {
             foreach (var chunk in map3D)
                 chunk.Value.delete();
             map3D.Clear();
-            if (gameObjectMap3D.transform.childCount > 0){
+            if (gameObjectMap3D.transform.childCount > 0)
+            {
                 foreach (Transform childTransform in gameObjectMap3D.transform)
                 {
                     GameObject.Destroy(childTransform.gameObject);
                 }
             }
         }
-        else if(map3D.Count>0){
-           
-            if (trashMaps == null) { //POR SI QUIERES ELIMIANR TODA LA BASURA DE GOLPE Q SEA COMODO
+        else if (map3D.Count > 0)
+        {
+
+            if (trashMaps == null)
+            { //POR SI QUIERES ELIMIANR TODA LA BASURA DE GOLPE Q SEA COMODO
                 trashMaps = new GameObject("TrashMaps"); trashMaps.transform.SetParent(transform);
                 trashMaps.SetActive(false);
             }
@@ -209,80 +327,6 @@ public class MapGenerator : MonoBehaviour{
                 foreach (Transform childTransform in gameObjectMap3D.transform)
                 {
                     GameObject.Destroy(childTransform.gameObject);
-                }
-            }
-        }
-
-        MapDisplay display = GetComponent<MapDisplay>();        
-        switch (drawMode){
-            case DrawMode.NoiseMap:
-                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(noiseMap));
-                display.ActiveMap(true);
-                break;
-            case DrawMode.ColorMap:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(colorMap, mapSize, mapSize));
-                display.ActiveMap(true);
-                break;
-            case DrawMode.FallOff:
-                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(Noise.GenerateFalloffMap(mapSize)));
-                display.ActiveMap(true);
-                break;
-            case DrawMode.NoObjects:
-                GenerateMapByChunks();
-                display.ActiveMap(false);
-                break;
-            case DrawMode.Objects:               
-                GenerateMapByChunks();
-                ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
-                display.ActiveMap(false);
-                break;
-            case DrawMode.NoObjectsWithDisplay:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(colorMap, mapSize, mapSize));
-                GenerateMapByChunks();
-                display.ActiveMap(true);
-                break;
-            case DrawMode.All:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(colorMap, mapSize, mapSize));
-                GenerateMapByChunks();
-                ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
-                display.ActiveMap(true);
-                break;
-            case DrawMode.Cartoon:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(colorMap, mapSize, mapSize));
-                GenerateMapByChunks_Cartoon();
-                display.ActiveMap(false);
-                break;
-        }                     
-    }
-
-    void GenerateMapByChunks(){
-        int numChunks = mapSize / chunkSize;
-        if (mapSize % chunkSize != 0) numChunks++;
-
-        for (int y = 0; y < numChunks; y++){
-            for (int x = 0; x < numChunks; x++){
-                Vector2 chunkPos= new Vector2(x, y);
-                if(!map3D.ContainsKey(chunkPos)){
-                    map3D[chunkPos] = new Chunk(chunkPos,cellMap,sizePerBlock,chunkSize, gameObjectMap3D.transform,false, levelOfDetail);
-                }
-                else{
-                    map3D[chunkPos].GenerateTerrainMesh(cellMap,sizePerBlock,chunkSize);
-                }
-            }
-        }
-    }
-    void GenerateMapByChunks_Cartoon(){
-        int numChunks = mapSize / chunkSize;
-        if (mapSize % chunkSize != 0) numChunks++;
-
-        for (int y = 0; y < numChunks; y++){
-            for (int x = 0; x < numChunks; x++){
-                Vector2 chunkPos = new Vector2(x, y);
-                if (!map3D.ContainsKey(chunkPos)){
-                    map3D[chunkPos] = new Chunk(chunkPos, cellMap, sizePerBlock, chunkSize, gameObjectMap3D.transform,true, levelOfDetail);
-                }
-                else{
-                    map3D[chunkPos].GenerateTerrainMesh_Cartoon(cellMap, levelOfDetail, chunkSize);
                 }
             }
         }

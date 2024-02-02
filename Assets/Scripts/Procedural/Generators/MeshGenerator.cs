@@ -11,7 +11,7 @@ public static class MeshGenerator{
     /// <summary>
     /// Genera el suelo del Chunk
     /// </summary>
-    public static void GenerateTerrainMeshChunk(Cell[,] mapaCells, Vector2 pos, GameObject chunkObject, float sizePerBlock, int chunkSize){
+    public static void GenerateTerrainMeshChunk(Cell[,] mapaCells, GameObject chunkObject, float sizePerBlock){
         int size = mapaCells.GetLength(0);
 
         float topLeftX = (size - 1) / -2f;
@@ -22,8 +22,8 @@ public static class MeshGenerator{
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>(); //coordenadas de textura
 
-        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + 1) * chunkSize && y < size; y++){
-            for (int x = (int)pos.x*chunkSize; x < (int)(pos.x+1)*chunkSize && x<size; x++){
+        for (int y = 0; y < size; y++){
+            for (int x = 0; x<size; x++){
                 Cell cell = mapaCells[x, y];
                 //definir los vertices de la celda
                 Vector3 a = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
@@ -56,18 +56,18 @@ public static class MeshGenerator{
         meshFilter.mesh = BaseMesh;
 
         var renderer = chunkObject.GetComponent<MeshRenderer>();
-        DrawTextureChunk(mapaCells,pos,renderer,chunkSize);
+        DrawTextureChunk(mapaCells,renderer);
     }
 
     /// <summary>
     /// Estableze el color de la cada pixel de la textura
     /// </summary>
-    public static void DrawTextureChunk(Cell[,] mapaCells, Vector2 pos, MeshRenderer renderer, int chunkSize){
+    public static void DrawTextureChunk(Cell[,] mapaCells, MeshRenderer renderer){
         int size = mapaCells.GetLength(0);
 
         Texture2D texture = new Texture2D(size, size);
-        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + 1) * chunkSize && y < size; y++){
-            for (int x = (int)pos.x * chunkSize; x < (int)(pos.x + 1) * chunkSize && x < size; x++){
+        for (int y = 0; y < size; y++){
+            for (int x = 0; x < size; x++){
                 Cell cell = mapaCells[x, y];
                 texture.SetPixel(x, y, cell.type.color);
             }
@@ -80,7 +80,7 @@ public static class MeshGenerator{
     /// <summary>
     /// Genera y renderiza los bordes entre las celdas del terreno,(SOLO AQUELLAS Q VAN A SER VISIBLES)
     /// </summary>
-    public static void DrawEdgesChunk(Cell[,] mapaCells, Vector2 pos, GameObject edges,float sizePerBlock,int chunkSize){
+    public static void DrawEdgesChunk(Cell[,] mapaCells, GameObject edges,float sizePerBlock){
         int size = mapaCells.GetLength(0);
 
         float topLeftX = (size - 1) / -2f;
@@ -90,8 +90,8 @@ public static class MeshGenerator{
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>(); //coordenadas de textura
-        for (int y = (int)pos.y * chunkSize; y < (int)(pos.y + 1) * chunkSize && y < size; y++){
-            for (int x = (int)pos.x * chunkSize; x < (int)(pos.x + 1) * chunkSize && x < size; x++){
+        for (int y = 0;  y < size; y++){
+            for (int x = 0; x < size; x++){
                 Cell cell = mapaCells[x, y];               
 
                 if (x > 0){
@@ -200,7 +200,7 @@ public static class MeshGenerator{
         meshFilter.mesh = mesh;
 
         var render = edges.GetComponent<MeshRenderer>();
-        DrawTextureChunk(mapaCells,pos,render, chunkSize);
+        DrawTextureChunk(mapaCells, render);
     }
 
 
@@ -212,27 +212,28 @@ public static class MeshGenerator{
     }
 
 
-    public static void GenerateTerrainMeshChunk_Cartoon(Cell[,] mapaCells, Vector2 pos, GameObject chunkObject, int levelOfDetails, int chunkSize)
+    public static void GenerateTerrainMeshChunk_Cartoon(Cell[,] mapaCells, GameObject chunkObject, int levelOfDetails)
     {
         int size = mapaCells.GetLength(0);
         float topLeftX = (size - 1) / -2f;
         float topLeftZ = (size - 1) / -2f;
 
         int meshSimplificationIncrement = levelOfDetails;
-        int currentChunkSize = (int)(((float)chunkSize / (float)meshSimplificationIncrement) + 1.0f);
+        int currentChunkSize = (int)(((float)size / (float)meshSimplificationIncrement));
 
-        int triangle = (chunkSize - 1) * (chunkSize - 1) * 6;
+        int triangle = (size - 1) * (size - 1) * 6;
 
         Mesh BaseMesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>(new Vector3[currentChunkSize * currentChunkSize]);//Almacenar los vertices y triangulos de la malla
         List<int> triangles = new List<int>(new int[triangle + 1]);
         List<Vector2> uvs = new List<Vector2>(new Vector2[currentChunkSize * currentChunkSize]); //coordenadas de textura
         Debug.Log("vertices Count: " + vertices.Count + " triangles Count: " + triangles.Count + " uvs Count: " + uvs.Count);
+
         int vertexIndex = 0;
         int triangleIndex = 0;
-        for (int y = (int)pos.y * chunkSize * meshSimplificationIncrement; y < (int)(pos.y + 1) * (chunkSize) && y < size; y += meshSimplificationIncrement)
+        for (int y = 0;y < size; y += meshSimplificationIncrement)
         {
-            for (int x = (int)pos.x * chunkSize * meshSimplificationIncrement; x < (int)(pos.x + 1) * (chunkSize) && x < size; x += meshSimplificationIncrement)
+            for (int x = 0;x < size; x += meshSimplificationIncrement)
             {
 
                 vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
@@ -269,6 +270,6 @@ public static class MeshGenerator{
         meshFilter.mesh = BaseMesh;
 
         var renderer = chunkObject.GetComponent<MeshRenderer>();
-        DrawTextureChunk(mapaCells, pos, renderer, chunkSize);
+        DrawTextureChunk(mapaCells, renderer);
     }
 }
