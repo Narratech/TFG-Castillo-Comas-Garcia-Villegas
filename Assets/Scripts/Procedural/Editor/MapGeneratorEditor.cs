@@ -14,6 +14,7 @@ public class MapGeneratorEditor : Editor{
             if(mapGen.autoUpdate){
                 mapGen.GenerateMap();
             }
+            mapGen.mapSize =(int)Mathf.Floor(mapGen.mapSize / 10.0f) * 10;
         }
         if (GUILayout.Button("Generate")){
             mapGen.GenerateMap();

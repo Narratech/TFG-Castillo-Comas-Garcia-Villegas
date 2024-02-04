@@ -212,7 +212,7 @@ public static class MeshGenerator{
     }
 
 
-    public static void GenerateTerrainMeshChunk_Cartoon(Cell[,] mapaCells, GameObject chunkObject, int levelOfDetails)
+    public static void GenerateTerrainMeshChunk_LowPoly(Cell[,] mapaCells, GameObject chunkObject, int levelOfDetails)
     {
         int size = mapaCells.GetLength(0);
         float topLeftX = (size - 1) / -2f;

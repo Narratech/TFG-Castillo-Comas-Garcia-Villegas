@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -51,7 +52,8 @@ public class MapGenerator : MonoBehaviour{
     public int mapSize;
 
     //TAMAÑO DEL CHUNK (En caso de que se cambie, es probable de k no se genere bien la malla del mapa debido al limite de creacion de vertices de unity por malla)
-    public const int chunkSize = 50;
+    [HideInInspector]
+    public int chunkSize = 50;
     //TAMAÑO DE CADA CELDA (En caso de modificacion posible solapacion de vertices)
     const float sizePerBlock = 0.5f;
 
@@ -121,6 +123,7 @@ public class MapGenerator : MonoBehaviour{
 
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
+    float[,] noiseMap= null;
     //Sistema de chunks para la generacion del mallado del mapa
     Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
 
@@ -153,11 +156,11 @@ public class MapGenerator : MonoBehaviour{
         }
 
         cleanMaps();
+        noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
         MapDisplay display = GetComponent<MapDisplay>();        
         switch (drawMode){
             case DrawMode.NoiseMap:
-                float[,] noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset, new Vector2Int(0,0));
                 display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(noiseMap));
                 display.ActiveMap(true);
                 break;
@@ -201,9 +204,8 @@ public class MapGenerator : MonoBehaviour{
     /// </summary>
     /// <param name="fallOffMap"></param>
     /// <returns></returns>
-    Color[] generateColorMap()
-    {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset, new Vector2Int(0, 0));
+    Color[] generateColorMap(){
+        
         Color[] colorMap = new Color[mapSize * mapSize];
 
         //Nos guardamos y vemos toda la informacion del mapa generado
@@ -230,18 +232,16 @@ public class MapGenerator : MonoBehaviour{
     }
 
     public Cell[,] generateChunk(Vector2Int chunkCoord){
-        //Generar el mapa de ruido
-        float[,] noiseMap = Noise.GenerateNoiseMap(chunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset, chunkCoord);
-
+        
         Cell[,] cellMap = new Cell[chunkSize, chunkSize];
         Color[] colorMap = new Color[chunkSize * chunkSize];
 
         //Nos guardamos y vemos toda la informacion del mapa generado
         for (int y = 0; y < chunkSize; y++){
             for (int x = 0; x < chunkSize; x++){
-
-                if (useFallOff) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
-                float currentHeight = noiseMap[x, y];
+                Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize, y + chunkCoord.y * chunkSize);
+                if (useFallOff) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x,posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                float currentHeight = noiseMap[posNoise.x, posNoise.y];
 
                 foreach (var currentRegion in regions){
                     //recorremos y miramos que tipo de terreno se ha generado
@@ -261,7 +261,20 @@ public class MapGenerator : MonoBehaviour{
         return cellMap;
     }
 
+    void calculateChunkSize(){
+        chunkSize = 60;
+        int divisor = 2;
+        while (chunkSize > 50)
+        {
+            chunkSize = mapSize / divisor;
+            divisor += 2;
+        }
+    }
+
     void generateChunks_LowPoly(){
+
+        calculateChunkSize();
+
         int numChunks = mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
 
@@ -272,8 +285,10 @@ public class MapGenerator : MonoBehaviour{
             }
         }
     }
-    void generateChunks_Minecraft()
-    {
+    void generateChunks_Minecraft(){
+
+        calculateChunkSize();
+
         int numChunks = mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
 
@@ -284,6 +299,7 @@ public class MapGenerator : MonoBehaviour{
                 Vector2Int chunkPos = new Vector2Int(x, y);
                 map3D[chunkPos] = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, levelOfDetail);
             }
+
         }
     }
 
@@ -330,5 +346,9 @@ public class MapGenerator : MonoBehaviour{
                 }
             }
         }
+    }
+    public float[,] getNoise()
+    {
+        return noiseMap;
     }
 }

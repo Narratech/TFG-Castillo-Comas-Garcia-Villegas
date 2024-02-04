@@ -90,20 +90,22 @@ public class Chunk{
         //Generamos la maya
         if (!cartoon) { // si es tipo minecraft
             generateEdgesGameObject();
-            GenerateTerrainMesh(mapCells, sizePerBlock, chunkSize);
+            GenerateTerrainMesh_Minecraft(mapCells, sizePerBlock);
             edges.AddComponent<MeshCollider>();
             GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
         }
-        else GenerateTerrainMesh_Cartoon(mapCells, levelOfDetail);
+        else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
 
         floor.AddComponent<MeshCollider>();
-        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic); 
+        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
+
+        chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
     }
 
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh(Cell[,] mapaCells,float sizePerBlock,int chunkSize){
+    public void GenerateTerrainMesh_Minecraft(Cell[,] mapaCells,float sizePerBlock){
         MeshGenerator.GenerateTerrainMeshChunk(mapaCells, floor, sizePerBlock);
         MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
     }
@@ -111,8 +113,8 @@ public class Chunk{
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh_Cartoon(Cell[,] mapaCells, int levelOfDetail){
-        MeshGenerator.GenerateTerrainMeshChunk_Cartoon(mapaCells, floor, levelOfDetail);
+    public void GenerateTerrainMesh_LowPoly(Cell[,] mapaCells, int levelOfDetail){
+        MeshGenerator.GenerateTerrainMeshChunk_LowPoly(mapaCells, floor, levelOfDetail);
     }
 
     public void setParent(Transform parent){

@@ -19,41 +19,40 @@ public static  class Noise {
     /// <param name="offset">La posición inicial del ruido generado</param>
     /// <param name="chunkCoords">HAY Q PONER PARA K SIRVE</param>
     /// <returns></returns>
-    public static float[,] GenerateNoiseMap(int size,int seed,float noiseScale,int octaves, float persistance, float lacunarity,Vector2 offset, Vector2Int chunkCoords){
+    public static float[,] GenerateNoiseMap(int size,int seed,float noiseScale,int octaves, float persistance, float lacunarity,Vector2 offset){
         if (noiseScale <= 0) noiseScale = 0.0001f;
-        float[,] noiseMap= new float[size,size];
+        float[,] noiseMap = new float[size, size];
         // Crear una instancia de Random con la semilla proporcionada
         System.Random r = new System.Random(seed);
         // Generar vectores de desplazamiento para cada octava
         Vector2[] octaveOffsets = new Vector2[octaves];
-        for (int i = 0; i < octaves; i++){
+        for (int i = 0; i < octaves; i++)
+        {
             float offsetX = r.Next(-10000, 10000) + offset.x;
             float offsetY = r.Next(-10000, 10000) + offset.y;
-            octaveOffsets[i]= new Vector2(offsetX,offsetY);  
+            octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
         // Inicializar variables para determinar los valores máximos y mínimos de altura del ruido
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
 
-        float halfWidth = size/ 2f;
-        float halfHeight = size/ 2f;
-        offset.x = chunkCoords.x * size;
-        offset.y = chunkCoords.y * size;
+        float halfWidth = size / 2f;
+        float halfHeight = size / 2f;
         // Generar el ruido por octavas
-        for (int y = 0; y < size; y++){
-            for (int x = 0; x < size; x++){
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
                 float amplitude = 1;
                 float frequency = 1;
                 float noiseHeight = 0;
                 // Calcular la altura del ruido para cada octava
-                for (int i = 0; i < octaves; i++){
+                for (int i = 0; i < octaves; i++)
+                {
                     float smpleX = (x - halfWidth) / noiseScale * frequency + octaveOffsets[i].x;
-                    float smpleY = (y - halfHeight)/ noiseScale * frequency + octaveOffsets[i].y;
-
-                    chunkCoords.x++; chunkCoords.y++;
-
+                    float smpleY = (y - halfHeight) / noiseScale * frequency + octaveOffsets[i].y;
                     // Obtener el valor de ruido Perlin y ajustarlo al rango [-1, 1]
-                    float perlinValue = Mathf.PerlinNoise(smpleX, smpleY)* 2-1;
+                    float perlinValue = Mathf.PerlinNoise(smpleX, smpleY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
 
                     amplitude *= persistance;
@@ -62,15 +61,17 @@ public static  class Noise {
                 }
                 // Actualizar los valores máximos y mínimos de altura del ruido
                 if (noiseHeight > maxNoiseHeight) maxNoiseHeight = noiseHeight;
-                else if(noiseHeight < minNoiseHeight) minNoiseHeight = noiseHeight;
+                else if (noiseHeight < minNoiseHeight) minNoiseHeight = noiseHeight;
                 // Guardar la altura del ruido normalizada en el mapa de ruido
-                noiseMap[x,y] = noiseHeight;
+                noiseMap[x, y] = noiseHeight;
             }
         }
         // Normalizar los valores de altura del ruido entre 0 y 1
-        for (int y = 0; y < size; y++){
-            for (int x = 0; x < size; x++){
-                noiseMap[x,y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x,y]);
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
             }
         }
 
