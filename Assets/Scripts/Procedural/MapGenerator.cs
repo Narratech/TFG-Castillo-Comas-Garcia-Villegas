@@ -233,29 +233,36 @@ public class MapGenerator : MonoBehaviour{
 
     public Cell[,] generateChunk(Vector2Int chunkCoord){
         
-        Cell[,] cellMap = new Cell[chunkSize, chunkSize];
-        Color[] colorMap = new Color[chunkSize * chunkSize];
-
+        Cell[,] cellMap = new Cell[chunkSize+2, chunkSize+2];
+        
         //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < chunkSize; y++){
-            for (int x = 0; x < chunkSize; x++){
-                Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize, y + chunkCoord.y * chunkSize);
-                if (useFallOff) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x,posNoise.y]);// calculo del nuevo noise con respecto al falloff
-                float currentHeight = noiseMap[posNoise.x, posNoise.y];
+        for (int y = 0; y < chunkSize + 2; y++){
+            for (int x = 0; x < chunkSize + 2; x++){
+                bool existCellDown = x + chunkCoord.x * chunkSize -1 >=0 && y + chunkCoord.y * chunkSize - 1 >= 0;
+                bool existCellUp = x + chunkCoord.x * chunkSize - 1 < mapSize && y + chunkCoord.y * chunkSize - 1 < mapSize;
+                if (existCellDown && existCellUp)
+                {
+                    Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize - 1, y + chunkCoord.y * chunkSize - 1);
+                    if (useFallOff) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                    float currentHeight = noiseMap[posNoise.x, posNoise.y];
 
-                foreach (var currentRegion in regions){
-                    //recorremos y miramos que tipo de terreno se ha generado
-                    if (currentHeight <= currentRegion.height){
-                        colorMap[y * chunkSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
-                        //Nos guardamos el estado de la celda que se ha generado
-                        cellMap[x, y] = new Cell();
-                        cellMap[x, y].type = currentRegion;
-                        cellMap[x, y].noise = currentHeight;
-                        cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplayer;
+                    foreach (var currentRegion in regions)
+                    {
+                        //recorremos y miramos que tipo de terreno se ha generado
+                        if (currentHeight <= currentRegion.height)
+                        {
 
-                        break;
+                            //Nos guardamos el estado de la celda que se ha generado
+                            cellMap[x, y] = new Cell();
+                            cellMap[x, y].type = currentRegion;
+                            cellMap[x, y].noise = currentHeight;
+                            cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplayer;
+
+                            break;
+                        }
                     }
                 }
+                else cellMap[x, y] = null;
             }
         }
         return cellMap;

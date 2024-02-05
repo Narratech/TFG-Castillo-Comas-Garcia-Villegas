@@ -83,8 +83,8 @@ public static class MeshGenerator{
     public static void DrawEdgesChunk(Cell[,] mapaCells, GameObject edges,float sizePerBlock){
         int size = mapaCells.GetLength(0);
 
-        float topLeftX = (size - 1) / -2f;
-        float topLeftZ = (size - 1) / -2f;
+        float topLeftX = (100 - 1) / -2f;
+        float topLeftZ = (100 - 1) / -2f;
 
         Mesh mesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>();

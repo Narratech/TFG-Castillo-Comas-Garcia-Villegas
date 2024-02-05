@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -90,7 +91,9 @@ public class Chunk{
         //Generamos la maya
         if (!cartoon) { // si es tipo minecraft
             generateEdgesGameObject();
+           
             GenerateTerrainMesh_Minecraft(mapCells, sizePerBlock);
+
             edges.AddComponent<MeshCollider>();
             GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
         }
@@ -106,8 +109,21 @@ public class Chunk{
     /// Genera la maya del chunk
     /// </summary>
     public void GenerateTerrainMesh_Minecraft(Cell[,] mapaCells,float sizePerBlock){
-        MeshGenerator.GenerateTerrainMeshChunk(mapaCells, floor, sizePerBlock);
-        MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
+
+
+        int sizeAntiguo = mapCells.GetLength(0);
+        Cell[,] matrizReducida = new Cell[sizeAntiguo - 2, sizeAntiguo - 2];
+
+        // Copiar los elementos relevantes a la nueva matriz usando Array.Copy
+        for (int i = 1; i < sizeAntiguo - 1; i++)
+            Array.Copy(mapCells, i * sizeAntiguo + 1, matrizReducida, (i - 1) * (sizeAntiguo - 2), sizeAntiguo - 2);
+
+
+        MeshGenerator.GenerateTerrainMeshChunk(matrizReducida, floor, sizePerBlock);
+        //MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
+
+        mapCells = matrizReducida;
+
     }
 
     /// <summary>
