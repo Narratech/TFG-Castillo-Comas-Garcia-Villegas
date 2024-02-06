@@ -109,19 +109,18 @@ public class Chunk{
     /// Genera la maya del chunk
     /// </summary>
     public void GenerateTerrainMesh_Minecraft(Cell[,] mapaCells,float sizePerBlock){
-
-
         int sizeAntiguo = mapCells.GetLength(0);
         Cell[,] matrizReducida = new Cell[sizeAntiguo - 2, sizeAntiguo - 2];
 
-        // Copiar los elementos relevantes a la nueva matriz usando Array.Copy
+        // Copiar los elementos relevantes a la nueva matriz
         for (int i = 1; i < sizeAntiguo - 1; i++)
             Array.Copy(mapCells, i * sizeAntiguo + 1, matrizReducida, (i - 1) * (sizeAntiguo - 2), sizeAntiguo - 2);
 
 
         MeshGenerator.GenerateTerrainMeshChunk(matrizReducida, floor, sizePerBlock);
-        //MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
-
+        MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
+        // El +2 para compensar el tamaño aumentado de map Cells q es chunsize +2
+        edges.transform.position = new Vector3(edges.transform.position.x,edges.transform.position.y,edges.transform.position.z+2);
         mapCells = matrizReducida;
 
     }
