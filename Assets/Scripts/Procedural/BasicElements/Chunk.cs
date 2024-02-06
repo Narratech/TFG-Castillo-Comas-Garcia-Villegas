@@ -70,7 +70,7 @@ public class Chunk{
     public Chunk(MapGenerator mapGenerator,Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent,bool cartoon,int levelOfDetail){
         this.posMap = posMap;
 
-        mapCells = mapGenerator.generateChunk(posMap);
+        mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
 
         //Generamos los GameObjects
         chunk = new GameObject("Chunk " + posMap);

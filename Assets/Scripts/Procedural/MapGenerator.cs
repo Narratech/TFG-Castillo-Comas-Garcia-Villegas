@@ -231,7 +231,7 @@ public class MapGenerator : MonoBehaviour{
         return colorMap;
     }
 
-    public Cell[,] generateChunk(Vector2Int chunkCoord){
+    public Cell[,] generateChunk_Minecraft(Vector2Int chunkCoord){
         
         Cell[,] cellMap = new Cell[chunkSize+2, chunkSize+2];
         
@@ -267,7 +267,39 @@ public class MapGenerator : MonoBehaviour{
         }
         return cellMap;
     }
+    public Cell[,] generateChunk_LowPoly(Vector2Int chunkCoord)
+    {
 
+        Cell[,] cellMap = new Cell[chunkSize, chunkSize];
+
+        //Nos guardamos y vemos toda la informacion del mapa generado
+        for (int y = 0; y < chunkSize; y++)
+        {
+            for (int x = 0; x < chunkSize; x++)
+            {
+                Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize, y + chunkCoord.y * chunkSize );
+                if (useFallOff) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                float currentHeight = noiseMap[posNoise.x, posNoise.y];
+
+                foreach (var currentRegion in regions)
+                {
+                    //recorremos y miramos que tipo de terreno se ha generado
+                    if (currentHeight <= currentRegion.height)
+                    {
+
+                        //Nos guardamos el estado de la celda que se ha generado
+                        cellMap[x, y] = new Cell();
+                        cellMap[x, y].type = currentRegion;
+                        cellMap[x, y].noise = currentHeight;
+                        cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplayer;
+
+                        break;
+                    }
+                }
+            }
+        }
+        return cellMap;
+    }
     void calculateChunkSize(){
         chunkSize = 60;
         int divisor = 2;
@@ -276,6 +308,7 @@ public class MapGenerator : MonoBehaviour{
             chunkSize = mapSize / divisor;
             divisor += 2;
         }
+        chunkSize = 50;
     }
 
     void generateChunks_LowPoly(){
