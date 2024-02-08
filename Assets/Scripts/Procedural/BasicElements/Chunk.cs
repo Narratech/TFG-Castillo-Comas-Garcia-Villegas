@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 /// <summary>
 /// Capa de terreno que se puede generar
 /// </summary>
@@ -58,6 +60,7 @@ public class Chunk{
     GameObject edges;
     public GameObject objectsGenerated;
     Cell[,] mapCells;
+    Bounds bound;
     void generateEdgesGameObject(){
         edges = new GameObject("Edges " + posMap);
         edges.transform.SetParent(chunk.transform);
@@ -67,11 +70,8 @@ public class Chunk{
         edges.AddComponent<MeshRenderer>().material = edgesMaterial;
     }
 
-    public Chunk(MapGenerator mapGenerator,Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent,bool cartoon,int levelOfDetail){
-        this.posMap = posMap;
-
-        mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
-
+    void createGameObjectChunk(Transform parent, Vector2 posMap)
+    {
         //Generamos los GameObjects
         chunk = new GameObject("Chunk " + posMap);
         floor = new GameObject("Suelo " + posMap);
@@ -81,26 +81,42 @@ public class Chunk{
         setParent(parent);
         floor.transform.SetParent(chunk.transform);
         objectsGenerated.transform.SetParent(chunk.transform);
+    }
 
-        //Creamos los respectivos materiales para cada malla
-        Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-        floor.AddComponent<MeshFilter>();
-        floor.AddComponent<MeshRenderer>().material = sueloMaterial;
+    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail){
+        this.posMap = posMap;
+        bound = new Bounds(posMap.ConvertTo<Vector2>(),Vector2.one*chunkSize);
+
+        createGameObjectChunk(parent, posMap);
+
+        if ( Mathf.Abs(posMap.x*chunkSize) <= mapGenerator.mapSize && Mathf.Abs(posMap.y * chunkSize) <= mapGenerator.mapSize)
+        {
+            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
+
+            //Creamos los respectivos materiales para cada malla
+            Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            floor.AddComponent<MeshFilter>();
+            floor.AddComponent<MeshRenderer>().material = sueloMaterial;
 
 
-        //Generamos la maya
-        if (!cartoon) { // si es tipo minecraft
-            generateEdgesGameObject();
-           
-            GenerateTerrainMesh_Minecraft(mapCells, sizePerBlock);
+            //Generamos la maya
+            if (!cartoon)
+            { // si es tipo minecraft
+                generateEdgesGameObject();
 
-            edges.AddComponent<MeshCollider>();
-            GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
+                GenerateTerrainMesh_Minecraft(mapCells, sizePerBlock);
+
+                edges.AddComponent<MeshCollider>();
+                GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
+            }
+            else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
+
+            floor.AddComponent<MeshCollider>();
+            GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
         }
-        else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
-
-        floor.AddComponent<MeshCollider>();
-        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
+        else{
+            floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        }  
 
         chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
     }
@@ -141,5 +157,15 @@ public class Chunk{
         GameObject.Destroy(edges.gameObject);
         GameObject.Destroy(objectsGenerated.gameObject);
         GameObject.Destroy(floor.gameObject);
+    }
+
+    public void Update(Vector2 viewPosition, float maxViewDst)
+    {
+        float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(viewPosition));
+        setVisible(viewerDstFromNearestEdge <= maxViewDst);
+    }
+
+    void setVisible(bool visible){
+        chunk.gameObject.SetActive(visible);
     }
 }
