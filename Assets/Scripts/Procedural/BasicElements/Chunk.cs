@@ -135,8 +135,7 @@ public class Chunk{
 
         MeshGenerator.GenerateTerrainMeshChunk(matrizReducida, floor, sizePerBlock);
         MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
-        // El +2 para compensar el tamaño aumentado de map Cells q es chunsize +2
-        edges.transform.position = new Vector3(edges.transform.position.x,edges.transform.position.y,edges.transform.position.z+2);
+       
         mapCells = matrizReducida;
 
     }

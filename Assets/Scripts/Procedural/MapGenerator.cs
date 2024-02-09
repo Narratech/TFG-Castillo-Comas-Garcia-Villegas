@@ -27,13 +27,13 @@ public class MapGenerator : MonoBehaviour{
         /// <summary>
         /// Generacion de un Mapa de Con los layers de terreno establecidos(Solo visual 3D)
         /// </summary>
-        NoObjects,
+        CubicMap,
         /// <summary>
         /// Generacion de un Mapa de Con los layers de terreno establecidos y los Objectos puestos para generar(Solo visual 3D)
         /// </summary>
-        Objects,
+        MapWithObjects,
         /// <summary>
-        /// Config de ColorMap y NoObjects
+        /// Config de ColorMap y CubicMap
         /// </summary>
         NoObjectsWithDisplay,
         All,
@@ -64,7 +64,7 @@ public class MapGenerator : MonoBehaviour{
     /// <summary>
     ///  Controlar al altura del terreno del mundo
     /// </summary>
-    public float heightMultiplayer = 100f;
+    public float heightMultiplier = 100f;
 
     public AnimationCurve meshHeightCurve;
 
@@ -91,7 +91,7 @@ public class MapGenerator : MonoBehaviour{
     /// </summary>
     public int seed;
     /// <summary>
-    ///  La posición inicial del ruido generado
+    ///  Desplazamiento del ruido generado
     /// </summary>
     public Vector2 offset;
 
@@ -107,7 +107,7 @@ public class MapGenerator : MonoBehaviour{
     /// <summary>
     ///  Generar el mapa con forma de isla
     /// </summary>
-    public bool useFallOff = false;
+    public bool isIsland = false;
     float[,] fallOffMap = null;
     /// <summary>
     ///  Cuando se realize un cambio des de el editor, auto actualizar el mapa
@@ -149,13 +149,15 @@ public class MapGenerator : MonoBehaviour{
     /// Generar el Mapa con los parametros establecidos
     /// </summary>
     public void GenerateMap(){
-        //generar el falloff si se ha activado en la configuracion
-        if (useFallOff) {
-            fallOffMap = new float[mapSize, mapSize];
-            fallOffMap = Noise.GenerateFalloffMap(mapSize); 
-        }
+        //Borro todo lo anterior creado para crear un nuevo mapa
+        CleanMaps();
 
-        cleanMaps();
+        //generar isla si se ha activado en la configuracion
+        if (isIsland) {
+            fallOffMap = new float[mapSize, mapSize];
+            fallOffMap = Noise.GenerateFallOffMap(mapSize); 
+        }
+        
         noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
         MapDisplay display = GetComponent<MapDisplay>();        
@@ -165,30 +167,30 @@ public class MapGenerator : MonoBehaviour{
                 display.ActiveMap(true);
                 break;
             case DrawMode.ColorMap:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, mapSize));
+                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                 display.ActiveMap(true);
                 Debug.Log("Color Map 2D generado");
                 break;
             case DrawMode.FallOff:
-                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(Noise.GenerateFalloffMap(mapSize)));
+                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(Noise.GenerateFallOffMap(mapSize)));
                 display.ActiveMap(true);
                 break;
-            case DrawMode.NoObjects:
+            case DrawMode.CubicMap:
                 generateChunks_Minecraft();
                 display.ActiveMap(false);
                 break;
-            case DrawMode.Objects:
+            case DrawMode.MapWithObjects:
                 generateChunks_Minecraft();
                 //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                 display.ActiveMap(false);
                 break;
             case DrawMode.NoObjectsWithDisplay:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, mapSize));
+                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                 generateChunks_Minecraft();
                 display.ActiveMap(true);
                 break;
             case DrawMode.All:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, mapSize));
+                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                 generateChunks_Minecraft();
                 //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                 display.ActiveMap(true);
@@ -214,7 +216,7 @@ public class MapGenerator : MonoBehaviour{
             for (int x = 0; x < mapSize; x++)
             {
 
-                if (useFallOff) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
+                if (isIsland) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
                 float currentHeight = noiseMap[x, y];
 
                 foreach (var currentRegion in regions)
@@ -243,7 +245,7 @@ public class MapGenerator : MonoBehaviour{
                 if (existCellDown && existCellUp)
                 {
                     Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize - 1, y + chunkCoord.y * chunkSize - 1);
-                    if (useFallOff) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                    if (isIsland) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
                     float currentHeight = noiseMap[posNoise.x, posNoise.y];
 
                     foreach (var currentRegion in regions)
@@ -256,7 +258,7 @@ public class MapGenerator : MonoBehaviour{
                             cellMap[x, y] = new Cell();
                             cellMap[x, y].type = currentRegion;
                             cellMap[x, y].noise = currentHeight;
-                            cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplayer;
+                            cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplier;
 
                             break;
                         }
@@ -278,7 +280,7 @@ public class MapGenerator : MonoBehaviour{
             for (int x = 0; x < chunkSize; x++)
             {
                 Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize, y + chunkCoord.y * chunkSize );
-                if (useFallOff) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                if (isIsland) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
                 float currentHeight = noiseMap[posNoise.x, posNoise.y];
 
                 foreach (var currentRegion in regions)
@@ -291,7 +293,7 @@ public class MapGenerator : MonoBehaviour{
                         cellMap[x, y] = new Cell();
                         cellMap[x, y].type = currentRegion;
                         cellMap[x, y].noise = currentHeight;
-                        cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplayer;
+                        cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplier;
 
                         break;
                     }
@@ -300,15 +302,22 @@ public class MapGenerator : MonoBehaviour{
         }
         return cellMap;
     }
+    /// <summary>
+    /// Calcula las medidas del chunk segun las del mapa. Como maximo cada chunk sera de 50
+    /// </summary>
     void calculateChunkSize(){
         chunkSize = 60;
         int divisor = 2;
-        while (chunkSize > 50)
+        while (divisor < mapSize)
         {
-            chunkSize = mapSize / divisor;
+            if(mapSize % divisor == 0)
+            {
+                chunkSize = mapSize / divisor;
+                if (chunkSize <= 50) break;
+            }
+
             divisor += 2;
         }
-        chunkSize = 50;
     }
 
     void generateChunks_LowPoly(){
@@ -328,6 +337,7 @@ public class MapGenerator : MonoBehaviour{
     void generateChunks_Minecraft(){
 
         calculateChunkSize();
+        Debug.Log("tamaño de chunk: " + chunkSize);
 
         int numChunks = mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
@@ -347,7 +357,7 @@ public class MapGenerator : MonoBehaviour{
     ///  Si yo creo un mapa y lo actualizo, la basura se va quedando ahi pero desactivada(SOLO FUERA DE EJECUCION),
     ///  en ejecucion se elimina el mapa anterior
     /// </summary>
-    void cleanMaps()
+    void CleanMaps()
     {
         if (clean)
         {

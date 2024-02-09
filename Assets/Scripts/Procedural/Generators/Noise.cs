@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -19,11 +17,16 @@ public static  class Noise {
     /// <param name="offset">La posición inicial del ruido generado</param>
     /// <param name="chunkCoords">HAY Q PONER PARA K SIRVE</param>
     /// <returns></returns>
-    public static float[,] GenerateNoiseMap(int size,int seed,float noiseScale,int octaves, float persistance, float lacunarity,Vector2 offset){
+    
+    public static float[,] GenerateNoiseMap(int size, int seed, float noiseScale, int octaves, float persistance, 
+        float lacunarity, Vector2 offset){
+        
+        // Evitar el error al dividir entre 0
         if (noiseScale <= 0) noiseScale = 0.0001f;
         float[,] noiseMap = new float[size, size];
         // Crear una instancia de Random con la semilla proporcionada
         System.Random r = new System.Random(seed);
+        
         // Generar vectores de desplazamiento para cada octava
         Vector2[] octaveOffsets = new Vector2[octaves];
         for (int i = 0; i < octaves; i++)
@@ -36,8 +39,8 @@ public static  class Noise {
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
 
-        float halfWidth = size / 2f;
-        float halfHeight = size / 2f;
+        float halfSize = size / 2f;
+        
         // Generar el ruido por octavas
         for (int y = 0; y < size; y++)
         {
@@ -49,14 +52,13 @@ public static  class Noise {
                 // Calcular la altura del ruido para cada octava
                 for (int i = 0; i < octaves; i++)
                 {
-                    float smpleX = (x - halfWidth) / noiseScale * frequency + octaveOffsets[i].x;
-                    float smpleY = (y - halfHeight) / noiseScale * frequency + octaveOffsets[i].y;
+                    float smpleX = (x - halfSize) / noiseScale * frequency + octaveOffsets[i].x;
+                    float smpleY = (y - halfSize) / noiseScale * frequency + octaveOffsets[i].y;
                     // Obtener el valor de ruido Perlin y ajustarlo al rango [-1, 1]
                     float perlinValue = Mathf.PerlinNoise(smpleX, smpleY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
-
-                    amplitude *= persistance;
-                    frequency *= lacunarity;
+                    amplitude *= persistance; // Va aumentando
+                    frequency *= lacunarity; // Va disminuyendo
 
                 }
                 // Actualizar los valores máximos y mínimos de altura del ruido
@@ -81,7 +83,7 @@ public static  class Noise {
     /// <summary>
     /// Generar un mapa de falloff para suavizar los bordes del terreno
     /// </summary>
-    public static float[,] GenerateFalloffMap(int size){
+    public static float[,] GenerateFallOffMap(int size){
         float[,] map = new float[size, size];
         
         for (int i = 0; i < size; i++){
