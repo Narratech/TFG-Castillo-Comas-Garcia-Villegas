@@ -203,9 +203,15 @@ public class Chunk
 
                     if (validPosition)
                     {
+                        // Generar un ángulo aleatorio
+                        Quaternion objRotation;
+                        float randomAngle_y = UnityEngine.Random.Range(0f, 360f);
+                        float randomAngle_x = UnityEngine.Random.Range(-15f, 15f);
+                        float randomAngle_z = UnityEngine.Random.Range(-15f, 15f);
+                        objRotation = Quaternion.Euler(randomAngle_x, randomAngle_y, randomAngle_z);
 
                         GameObject thisObject = Transform.Instantiate(obj, objPosition,
-                        Quaternion.identity, chunk.transform);
+                        objRotation, chunk.transform);
 
                         chunkObjects.Add(thisObject.transform);
                     }
