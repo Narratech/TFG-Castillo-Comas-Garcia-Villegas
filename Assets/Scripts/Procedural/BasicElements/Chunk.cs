@@ -9,7 +9,8 @@ using UnityEngine.PlayerLoop;
 /// Capa de terreno que se puede generar
 /// </summary>
 [System.Serializable]
-public struct TerrainType{
+public struct TerrainType
+{
     /// <summary>
     /// Nombre Capa De Terreno
     /// </summary>
@@ -29,7 +30,8 @@ public struct TerrainType{
 /// Objecto que se puede generar en el mapa
 /// </summary>
 [System.Serializable]
-public class ObjectInMap{
+public class ObjectInMap
+{
     public GameObject prefab;
     /// <summary>
     /// Densidad del objecto 
@@ -49,7 +51,8 @@ public class ObjectInMap{
 /// Un Chunk es una porcion del Mapa que contiene el suelo, objectos y bordes de una porcion del mapa generado
 /// (ES NECESARIO PUES UNITY LIMITA LA CREACION DE VERTICES PARA LAS MAYAS)
 /// </summary>
-public class Chunk{
+public class Chunk
+{
     /// <summary>
     /// Posicion del chunk en el mapa
     /// </summary>
@@ -61,7 +64,8 @@ public class Chunk{
     public GameObject objectsGenerated;
     Cell[,] mapCells;
     Bounds bound;
-    void generateEdgesGameObject(){
+    void generateEdgesGameObject()
+    {
         edges = new GameObject("Edges " + posMap);
         edges.transform.SetParent(chunk.transform);
 
@@ -83,13 +87,14 @@ public class Chunk{
         objectsGenerated.transform.SetParent(chunk.transform);
     }
 
-    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail){
+    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
+    {
         this.posMap = posMap;
-        bound = new Bounds(posMap.ConvertTo<Vector2>(),Vector2.one*chunkSize);
+        bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
 
         createGameObjectChunk(parent, posMap);
 
-        if ( Mathf.Abs(posMap.x*chunkSize) <= mapGenerator.mapSize && Mathf.Abs(posMap.y * chunkSize) <= mapGenerator.mapSize)
+        if (Mathf.Abs(posMap.x * chunkSize) <= mapGenerator.mapSize && Mathf.Abs(posMap.y * chunkSize) <= mapGenerator.mapSize)
         {
             mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
 
@@ -114,17 +119,70 @@ public class Chunk{
             floor.AddComponent<MeshCollider>();
             GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
         }
-        else{
+        else
+        {
             floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        }  
+        }
 
         chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
+
+
+        obj = mapGenerator.objects[0].prefab;
+        GenerateObjects(mapCells, chunkSize);
     }
+
+    GameObject obj;
+
+    void GenerateObjects(Cell[,] cells, int chunkSize)
+    {
+        int lenght_0 = cells.GetLength(0);
+        int lenght_1 = cells.GetLength(1);
+
+        float distanceBetween = (float)chunkSize / (float)lenght_0;
+
+        Vector3 cornerPosition = new Vector3(chunk.transform.position.x - chunkSize / 2, 0, chunk.transform.position.z + chunkSize / 2);
+
+        for (int i = 0; i < lenght_0; i++)
+        {
+            for (int j = 0; j < lenght_1; j++)
+            {
+                //Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, 0, j * distanceBetween);
+
+                //Ray ray = new Ray(objPosition, Vector3.up);
+                //RaycastHit hitInfo;
+
+                //if (Physics.Raycast(ray, out hitInfo))
+                //{
+                //    objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
+                //}
+                //else
+                //{
+                //    ray = new Ray(objPosition, Vector3.down);
+
+                //    if (Physics.Raycast(ray, out hitInfo))
+                //    {
+                //        objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
+                //    }
+                //}
+
+                if (UnityEngine.Random.Range(0, 8) == 0)
+                {
+                    Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cells[i, j].Height, -j * distanceBetween);
+
+                    GameObject thisObject = Transform.Instantiate(obj, objPosition,
+                    Quaternion.identity, chunk.transform);
+                }
+            }
+        }
+    }
+
+
 
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh_Minecraft(Cell[,] mapaCells,float sizePerBlock){
+    public void GenerateTerrainMesh_Minecraft(Cell[,] mapaCells, float sizePerBlock)
+    {
         int sizeAntiguo = mapCells.GetLength(0);
         Cell[,] matrizReducida = new Cell[sizeAntiguo - 2, sizeAntiguo - 2];
 
@@ -135,7 +193,7 @@ public class Chunk{
 
         MeshGenerator.GenerateTerrainMeshChunk(matrizReducida, floor, sizePerBlock);
         MeshGenerator.DrawEdgesChunk(mapaCells, edges, sizePerBlock);
-       
+
         mapCells = matrizReducida;
 
     }
@@ -143,15 +201,19 @@ public class Chunk{
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh_LowPoly(Cell[,] mapaCells, int levelOfDetail){
+    public void GenerateTerrainMesh_LowPoly(Cell[,] mapaCells, int levelOfDetail)
+    {
         MeshGenerator.GenerateTerrainMeshChunk_LowPoly(mapaCells, floor, levelOfDetail);
     }
 
-    public void setParent(Transform parent){
-        chunk.transform.SetParent(parent);
+    public void setParent(Transform parent)
+    {
+        if (chunk != null)
+            chunk.transform.SetParent(parent);
     }
 
-    public void delete(){
+    public void delete()
+    {
         GameObject.Destroy(chunk.gameObject);
         GameObject.Destroy(edges.gameObject);
         GameObject.Destroy(objectsGenerated.gameObject);
@@ -164,7 +226,8 @@ public class Chunk{
         setVisible(viewerDstFromNearestEdge <= maxViewDst);
     }
 
-    void setVisible(bool visible){
+    void setVisible(bool visible)
+    {
         chunk.gameObject.SetActive(visible);
     }
 }
