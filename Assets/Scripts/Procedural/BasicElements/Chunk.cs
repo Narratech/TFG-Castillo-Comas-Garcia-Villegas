@@ -33,6 +33,10 @@ public struct TerrainType
 public class ObjectInMap
 {
     public GameObject prefab;
+
+    // Curva de densidad basada en la altura del terreno
+    public AnimationCurve densityCurve;
+
     /// <summary>
     /// Densidad del objecto 
     /// </summary>               
@@ -127,11 +131,15 @@ public class Chunk
         chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
 
+        maxHeight = mapGenerator.heightMultiplier;
         obj = mapGenerator.objects[0].prefab;
+        densityCurve = mapGenerator.objects[0].densityCurve;
         GenerateObjects(mapCells, chunkSize);
     }
 
+    float maxHeight;
     GameObject obj;
+    AnimationCurve densityCurve;
 
     void GenerateObjects(Cell[,] cells, int chunkSize)
     {
@@ -165,9 +173,18 @@ public class Chunk
                 //    }
                 //}
 
-                if (UnityEngine.Random.Range(0, 8) == 0)
+                float cellHeight = cells[i, j].Height;
+
+                // Transformarlo a un valor entre 0 y 1
+                float normalizedHeight = cellHeight / maxHeight;
+
+                // Calcular probabilidad de que este objeto aparezca en esta casilla
+                float probability = densityCurve.Evaluate(normalizedHeight);
+
+                // Basada en esta probabilidad, se calcula si hay un arbol o no en esta casilla
+                if (UnityEngine.Random.Range(0f, 1f) < probability)
                 {
-                    Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cells[i, j].Height, -j * distanceBetween);
+                    Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cellHeight, -j * distanceBetween);
 
                     GameObject thisObject = Transform.Instantiate(obj, objPosition,
                     Quaternion.identity, chunk.transform);
