@@ -131,6 +131,7 @@ public class Chunk
         chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
 
+        chunkObjects = new List<Transform>();
         maxHeight = mapGenerator.heightMultiplier;
         obj = mapGenerator.objects[0].prefab;
         densityCurve = mapGenerator.objects[0].densityCurve;
@@ -141,6 +142,9 @@ public class Chunk
     GameObject obj;
     AnimationCurve densityCurve;
 
+    // Objetos instanciados en este chunk
+    List<Transform> chunkObjects;
+    float minDistance = 3;
     void GenerateObjects(Cell[,] cells, int chunkSize)
     {
         int lenght_0 = cells.GetLength(0);
@@ -186,8 +190,25 @@ public class Chunk
                 {
                     Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cellHeight, -j * distanceBetween);
 
-                    GameObject thisObject = Transform.Instantiate(obj, objPosition,
-                    Quaternion.identity, chunk.transform);
+                    // Comprobar si este objeto esta a una distancia ilegal de otro objeto
+                    // Esto se ampliara para tener en cuenta que objeto tiene preferencia sobre otros
+                    bool validPosition = true;
+                    for (int k = 0; k < chunkObjects.Count; k++)
+                    {
+                        Vector2 thisPosition = new Vector2(objPosition.x, objPosition.z);
+                        Vector2 otherPosition = new Vector2(chunkObjects[k].position.x, chunkObjects[k].position.z);
+                        if (Vector2.Distance(thisPosition, otherPosition) < minDistance)
+                            validPosition = false;
+                    }
+
+                    if (validPosition)
+                    {
+
+                        GameObject thisObject = Transform.Instantiate(obj, objPosition,
+                        Quaternion.identity, chunk.transform);
+
+                        chunkObjects.Add(thisObject.transform);
+                    }
                 }
             }
         }
