@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 /// <summary>
 /// Capa de terreno que se puede generar
 /// </summary>
@@ -23,7 +23,7 @@ public struct TerrainType
     /// <summary>
     /// Color de Capa
     /// </summary>
-    public Color color;
+    public UnityEngine.Color color;
 }
 
 /// <summary>
@@ -82,6 +82,7 @@ public class Chunk
     {
         //Generamos los GameObjects
         chunk = new GameObject("Chunk " + posMap);
+        //chunk = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor = new GameObject("Suelo " + posMap);
         objectsGenerated = new GameObject("Objectos " + posMap);
 
@@ -98,44 +99,40 @@ public class Chunk
 
         createGameObjectChunk(parent, posMap);
 
-        if (Mathf.Abs(posMap.x * chunkSize) <= mapGenerator.mapSize && Mathf.Abs(posMap.y * chunkSize) <= mapGenerator.mapSize)
+        if (mapGenerator.getEndLessActive())
         {
-            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
-
-            //Creamos los respectivos materiales para cada malla
-            Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            floor.AddComponent<MeshFilter>();
-            floor.AddComponent<MeshRenderer>().material = sueloMaterial;
-
-
-            //Generamos la maya
-            if (!cartoon)
-            { // si es tipo minecraft
-                generateEdgesGameObject();
-
-                GenerateTerrainMesh_Minecraft(mapCells, sizePerBlock);
-
-                edges.AddComponent<MeshCollider>();
-                GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
-            }
-            else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
-
-            floor.AddComponent<MeshCollider>();
-            GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
+            mapGenerator.generatePerlinChunkEndLessTerrain();
+            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(new Vector2Int(0,0)) : mapGenerator.generateChunk_Minecraft(new Vector2Int(0, 0));
         }
-        else
-        {
-            floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        else  mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
+        //Creamos los respectivos materiales para cada malla
+        Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+        floor.AddComponent<MeshFilter>();
+        floor.AddComponent<MeshRenderer>().material = sueloMaterial;
+
+
+        //Generamos la maya
+        if (!cartoon)
+        { // si es tipo minecraft
+            generateEdgesGameObject();
+
+            GenerateTerrainMesh_Minecraft(mapCells, sizePerBlock);
+
+            edges.AddComponent<MeshCollider>();
+            GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
         }
+        else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
+
+        floor.AddComponent<MeshCollider>();
+        GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 
         chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
-
-
+        
         chunkObjects = new List<Transform>();
         maxHeight = mapGenerator.heightMultiplier;
         obj = mapGenerator.objects[0].prefab;
         densityCurve = mapGenerator.objects[0].densityCurve;
-        GenerateObjects(mapCells, chunkSize);
+        //GenerateObjects(mapCells, chunkSize);
     }
 
     float maxHeight;
@@ -267,11 +264,16 @@ public class Chunk
     public void Update(Vector2 viewPosition, float maxViewDst)
     {
         float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(viewPosition));
-        setVisible(viewerDstFromNearestEdge <= maxViewDst);
+        SetVisible(viewerDstFromNearestEdge <= maxViewDst);
     }
 
-    void setVisible(bool visible)
+    public void SetVisible(bool visible)
     {
         chunk.gameObject.SetActive(visible);
+    }
+
+    public bool isVisible()
+    {
+        return chunk.activeSelf;
     }
 }

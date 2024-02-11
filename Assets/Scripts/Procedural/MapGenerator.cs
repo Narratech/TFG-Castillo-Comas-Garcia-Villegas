@@ -120,22 +120,22 @@ public class MapGenerator : MonoBehaviour{
 
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)
     bool clean = false;
-
+    bool endlessActive = false;
+    public bool getEndLessActive() {  return endlessActive; }
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
     float[,] noiseMap= null;
     //Sistema de chunks para la generacion del mallado del mapa
     Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
 
-    public Dictionary<Vector2, Chunk> Map3D
-    {
-        get { return map3D; }
-        set { map3D = value; }
-    }
+    public Dictionary<Vector2, Chunk> Map3D;
+   
 
     private void Awake(){
         clean = true;
         if(autoRegenerate) GenerateMap();
+        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false; 
+        else Map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
     }
 
     private void OnValidate(){
@@ -151,55 +151,61 @@ public class MapGenerator : MonoBehaviour{
     public void GenerateMap(){
         //Borro todo lo anterior creado para crear un nuevo mapa
         CleanMaps();
+        Map3D = new Dictionary<Vector2, Chunk>();
+        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
+        {
+            //generar isla si se ha activado en la configuracion
+            if (isIsland)
+            {
+                fallOffMap = new float[mapSize, mapSize];
+                fallOffMap = Noise.GenerateFallOffMap(mapSize);
+            }
 
-        //generar isla si se ha activado en la configuracion
-        if (isIsland) {
-            fallOffMap = new float[mapSize, mapSize];
-            fallOffMap = Noise.GenerateFallOffMap(mapSize); 
+            noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+
+            MapDisplay display = GetComponent<MapDisplay>();
+            switch (drawMode)
+            {
+                case DrawMode.NoiseMap:
+                    display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(noiseMap));
+                    display.ActiveMap(true);
+                    break;
+                case DrawMode.ColorMap:
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
+                    display.ActiveMap(true);
+                    Debug.Log("Color Map 2D generado");
+                    break;
+                case DrawMode.FallOff:
+                    display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(Noise.GenerateFallOffMap(mapSize)));
+                    display.ActiveMap(true);
+                    break;
+                case DrawMode.CubicMap:
+                    generateChunks_Minecraft();
+                    display.ActiveMap(false);
+                    break;
+                case DrawMode.MapWithObjects:
+                    generateChunks_Minecraft();
+                    //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
+                    display.ActiveMap(false);
+                    break;
+                case DrawMode.NoObjectsWithDisplay:
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
+                    generateChunks_Minecraft();
+                    display.ActiveMap(true);
+                    break;
+                case DrawMode.All:
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
+                    generateChunks_Minecraft();
+                    //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
+                    display.ActiveMap(true);
+                    break;
+                case DrawMode.Cartoon:
+                    generateChunks_LowPoly();
+                    display.ActiveMap(false);
+                    break;
+            }
         }
-        
-        noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
-
-        MapDisplay display = GetComponent<MapDisplay>();        
-        switch (drawMode){
-            case DrawMode.NoiseMap:
-                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(noiseMap));
-                display.ActiveMap(true);
-                break;
-            case DrawMode.ColorMap:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
-                display.ActiveMap(true);
-                Debug.Log("Color Map 2D generado");
-                break;
-            case DrawMode.FallOff:
-                display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(Noise.GenerateFallOffMap(mapSize)));
-                display.ActiveMap(true);
-                break;
-            case DrawMode.CubicMap:
-                generateChunks_Minecraft();
-                display.ActiveMap(false);
-                break;
-            case DrawMode.MapWithObjects:
-                generateChunks_Minecraft();
-                //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
-                display.ActiveMap(false);
-                break;
-            case DrawMode.NoObjectsWithDisplay:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
-                generateChunks_Minecraft();
-                display.ActiveMap(true);
-                break;
-            case DrawMode.All:
-                display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
-                generateChunks_Minecraft();
-                //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
-                display.ActiveMap(true);
-                break;
-            case DrawMode.Cartoon:
-                generateChunks_LowPoly();
-                display.ActiveMap(false);
-            break;
-        }                     
+        else endlessActive = true;
     }
     /// <summary>
     /// Se usa para generar el mapa 2D a color
@@ -302,6 +308,11 @@ public class MapGenerator : MonoBehaviour{
         }
         return cellMap;
     }
+
+    public void generatePerlinChunkEndLessTerrain(){
+        noiseMap = Noise.GenerateNoiseMap(chunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+    }
+
     /// <summary>
     /// Calcula las medidas del chunk segun las del mapa. Como maximo cada chunk sera de 50
     /// </summary>
