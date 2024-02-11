@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -236,7 +237,7 @@ public static class MeshGenerator{
         float topLeftZ = (size - 1) / 2f;
 
         int meshSimplificationIncrement = levelOfDetails;
-        int currentChunkSize = (int)(((float)size / (float)meshSimplificationIncrement));
+        int currentChunkSize = (int)(((float)size / (float)meshSimplificationIncrement) + 0.9999f);
 
         int triangle = (size - 1) * (size - 1) * 6;
 
@@ -244,41 +245,28 @@ public static class MeshGenerator{
         List<Vector3> vertices = new List<Vector3>(new Vector3[currentChunkSize * currentChunkSize]);//Almacenar los vertices y triangulos de la malla
         List<int> triangles = new List<int>(new int[triangle]);
         List<Vector2> uvs = new List<Vector2>(new Vector2[currentChunkSize * currentChunkSize]); //coordenadas de textura
-        Debug.Log("vertices Count: " + vertices.Count + " triangles Count: " + triangles.Count + " uvs Count: " + uvs.Count);
 
         int vertexIndex = 0;
         int triangleIndex = 0;
+
+        Debug.Log("currentChunkSize * currentChunkSize: " + currentChunkSize * currentChunkSize);
+        Debug.Log("size: " + size);
+        Debug.Log("meshSimplificationIncrement: " + meshSimplificationIncrement);
         for (int y = 0; y < size; y += meshSimplificationIncrement)
         {
             for (int x = 0; x < size; x += meshSimplificationIncrement)
             {
-                Debug.Log("Vertex index: " + vertexIndex);
-                Debug.Log("X: " + x + ", Y: " + y);
-
-
                 vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
                 uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
 
                 if (x < size - meshSimplificationIncrement && y < size - meshSimplificationIncrement)
                 {
-                    Debug.Log("-----------------------------------------------------------");
-                    Debug.Log(vertexIndex + " \\\t----    " + (vertexIndex + currentChunkSize));
-                    Debug.Log((vertexIndex + 1) + "\t----   \\ " + (vertexIndex + currentChunkSize + 1));
-                    /*
-                           vertexIndex     ----   vertexIndex + currentChunkSize
-                                                                 
-                                |                               |
-                                |                               |
-                                                                 
-                          vertexIndex + 1  ----  vertexIndex + currentChunkSize + 1
-                     */
                     AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + currentChunkSize + 1, vertexIndex + currentChunkSize);
                     AddTriangle(triangles, ref triangleIndex, vertexIndex + currentChunkSize + 1, vertexIndex, vertexIndex + 1);
                 }
 
                 vertexIndex++;
             }
-            Debug.Log("============================================================");
         }
 
         BaseMesh.vertices = vertices.ToArray();// se le asignan los vertices a la malla q hemos creado

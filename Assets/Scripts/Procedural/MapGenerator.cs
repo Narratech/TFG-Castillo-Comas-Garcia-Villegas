@@ -161,7 +161,10 @@ public class MapGenerator : MonoBehaviour{
                 fallOffMap = Noise.GenerateFallOffMap(mapSize);
             }
 
-            noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+            if (drawMode == DrawMode.Cartoon)
+                noiseMap = Noise.GenerateNoiseMap(mapSize + 1, seed, noiseScale, octaves, persistance, lacunarity, offset);
+            else
+                noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -278,15 +281,16 @@ public class MapGenerator : MonoBehaviour{
     public Cell[,] generateChunk_LowPoly(Vector2Int chunkCoord)
     {
 
-        Cell[,] cellMap = new Cell[chunkSize, chunkSize];
+        Cell[,] cellMap = new Cell[chunkSize + 1, chunkSize + 1];
 
         //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < chunkSize; y++)
+        for (int y = 0; y < chunkSize + 1; y++)
         {
-            for (int x = 0; x < chunkSize; x++)
+            for (int x = 0; x < chunkSize + 1; x++)
             {
                 Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize, y + chunkCoord.y * chunkSize );
-                if (isIsland) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                if (isIsland)
+                    noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
                 float currentHeight = noiseMap[posNoise.x, posNoise.y];
 
                 foreach (var currentRegion in regions)
