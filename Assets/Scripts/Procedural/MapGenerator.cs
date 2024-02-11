@@ -124,7 +124,7 @@ public class MapGenerator : MonoBehaviour{
     public bool getEndLessActive() {  return endlessActive; }
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
-    float[,] noiseMap= null;
+    float[,] noiseMap = null;
     //Sistema de chunks para la generacion del mallado del mapa
     Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
 

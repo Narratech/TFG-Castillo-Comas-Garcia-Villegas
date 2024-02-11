@@ -242,21 +242,24 @@ public static class MeshGenerator{
 
         Mesh BaseMesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>(new Vector3[currentChunkSize * currentChunkSize]);//Almacenar los vertices y triangulos de la malla
-        List<int> triangles = new List<int>(new int[triangle + 1]);
+        List<int> triangles = new List<int>(new int[triangle]);
         List<Vector2> uvs = new List<Vector2>(new Vector2[currentChunkSize * currentChunkSize]); //coordenadas de textura
         Debug.Log("vertices Count: " + vertices.Count + " triangles Count: " + triangles.Count + " uvs Count: " + uvs.Count);
 
         int vertexIndex = 0;
         int triangleIndex = 0;
-        for (int y = 0;y < size; y += meshSimplificationIncrement)
+        for (int y = 0; y < size; y += meshSimplificationIncrement)
         {
-            for (int x = 0;x < size; x += meshSimplificationIncrement)
+            for (int x = 0; x < size; x += meshSimplificationIncrement)
             {
+                Debug.Log("Vertex index: " + vertexIndex);
+                Debug.Log("X: " + x + ", Y: " + y);
+
 
                 vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
                 uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
 
-                if (x < size && y < size - meshSimplificationIncrement)
+                if (x < size - meshSimplificationIncrement && y < size - meshSimplificationIncrement)
                 {
                     Debug.Log("-----------------------------------------------------------");
                     Debug.Log(vertexIndex + " \\\t----    " + (vertexIndex + currentChunkSize));
