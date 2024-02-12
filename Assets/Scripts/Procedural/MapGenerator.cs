@@ -257,21 +257,18 @@ public class MapGenerator : MonoBehaviour{
                     if (isIsland) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
                    
                     float currentHeight = noiseMap[posNoise.x, posNoise.y];
-                    currentHeight = (float)Math.Round(currentHeight, 2);
 
                     foreach (var currentRegion in regions)
                     {
                         //recorremos y miramos que tipo de terreno se ha generado
                         if (currentHeight <= currentRegion.height)
                         {
-
+                            currentHeight = (float)Math.Round(currentHeight, 2);
                             //Nos guardamos el estado de la celda que se ha generado
                             cellMap[x, y] = new Cell();
                             cellMap[x, y].type = currentRegion;
                             cellMap[x, y].noise = currentHeight;
-                            var info = (float)Math.Round(meshHeightCurve.Evaluate(currentHeight) * heightMultiplier, 1) * 10;
-                            Debug.Log(info);
-                            cellMap[x, y].Height = info ;
+                            cellMap[x, y].Height = (float)Math.Round(meshHeightCurve.Evaluate(currentHeight) * heightMultiplier, 1) * 10;
 
                             break;
                         }
@@ -356,7 +353,7 @@ public class MapGenerator : MonoBehaviour{
     void generateChunks_Minecraft(){
 
         calculateChunkSize();
-        Debug.Log("tamaño de chunk: " + chunkSize);
+        //Debug.Log("tamaño de chunk: " + chunkSize);
 
         int numChunks = mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;

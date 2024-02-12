@@ -98,7 +98,7 @@ public class Chunk
 
         createGameObjectChunk(parent, posMap);
 
-        if (mapGenerator.getEndLessActive())
+        if (mapGenerator.getEndLessActive()) //si esta activado endless terrain se generaran los chunks de esta manera
         {
             mapGenerator.generatePerlinChunkEndLessTerrain();
             mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(new Vector2Int(0,0)) : mapGenerator.generateChunk_Minecraft(new Vector2Int(0, 0));

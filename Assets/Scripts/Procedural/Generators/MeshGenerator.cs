@@ -98,7 +98,7 @@ public static class MeshGenerator{
                 Cell cell = mapaCells[x, y];
                 if (cell != null)
                 {
-                    if (x > 0 && y!=0 && y < size - 1)
+                    if (x > 0 && y!=0 && y < size - 1 && x < size -1)
                     {
                         Cell left = mapaCells[x - 1, y];//izquierda
 
@@ -126,7 +126,7 @@ public static class MeshGenerator{
 
                         }
                     }
-                    if (x < size - 1 && y !=0 && y < size - 1)
+                    if (x < size - 1 && y !=0 && y < size - 1 && x > 0)
                     {
                         Cell right = mapaCells[x + 1, y];//derecha
                         if (right != null && right.noise < cell.noise)
@@ -153,7 +153,7 @@ public static class MeshGenerator{
 
                         }
                     }
-                    if (y > 0 && x !=0 && x < size - 1)
+                    if (y > 0 && x !=0 && x < size - 1 && y < size -1)
                     {
                         Cell down = mapaCells[x, y - 1];//abajo
                         if (down != null && down.noise < cell.noise)
@@ -180,7 +180,7 @@ public static class MeshGenerator{
 
                         }
                     }
-                    if (y < size - 1 && x != 0 && x < size - 1)
+                    if (y < size - 1 && x != 0 && x < size - 1 && y > 0)
                     {
                         Cell up = mapaCells[x, y + 1];//arriba
                         if (up != null && up.noise < cell.noise)
