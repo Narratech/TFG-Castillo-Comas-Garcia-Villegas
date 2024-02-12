@@ -255,7 +255,9 @@ public class MapGenerator : MonoBehaviour{
                 {
                     Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize - 1, y + chunkCoord.y * chunkSize - 1);
                     if (isIsland) noiseMap[posNoise.x, posNoise.y] = Mathf.Clamp01(noiseMap[posNoise.x, posNoise.y] - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
+                   
                     float currentHeight = noiseMap[posNoise.x, posNoise.y];
+                    currentHeight = (float)Math.Round(currentHeight, 2);
 
                     foreach (var currentRegion in regions)
                     {
@@ -267,7 +269,9 @@ public class MapGenerator : MonoBehaviour{
                             cellMap[x, y] = new Cell();
                             cellMap[x, y].type = currentRegion;
                             cellMap[x, y].noise = currentHeight;
-                            cellMap[x, y].Height = meshHeightCurve.Evaluate(currentHeight) * heightMultiplier;
+                            var info = (float)Math.Round(meshHeightCurve.Evaluate(currentHeight) * heightMultiplier, 1) * 10;
+                            Debug.Log(info);
+                            cellMap[x, y].Height = info ;
 
                             break;
                         }
