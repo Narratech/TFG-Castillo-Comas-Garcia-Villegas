@@ -55,7 +55,7 @@ public class MapGenerator : MonoBehaviour{
     [HideInInspector]
     public int chunkSize = 50;
     //TAMAÑO DE CADA CELDA (En caso de modificacion posible solapacion de vertices)
-    const float sizePerBlock = 0.5f;
+    public float sizePerBlock = 1f;
 
 
     [Range(1, 10)]
@@ -141,6 +141,7 @@ public class MapGenerator : MonoBehaviour{
         if (lacunarity < 1) lacunarity = 1;
         if (octaves < 0) octaves = 0;
         if (octaves > 6) octaves = 5;
+        if (sizePerBlock < 1f) sizePerBlock = 1f;
     }
 
     /// <summary>
@@ -266,7 +267,7 @@ public class MapGenerator : MonoBehaviour{
                             cellMap[x, y] = new Cell();
                             cellMap[x, y].type = currentRegion;
                             cellMap[x, y].noise = currentHeight;
-                            cellMap[x, y].Height = (float)Math.Round(meshHeightCurve.Evaluate(currentHeight) * heightMultiplier, 1) * 10;
+                            cellMap[x, y].Height = (float)Math.Round(meshHeightCurve.Evaluate(currentHeight) * heightMultiplier, 1) * 10 * sizePerBlock;
 
                             break;
                         }

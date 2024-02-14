@@ -27,10 +27,10 @@ public static class MeshGenerator{
             for (int x = 0; x<size; x++){
                 Cell cell = mapaCells[x, y];
                 //definir los vertices de la celda
-                Vector3 a = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
-                Vector3 b = new Vector3(topLeftX + x + sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
-                Vector3 c = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y - sizePerBlock);
-                Vector3 d = new Vector3(topLeftX + x + sizePerBlock, cell.Height, topLeftZ - y - sizePerBlock);
+                Vector3 a = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
+                Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
+                Vector3 c = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
+                Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
 
                 Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                 Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -105,10 +105,12 @@ public static class MeshGenerator{
                         if (left != null && left.noise < cell.noise)
                         {
                             float leftHeight = cell.Height - left.Height;
-                            Vector3 a = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y - sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x - sizePerBlock, cell.Height - leftHeight, topLeftZ - y + sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x - sizePerBlock, cell.Height - leftHeight, topLeftZ - y - sizePerBlock);
+
+                            //definir los vertices de la celda
+                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, cell.Height - leftHeight, topLeftZ - y * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, cell.Height - leftHeight, topLeftZ - (y + 1) * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -132,10 +134,10 @@ public static class MeshGenerator{
                         if (right != null && right.noise < cell.noise)
                         {
                             float rightHeight = cell.Height - right.Height;
-                            Vector3 a = new Vector3(topLeftX + x + sizePerBlock, cell.Height, topLeftZ - y - sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x + sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x + sizePerBlock, cell.Height - rightHeight, topLeftZ - y - sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x + sizePerBlock, cell.Height - rightHeight, topLeftZ - y + sizePerBlock);
+                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - rightHeight, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - rightHeight, topLeftZ - y * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -159,10 +161,10 @@ public static class MeshGenerator{
                         if (down != null && down.noise < cell.noise)
                         {
                             float downHeight = cell.Height - down.Height;
-                            Vector3 a = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x + sizePerBlock, cell.Height, topLeftZ - y + sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x - sizePerBlock, cell.Height - downHeight, topLeftZ - y + sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x + sizePerBlock, cell.Height - downHeight, topLeftZ - y + sizePerBlock);
+                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, cell.Height - downHeight, topLeftZ - y * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - downHeight, topLeftZ - y * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -186,10 +188,10 @@ public static class MeshGenerator{
                         if (up != null && up.noise < cell.noise)
                         {
                             float upHeight = cell.Height - up.Height;
-                            Vector3 a = new Vector3(topLeftX + x + sizePerBlock, cell.Height, topLeftZ - y - sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x - sizePerBlock, cell.Height, topLeftZ - y - sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x + sizePerBlock, cell.Height - upHeight, topLeftZ - y - sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x - sizePerBlock, cell.Height - upHeight, topLeftZ - y - sizePerBlock);
+                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - upHeight, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, cell.Height - upHeight, topLeftZ - (y + 1) * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);

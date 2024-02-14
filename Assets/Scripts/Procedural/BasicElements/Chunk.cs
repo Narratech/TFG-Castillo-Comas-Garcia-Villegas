@@ -66,7 +66,18 @@ public class Chunk
     GameObject edges;
     public GameObject objectsGenerated;
     Cell[,] mapCells;
+    float sizePerBlock;
     Bounds bound;
+
+    float maxHeight;
+    GameObject obj;
+    AnimationCurve densityCurve;
+
+    // Objetos instanciados en este chunk
+    List<Transform> chunkObjects;
+    float minDistance = 3;
+
+
     void generateEdgesGameObject()
     {
         edges = new GameObject("Edges " + posMap);
@@ -95,6 +106,8 @@ public class Chunk
     {
         this.posMap = posMap;
         createGameObjectChunk(parent);
+        this.sizePerBlock = sizePerBlock;
+        bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
 
         if (mapGenerator.getEndLessActive()) //si esta activado endless terrain se generaran los chunks de esta manera
         {
@@ -132,7 +145,11 @@ public class Chunk
         floor.AddComponent<MeshCollider>();
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 
-        
+        chunk.transform.position = new Vector3(posMap.x * chunkSize*sizePerBlock, 0, -posMap.y * chunkSize*sizePerBlock);
+
+        edges.transform.localPosition = new Vector3(-sizePerBlock+1, 0, sizePerBlock-1);
+       
+
         chunkObjects = new List<Transform>();
         maxHeight = mapGenerator.heightMultiplier;
         obj = mapGenerator.objects[0].prefab;
@@ -140,13 +157,7 @@ public class Chunk
         //GenerateObjects(mapCells, chunkSize);
     }
 
-    float maxHeight;
-    GameObject obj;
-    AnimationCurve densityCurve;
-
-    // Objetos instanciados en este chunk
-    List<Transform> chunkObjects;
-    float minDistance = 3;
+   
     void GenerateObjects(Cell[,] cells, int chunkSize)
     {
         int lenght_0 = cells.GetLength(0);
@@ -205,7 +216,7 @@ public class Chunk
 
                     if (validPosition)
                     {
-                        // Generar un ángulo aleatorio
+                        // Generar un ï¿½ngulo aleatorio
                         Quaternion objRotation;
                         float randomAngle_y = UnityEngine.Random.Range(0f, 360f);
                         float randomAngle_x = UnityEngine.Random.Range(-15f, 15f);
