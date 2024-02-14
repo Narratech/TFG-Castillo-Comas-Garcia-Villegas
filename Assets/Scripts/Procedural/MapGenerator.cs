@@ -126,16 +126,14 @@ public class MapGenerator : MonoBehaviour{
 
     float[,] noiseMap = null;
     //Sistema de chunks para la generacion del mallado del mapa
-    Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
-
-    public Dictionary<Vector2, Chunk> Map3D;
+    public Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
    
 
     private void Awake(){
         clean = true;
         if(autoRegenerate) GenerateMap();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false; 
-        else Map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
+        else map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
     }
 
     private void OnValidate(){
@@ -151,7 +149,7 @@ public class MapGenerator : MonoBehaviour{
     public void GenerateMap(){
         //Borro todo lo anterior creado para crear un nuevo mapa
         CleanMaps();
-        Map3D = new Dictionary<Vector2, Chunk>();
+        map3D = new Dictionary<Vector2, Chunk>();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
         {
             //generar isla si se ha activado en la configuracion

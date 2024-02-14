@@ -42,19 +42,19 @@ public class EndlessTerrain : MonoBehaviour
             {
                 Vector2 viewedChunkCoord = new Vector2((int)(currentChunkCoordsX + xOffset), (int)(currentChunkCoordsY + yOffset));
                 
-                if (mapGenerator.Map3D.ContainsKey(viewedChunkCoord))
+                if (mapGenerator.map3D.ContainsKey(viewedChunkCoord))
                 {
                     //mirar si esta visible y si no lo esta hacerlo visible
-                    mapGenerator.Map3D[viewedChunkCoord].Update(playerPos, maxViewDst);
-                    if (mapGenerator.Map3D[viewedChunkCoord].isVisible())
+                    mapGenerator.map3D[viewedChunkCoord].Update(playerPos, maxViewDst);
+                    if (mapGenerator.map3D[viewedChunkCoord].isVisible())
                     {
-                        chunkVisibleLastUpdate.Add(mapGenerator.Map3D[viewedChunkCoord]);
+                        chunkVisibleLastUpdate.Add(mapGenerator.map3D[viewedChunkCoord]);
                     }
                 }
                 else
                 {
                     //llamar a mapgenerator para k genere ese chunk
-                    mapGenerator.Map3D[viewedChunkCoord] =
+                    mapGenerator.map3D[viewedChunkCoord] =
                         new Chunk(mapGenerator,new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y), 0.5f, chunkSize, mapGenerator.gameObjectMap3D.transform,false,0);
                 }
             }
