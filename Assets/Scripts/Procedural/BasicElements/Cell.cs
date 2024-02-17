@@ -8,9 +8,9 @@ using UnityEngine;
 /// </summary>
 public class Cell{
     /// <summary>
-    /// Tipo de terreno
+    /// Bioma al que pertenece
     /// </summary>
-    public TerrainType type;
+    public Biome biome;
     /// <summary>
     /// Ruido generado
     /// </summary>

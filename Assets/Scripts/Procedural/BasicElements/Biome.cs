@@ -10,6 +10,7 @@ public class Biome : ScriptableObject
     float noiseScale = 50f;
 
     [SerializeField]
+    [Range(0, 5)]
     int octaves = 2;
 
     [SerializeField]
@@ -22,6 +23,9 @@ public class Biome : ScriptableObject
     [SerializeField]
     float heightMultiplier = 100f;
 
+    //Temporal (?)
+    public Color color;
+
     [SerializeField]
     AnimationCurve meshHeightCurve;
 
@@ -33,4 +37,25 @@ public class Biome : ScriptableObject
     Foliage[] foliages = null;
 
     float[,] noiseMap = null;
+
+    public void GenerateNoiseMap(int size, int seed, Vector2 offset)
+    {
+        if (lacunarity < 1)
+            lacunarity = 1;
+        noiseMap = Noise.GenerateNoiseMap(size, seed, noiseScale, octaves, persistance, lacunarity, offset);
+    }
+
+    public float NoiseToHeight(float noise)
+    {
+        return meshHeightCurve.Evaluate(noise) * heightMultiplier;
+    }
+
+    public float GetMaximumHeight()
+    {
+        return heightMultiplier;
+    }
+
+    public float this[int index, int index2] {
+        get { return noiseMap[index, index2]; }
+    }
 }

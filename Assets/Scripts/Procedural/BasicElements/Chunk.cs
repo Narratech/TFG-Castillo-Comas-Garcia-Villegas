@@ -152,7 +152,7 @@ public class Chunk
        
 
         chunkObjects = new List<Transform>();
-        maxHeight = mapGenerator.heightMultiplier;
+        maxHeight = mapGenerator.maxHeightPossible;
         obj = mapGenerator.objects[0].prefab;
         densityCurve = mapGenerator.objects[0].densityCurve;
         //GenerateObjects(mapCells, chunkSize);
