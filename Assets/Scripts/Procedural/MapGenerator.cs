@@ -136,6 +136,7 @@ public class MapGenerator : MonoBehaviour{
         map3D = new Dictionary<Vector2, Chunk>();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
         {
+            endlessActive = false;
             //generar isla si se ha activado en la configuracion
             if (isIsland)
             {
@@ -424,6 +425,9 @@ public class MapGenerator : MonoBehaviour{
         }
 
         result.Height = GetCoordinatesHeight(result.noise, biomeInfluence);
+
+        if (forMinecraft)
+            result.Height = (float)(Math.Round(result.Height, 1) * 10 * sizePerBlock);
 
         return result;
     }
