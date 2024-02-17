@@ -140,6 +140,7 @@ public class Chunk
             GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
         }
         else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
+
         if (!mapGenerator.getEndLessActive()) chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
         floor.AddComponent<MeshCollider>();
@@ -147,7 +148,7 @@ public class Chunk
 
         chunk.transform.position = new Vector3(posMap.x * chunkSize*sizePerBlock, 0, -posMap.y * chunkSize*sizePerBlock);
 
-        edges.transform.localPosition = new Vector3(-sizePerBlock+1, 0, sizePerBlock-1);
+        if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock+1, 0, sizePerBlock-1);
        
 
         chunkObjects = new List<Transform>();

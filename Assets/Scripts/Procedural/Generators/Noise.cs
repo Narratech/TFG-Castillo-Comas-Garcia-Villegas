@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -79,6 +81,36 @@ public static  class Noise {
 
         return noiseMap;
     }
+
+
+    //public static List<Vector2Int> FindLocalMaxima(float[,] noiseMap){
+    //    List<Vector2Int> maximas = new List<Vector2Int>();
+
+    //    for (int x = 0; x < noiseMap.GetLength(0); x++){
+    //        for(int y = 0; y < noiseMap.GetLength(1); y++){
+    //            var noiseValue =  noiseMap[x, y];
+    //            if(CheckNeighbours(x,y,noiseMap,(neighbourNoise) => neighbourNoise < noiseValue)) { 
+    //                maximas.Add(new Vector2Int(x,y));
+    //            }
+    //        }
+    //    }
+    //    return maximas;
+    //}
+
+    //private static bool CheckNeighbours(int x, int y, float[,] noiseMap, Func<object, bool> failCondition){
+    //    foreach (var dir in directions){
+    //        var newPost = new Vector2Int(x + dir.x,y + dir.y);
+    //        if ( newPost.x <0 || newPost.x >= noiseMap.GetLength(0) || newPost.y < 0 || newPost.y >= noiseMap.GetLength(1))
+    //            continue;
+    //        if (failCondition(noiseMap[x+dir.x,y+dir.y]))return false;
+
+    //        return true;
+    //    }
+    //    return true;
+    //}
+
+
+
 
     /// <summary>
     /// Generar un mapa de falloff para suavizar los bordes del terreno
