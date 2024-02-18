@@ -42,6 +42,10 @@ Shader "Custom/HLSL_ColorHeight"
 				float4 vertex : SV_POSITION;
 				float2 uv : TEXCOORD0;
 
+				// Coordenada en el mundo
+				float3 worldPos : TEXCOORD1; // Agregar el miembro para almacenar la posición del mundo
+
+
 				// Codigo mio
 				//float3 worldPos;
 			};
@@ -72,6 +76,9 @@ Shader "Custom/HLSL_ColorHeight"
 				o.uv = v.uv;
 
 
+				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
+
+
 				//UNITY_TRANSFER_FOG(o, o.vertex);
 
 				// Codigo mio
@@ -100,6 +107,8 @@ Shader "Custom/HLSL_ColorHeight"
 				fixed4 col = tex2D(_MainTex, i.uv);
 				fixed4 redColor = fixed4(1, 0, 0, 1);
 
+
+				float3 worldPos = i.worldPos;
 
 				// Codigo mio
 				/*UNITY_APPLY_FOG(i.fogCoord, col)*/;
