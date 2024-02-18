@@ -57,7 +57,7 @@ Shader "Custom/HLSL_ColorHeight"
 			float4 _MainTex_ST;
 
 			float minHeight = 0;
-			float maxHeight = 10;
+			float maxHeight = 28;
 
 
 			// -------------------------------------------------------------------------------- //
@@ -76,6 +76,7 @@ Shader "Custom/HLSL_ColorHeight"
 				o.uv = v.uv;
 
 
+				//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
 
 
@@ -87,10 +88,10 @@ Shader "Custom/HLSL_ColorHeight"
 				return o;
 			}
 
-			//// Metodo mio
-			//float inverseLerp(float a, float b, float value) {
-			//	return saturate((value - a) / (b - a));
-			//}
+			// Metodo mio
+			float inverseLerp(float a, float b, float value) {
+				return saturate((value - a) / (b - a));
+			}
 
 
 
@@ -107,12 +108,10 @@ Shader "Custom/HLSL_ColorHeight"
 				fixed4 col = tex2D(_MainTex, i.uv);
 				fixed4 redColor = fixed4(1, 0, 0, 1);
 
-
 				float3 worldPos = i.worldPos;
 
-				// Codigo mio
-				/*UNITY_APPLY_FOG(i.fogCoord, col)*/;
-				return col;
+				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+				return heightPercent;
 			}
 			ENDHLSL
 		}
