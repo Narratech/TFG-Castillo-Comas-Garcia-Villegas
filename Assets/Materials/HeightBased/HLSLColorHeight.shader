@@ -2,13 +2,14 @@ Shader "Custom/HLSL_ColorHeight"
 {
 	Properties
 	{
-		//_Color ("Color", Color) = (1,1,1,1)
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
-	//_Glossiness ("Smoothness", Range(0,1)) = 0.5
-	//_Metallic ("Metallic", Range(0,1)) = 0.0
+
+		//_Color ("Color", Color) = (1,1,1,1)
+		//_Glossiness ("Smoothness", Range(0,1)) = 0.5
+		//_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 
-		SubShader
+	SubShader
 	{
 		Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalRenderPipeline"}
 		LOD 100
@@ -82,9 +83,6 @@ Shader "Custom/HLSL_ColorHeight"
 
 				//UNITY_TRANSFER_FOG(o, o.vertex);
 
-				// Codigo mio
-				//o.worldPos = float3(1, 2, 3);
-
 				return o;
 			}
 
@@ -92,7 +90,6 @@ Shader "Custom/HLSL_ColorHeight"
 			float inverseLerp(float a, float b, float value) {
 				return saturate((value - a) / (b - a));
 			}
-
 
 
 			// -------------------------------------------------------------------------------- //
