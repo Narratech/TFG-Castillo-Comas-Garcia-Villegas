@@ -13,6 +13,11 @@ public class TextureData : UpdatableData
 	public float[] baseBlends;
 
 
+	[Range(0, 1)]
+	public float middlePosition;
+	[Range(0, 1)]
+	public float blendEffect;
+
 
 	float savedMinHeight;
 	float savedMaxHeight;
@@ -27,6 +32,11 @@ public class TextureData : UpdatableData
 		material.SetColorArray("baseColours", baseColours);
 		material.SetFloatArray("baseStartHeights", baseStartHeights);
 		material.SetFloatArray("baseBlends", baseBlends);
+
+
+		material.SetFloat("middlePosition", middlePosition);
+		material.SetFloat("blendEffect", blendEffect);
+
 
 		UpdateMeshHeights(material, savedMinHeight, savedMaxHeight);
 	}

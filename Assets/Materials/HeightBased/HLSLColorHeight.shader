@@ -73,6 +73,10 @@ Shader "Custom/HLSL_ColorHeight"
 			float baseBlends[maxColourCount];
 
 
+			float middlePosition = .4f;
+			float blendEffect = .2f;
+
+
 			// -------------------------------------------------------------------------------- //
 			//								 VERTEX SHADER										//
 			// -------------------------------------------------------------------------------- //
@@ -170,19 +174,27 @@ Shader "Custom/HLSL_ColorHeight"
 				//fixed4 middleColor = fixed4(0, 1, 0, 1);
 				//fixed4 topColor = fixed4(0, 0, 1, 1);
 
-				float middlePosition = .3f;
+				//float middlePosition = .4f;
+				//float blendEffect = .2f;
 
 				if (heightPercent < middlePosition) {
-					col = lerp(bottomColor, middleColor, heightPercent / middlePosition);
+
+					if (heightPercent < middlePosition - blendEffect)
+						col = bottomColor;
+
+					// Si se esta en la franja del blend 
+					else 
+						col = lerp(bottomColor, middleColor, ( heightPercent - (middlePosition - blendEffect) ) / blendEffect);
 				}
 				else {
-					col = lerp(middleColor, topColor, heightPercent - middlePosition);
-				}
 
-				//if (i.uv.y < middlePosition) {
-				//	col = lerp(bottomColor, middleColor, i.uv.y / middlePosition);
-				//	//col = fixed4(1, 0, 0, 1);;
-				//}
+					if (heightPercent < middlePosition + blendEffect)
+						col = lerp(middleColor, topColor, (heightPercent - middlePosition) / blendEffect);
+
+					// Si se esta en la franja del blend
+					else
+						col = topColor;
+				}
 
 				return col;
 			}
