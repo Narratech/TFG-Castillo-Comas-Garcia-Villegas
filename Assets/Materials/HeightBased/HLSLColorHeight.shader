@@ -2,11 +2,12 @@ Shader "Custom/HLSL_ColorHeight"
 {
 	Properties
 	{
-		_MainTex("Albedo (RGB)", 2D) = "white" {}
+		testTexture("Albedo (RGB)", 2D) = "white" {}
+		testScale("Scale", Float) = 1
 
-	//_Color ("Color", Color) = (1,1,1,1)
-	//_Glossiness ("Smoothness", Range(0,1)) = 0.5
-	//_Metallic ("Metallic", Range(0,1)) = 0.0
+		//_Color ("Color", Color) = (1,1,1,1)
+		//_Glossiness ("Smoothness", Range(0,1)) = 0.5
+		//_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 
 		SubShader
@@ -33,6 +34,8 @@ Shader "Custom/HLSL_ColorHeight"
 				float4 vertex : POSITION;
 				// Coordenada de la textura
 				float2 uv : TEXCOORD0;
+
+				float3 worldNormalOS : NORMAL;
 			};
 
 			// VERTEX OUTPUT
@@ -46,11 +49,19 @@ Shader "Custom/HLSL_ColorHeight"
 				// Coordenada en el mundo
 				float3 worldPos : TEXCOORD1; // Agregar el miembro para almacenar la posición del mundo
 
+				
+				float3 worldNormalWS : TEXCOORD2;
 
 				// Codigo mio
 				//float3 worldPos;
 			};
 
+
+
+
+
+			sampler2D testTexture;
+			float testScale;
 
 
 
@@ -72,6 +83,8 @@ Shader "Custom/HLSL_ColorHeight"
 
 			float baseBlends[maxColourCount];
 
+
+			const static float epsilon = 1E-4;
 
 			float middlePosition = .4f;
 			float blendEffect = .2f;
@@ -96,6 +109,8 @@ Shader "Custom/HLSL_ColorHeight"
 				//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
 
+
+				o.worldNormalWS = mul(unity_ObjectToWorld, v.worldNormalOS).xyz;;
 
 				//UNITY_TRANSFER_FOG(o, o.vertex);
 
@@ -140,8 +155,8 @@ Shader "Custom/HLSL_ColorHeight"
 
 				// CAMBIO ENTRE COLORES PLANOS FUNCIONANDO
 
-				float3 worldPos = i.worldPos;
-				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+				//float3 worldPos = i.worldPos;
+				//float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
 
 				//fixed4 color = fixed4(1, 1, 1, 1);
 
@@ -162,41 +177,124 @@ Shader "Custom/HLSL_ColorHeight"
 
 
 
-				// GRADIENTE ENTRE 3 COLORES
+				//// GRADIENTE ENTRE 3 COLORES
 
-				fixed4 col = fixed4(0, 0, 1, 1);;
+				//fixed4 col = fixed4(0, 0, 1, 1);;
 
-				fixed4 bottomColor = baseColours[0];
-				fixed4 middleColor = baseColours[1];
-				fixed4 topColor = baseColours[2];
+				//fixed4 bottomColor = baseColours[0];
+				//fixed4 middleColor = baseColours[1];
+				//fixed4 topColor = baseColours[2];
 
-				//fixed4 bottomColor = fixed4(1, 0, 0, 1);
-				//fixed4 middleColor = fixed4(0, 1, 0, 1);
-				//fixed4 topColor = fixed4(0, 0, 1, 1);
+				////fixed4 bottomColor = fixed4(1, 0, 0, 1);
+				////fixed4 middleColor = fixed4(0, 1, 0, 1);
+				////fixed4 topColor = fixed4(0, 0, 1, 1);
 
-				//float middlePosition = .4f;
-				//float blendEffect = .2f;
+				////float middlePosition = .4f;
+				////float blendEffect = .2f;
 
-				if (heightPercent < middlePosition) {
+				//if (heightPercent < middlePosition) {
 
-					if (heightPercent < middlePosition - blendEffect)
-						col = bottomColor;
+				//	if (heightPercent < middlePosition - blendEffect)
+				//		col = bottomColor;
 
-					// Si se esta en la franja del blend 
-					else 
-						col = lerp(bottomColor, middleColor, ( heightPercent - (middlePosition - blendEffect) ) / blendEffect);
+				//	// Si se esta en la franja del blend 
+				//	else 
+				//		col = lerp(bottomColor, middleColor, ( heightPercent - (middlePosition - blendEffect) ) / blendEffect);
+				//}
+				//else {
+
+				//	if (heightPercent < middlePosition + blendEffect)
+				//		col = lerp(middleColor, topColor, (heightPercent - middlePosition) / blendEffect);
+
+				//	// Si se esta en la franja del blend
+				//	else
+				//		col = topColor;
+				//}
+
+				//return col;
+
+
+
+
+
+
+
+
+				//// COLORES SIN GRADIENTE
+				//float3 worldPos = i.worldPos;
+				//float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+
+				//// Inicializa el color final
+				//fixed4 finalColor = fixed4(0, 0, 0, 1);
+
+				//// Itera sobre los colores base
+				//for (int i = 0; i < baseColourCount; i++)
+				//{
+				//	// Calcula la fuerza de dibujo basada en la altura del fragmento
+				//	//float drawStrength = heightPercent - baseStartHeights[i];
+				//	float drawStrength = saturate(sign(heightPercent - baseStartHeights[i]));
+
+				//	// Mezcla el color actual con el color base ponderado por la fuerza de dibujo
+				//	finalColor = finalColor * (1 - drawStrength) + baseColours[i] * drawStrength;
+				//}
+
+
+
+
+
+				//// COLORES CON GRADIENTE
+				//float3 worldPos = i.worldPos;
+				//float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+
+				//// Inicializa el color final
+				//fixed4 finalColor = fixed4(0, 0, 0, 1);
+
+				//// Itera sobre los colores base
+				//for (int i = 0; i < baseColourCount; i++)
+				//{
+				//	// Calcula la fuerza de dibujo basada en la altura del fragmento
+				//	//float drawStrength = heightPercent - baseStartHeights[i];
+				//	float drawStrength = inverseLerp(-baseBlends[i]/2 - epsilon, baseBlends[i]/2, heightPercent - baseStartHeights[i]);
+
+				//	// Mezcla el color actual con el color base ponderado por la fuerza de dibujo
+				//	finalColor = finalColor * (1 - drawStrength) + baseColours[i] * drawStrength;
+				//}
+
+
+				
+				// TEXTURAS
+				float3 worldPos = i.worldPos;
+				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+
+				// Inicializa el color final
+				fixed4 finalColor = fixed4(0, 0, 0, 1);
+
+				// Itera sobre los colores base
+				for (int j = 0; j < baseColourCount; j++)
+				{
+					// Calcula la fuerza de dibujo basada en la altura del fragmento
+					float drawStrength = inverseLerp(-baseBlends[j]/2 - epsilon, baseBlends[j]/2, heightPercent - baseStartHeights[j]);
+
+					// Mezcla el color actual con el color base ponderado por la fuerza de dibujo
+					finalColor = finalColor * (1 - drawStrength) + baseColours[j] * drawStrength;
 				}
-				else {
 
-					if (heightPercent < middlePosition + blendEffect)
-						col = lerp(middleColor, topColor, (heightPercent - middlePosition) / blendEffect);
+				//// Triplanar mapping
+				//float3 scaledWorldPos = worldPos / testScale;
 
-					// Si se esta en la franja del blend
-					else
-						col = topColor;
-				}
+				//float3 blendAxes = abs(i.worldNormalWS);
+				//
+				//float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
+				//float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
+				//float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
 
-				return col;
+				//float3 projection = xProjection + yProjection + zProjection;
+				//finalColor = fixed4(projection.x, projection.y, projection.z, 1);
+
+
+
+				// Devuelve el color final
+				return finalColor;
 			}
 			ENDHLSL
 		}
