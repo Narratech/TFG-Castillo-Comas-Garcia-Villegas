@@ -4,12 +4,12 @@ Shader "Custom/HLSL_ColorHeight"
 	{
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 
-		//_Color ("Color", Color) = (1,1,1,1)
-		//_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		//_Metallic ("Metallic", Range(0,1)) = 0.0
+	//_Color ("Color", Color) = (1,1,1,1)
+	//_Glossiness ("Smoothness", Range(0,1)) = 0.5
+	//_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 
-	SubShader
+		SubShader
 	{
 		Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalRenderPipeline"}
 		LOD 100
@@ -29,88 +29,122 @@ Shader "Custom/HLSL_ColorHeight"
 			// Parametros de entrada para el VertexShader
 			struct appdata
 			{
-				// Posicion del vertice
-				float4 vertex : POSITION;
-				// Coordenada de la textura
-				float2 uv : TEXCOORD0;
-			};
+		// Posicion del vertice
+		float4 vertex : POSITION;
+		// Coordenada de la textura
+		float2 uv : TEXCOORD0;
+	};
 
-			// VERTEX OUTPUT
-			struct v2f {
-				//UNITY_FOG_COORDS(1)
+	// VERTEX OUTPUT
+	struct v2f {
+		//UNITY_FOG_COORDS(1)
 
-				// SV_POSITION significa pixel position
-				float4 vertex : SV_POSITION;
-				float2 uv : TEXCOORD0;
+		// SV_POSITION significa pixel position
+		float4 vertex : SV_POSITION;
+		float2 uv : TEXCOORD0;
 
-				// Coordenada en el mundo
-				float3 worldPos : TEXCOORD1; // Agregar el miembro para almacenar la posición del mundo
-
-
-				// Codigo mio
-				//float3 worldPos;
-			};
+		// Coordenada en el mundo
+		float3 worldPos : TEXCOORD1; // Agregar el miembro para almacenar la posición del mundo
 
 
+		// Codigo mio
+		//float3 worldPos;
+	};
 
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-
-			float minHeight = 0;
-			float maxHeight = 28;
 
 
-			// -------------------------------------------------------------------------------- //
-			//								 VERTEX SHADER										//
-			// -------------------------------------------------------------------------------- //
-			
-			// Aqui se convierte un vertice de posicion en 3D a posicion en pantalla
-			// v : input
-			v2f vert(appdata v)
-			{
-				// Output
-				v2f o;
-				o.vertex = UnityObjectToClipPos(v.vertex);
+	sampler2D _MainTex;
+	float4 _MainTex_ST;
 
-				//o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				o.uv = v.uv;
+	float minHeight = 0;
+	float maxHeight = 28;
 
+	const static int maxColourCount = 8;
 
-				//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
+	// Cuantos colores quiere el usuario utilizar
+	int baseColourCount;
+	// Colores deseados
+	fixed4 baseColours[maxColourCount];
+	// Alturas que separan los diferentes colores
+	float baseStartHeights[maxColourCount];
 
 
-				//UNITY_TRANSFER_FOG(o, o.vertex);
+	// -------------------------------------------------------------------------------- //
+	//								 VERTEX SHADER										//
+	// -------------------------------------------------------------------------------- //
 
-				return o;
-			}
+	// Aqui se convierte un vertice de posicion en 3D a posicion en pantalla
+	// v : input
+	v2f vert(appdata v)
+	{
+		// Output
+		v2f o;
+		o.vertex = UnityObjectToClipPos(v.vertex);
 
-			// Metodo mio
-			float inverseLerp(float a, float b, float value) {
-				return saturate((value - a) / (b - a));
-			}
+		//o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+		o.uv = v.uv;
 
 
-			// -------------------------------------------------------------------------------- //
-			//								FRAGMENT SHADER										//
-			// -------------------------------------------------------------------------------- //
+		//o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
+		o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; // Calcular la posición del mundo y asignarla
 
-			// Se llama por cada pixel que se quiere dibujar en pantalla
-			// Convierte todos los triangulos viisbles en pantalla y los transforma en fragmentos
-			// Cada fragmento representa un pixel en pantalla
-			// El color que devuelve la funcion es el color del pixel que se esta procesando en cada momento
-			fixed4 frag(v2f i) : SV_Target
-			{
-				fixed4 col = tex2D(_MainTex, i.uv);
-				fixed4 redColor = fixed4(1, 0, 0, 1);
 
-				float3 worldPos = i.worldPos;
+		//UNITY_TRANSFER_FOG(o, o.vertex);
 
-				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
-				return heightPercent;
-			}
-			ENDHLSL
-		}
+		return o;
+	}
+
+	// Metodo mio
+	float inverseLerp(float a, float b, float value) {
+		return saturate((value - a) / (b - a));
+	}
+
+
+	// -------------------------------------------------------------------------------- //
+	//								FRAGMENT SHADER										//
+	// -------------------------------------------------------------------------------- //
+
+	// Se llama por cada pixel que se quiere dibujar en pantalla
+	// Convierte todos los triangulos viisbles en pantalla y los transforma en fragmentos
+	// Cada fragmento representa un pixel en pantalla
+	// El color que devuelve la funcion es el color del pixel que se esta procesando en cada momento
+	fixed4 frag(v2f i) : SV_Target
+	{
+		// PRUEBAS MIAS
+
+		//fixed4 col = tex2D(_MainTex, i.uv);
+		//fixed4 color = fixed4(1, 1, 0, 1);
+
+		//float3 worldPos = i.worldPos;
+
+		//float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+
+		//if (heightPercent < .15f)
+		//	color = fixed4(1, 0, 0, 1);
+		//else if (heightPercent < .5f)
+		//	color = heightPercent;
+		//else if (worldPos.x < 0)
+		//	color = fixed4(0, 0, 1, 1);
+
+		//return color;
+
+
+		//baseColours[0] = fixed4(1, 0, 0, 1);
+
+		////float3 worldPos = i.worldPos;
+		////float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+		////fixed4 color = fixed4(1, 1, 0, 1);
+
+		//for (int i = 0; i < baseColourCount; i++)
+		//{
+		//	float drawStrength = saturate(sign(heightPercent - baseStartHeights[i]));
+		//	color = 
+		//}
+
+		return baseColours[0];
+	}
+	ENDHLSL
+}
 	}
 }
