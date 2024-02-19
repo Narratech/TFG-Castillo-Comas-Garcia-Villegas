@@ -12,6 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6761216f8310c478e981eda58d33b2, type: 3}
   m_Name: TextureData
   m_EditorClassIdentifier: 
-  autoUpdate: 0
-  baseColours: []
-  baseStartHeights: []
+  autoUpdate: 1
+  baseColours:
+  - {r: 0.46274513, g: 0.5137255, b: 0.5803922, a: 0}
+  - {r: 0.9960785, g: 0.9450981, b: 0.6509804, a: 0}
+  - {r: 0.30980393, g: 0.53333336, b: 0.23137257, a: 0}
+  - {r: 0.17254902, g: 0.3254902, b: 0.20000002, a: 0}
+  - {r: 0.7176471, g: 0.3921569, b: 0.2784314, a: 0}
+  - {r: 0.20392159, g: 0.14901961, b: 0.15294118, a: 0}
+  - {r: 1, g: 1, b: 1, a: 0}
+  - {r: 0.5, g: 0.5, b: 0.35566038, a: 0}
+  baseStartHeights:
+  - 0.144
+  - 0.264
+  - 0.362
+  - 0.487
+  - 0.612
+  - 0.753
+  - 0.962
+  - 1

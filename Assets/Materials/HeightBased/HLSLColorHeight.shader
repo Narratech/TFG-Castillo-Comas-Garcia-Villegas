@@ -146,7 +146,7 @@ Shader "Custom/HLSL_ColorHeight"
 				float3 worldPos = i.worldPos;
 				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
 
-				fixed4 color = fixed4(1, 1, 0, 1);
+				fixed4 color = fixed4(1, 1, 1, 1);
 
 				for (int i = 0; i < baseColourCount; i++)
 				{
