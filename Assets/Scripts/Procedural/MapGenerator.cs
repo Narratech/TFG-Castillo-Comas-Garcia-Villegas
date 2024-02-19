@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.XR;
 
 /// <summary>
 /// Generador de mapas Procedurales
 /// </summary>
-public class MapGenerator : MonoBehaviour{
+public class MapGenerator : MonoBehaviour {
     /// <summary>
     /// Tipo de Configuracion para la generacion
     /// </summary>
@@ -41,12 +38,20 @@ public class MapGenerator : MonoBehaviour{
         Cartoon
     };
 
+    public enum ALgorithm
+    {
+        Linear,
+        Exponential,
+        Logarithmic,
+    }
+
     public DrawMode drawMode;
 
     /// <summary>
     /// GameObject Padre de todo el mapa3D que se va a generar
     /// </summary>
     public GameObject gameObjectMap3D;
+
     /// <summary>
     /// Tamaño del Mapa
     /// </summary>
@@ -75,6 +80,12 @@ public class MapGenerator : MonoBehaviour{
     /// </summary>
     [SerializeField]
     Biome[] biomes;
+
+    [SerializeField]
+    AnimationCurve noiseTransition;
+
+    [SerializeField]
+    AnimationCurve heightTransition;
 
     /// <summary>
     ///  Layers de terreno que se pueden generar
@@ -424,7 +435,7 @@ public class MapGenerator : MonoBehaviour{
             result.noise = (float)Math.Round(result.noise, 2);
         }
 
-        result.Height = GetCoordinatesHeight(result.noise, biomeInfluence);
+        result.Height = GetActualHeight(result.noise, biomeInfluence);
 
         if (forMinecraft)
             result.Height = (float)(Math.Round(result.Height, 1) * 10 * sizePerBlock);
@@ -432,45 +443,42 @@ public class MapGenerator : MonoBehaviour{
         return result;
     }
 
-    float GetCoordinatesHeight(float noiseValue, Dictionary<Biome, float> biomeInfluence)
+    /// <summary>
+    /// Transforma el nivel de ruido dado a coordenadas de altura 
+    /// teniendo en cuenta los parámetros de los biomas influyentes
+    /// </summary>
+    /// <param name="noiseValue"></param>
+    /// <param name="biomeInfluence"></param>
+    /// <returns> La altura correspondiente </returns>
+    float GetActualHeight(float noiseValue, Dictionary<Biome, float> biomeInfluence)
     {
-        Biome current = null;
-        float currentMaxInfluence = 0;
+        float actualHeight = 0;
         foreach (var biome in biomeInfluence)
         {
-            if (biome.Value >= currentMaxInfluence)
-            {
-                currentMaxInfluence = biome.Value;
-                current = biome.Key;
-            }
+            actualHeight += biome.Key.NoiseToHeight(noiseValue) * heightTransition.Evaluate(biome.Value);
         }
-        return current.NoiseToHeight(noiseValue);
+        return actualHeight;
     }
 
     /// <summary>
-    /// (TODO) Se encargará de manejar la transición de biomas
+    /// (TODO) Se encargará de devolver el ruido transformado correspondiente a todos los biomas cercanos
     /// Ahora solo devuelve el valor del ruido correspondiente del bioma con mas influencia, sin transicion
     /// </summary>
     /// <param name="posNoise"></param>
     /// <returns></returns>
     float GetCoordinatesNoise(Vector2Int posNoise, Dictionary<Biome, float> biomeInfluence)
     {
-        Biome current = null;
-        float currentMaxInfluence = 0;
+        float currentNoise = 0;
         foreach (var biome in biomeInfluence)
         {
-            if (biome.Value >= currentMaxInfluence)
-            {
-                currentMaxInfluence = biome.Value;
-                current = biome.Key;
-            }
+            currentNoise += biome.Key[posNoise.x, posNoise.y] * noiseTransition.Evaluate(biome.Value);
         }
-        return current[posNoise.x, posNoise.y];
+        return currentNoise;
     }
 
     /// <summary>
     /// (TODO) Devolverá un map con los biomas actuales y su influencia en un punto concreto
-    /// De momento devuelve 0 si está en el bioma y 0 si no, sin transición
+    /// De momento devuelve 1 si está en el bioma y 0 si no, sin transición
     /// </summary>
     /// <param name="posNoise"> las coordenadas a procesar</param>
     /// <returns></returns>
@@ -478,16 +486,8 @@ public class MapGenerator : MonoBehaviour{
     {
         Dictionary<Biome, float> result = new Dictionary<Biome, float>();
 
-        if (biomeMap[posNoise.x, posNoise.y] < 0.75f)
-        {
-            result.Add(biomes[0], 1f);
-            result.Add(biomes[1], 0f);
-        }
-        else
-        {
-            result.Add(biomes[0], 0f);
-            result.Add(biomes[1], 1f);
-        }
+        result.Add(biomes[0], posNoise.x / (float)mapSize);
+        result.Add(biomes[1], 1f - (posNoise.x / (float)mapSize));
 
         return result;
     }

@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
   m_Name: Mountain
   m_EditorClassIdentifier: 
-  noiseScale: 50
+  noiseScale: 45.1
   octaves: 2
-  persistance: 0.043
-  lacunarity: 12
+  persistance: 0.01
+  lacunarity: 65.48
   heightMultiplier: 100
-  color: {r: 0.8773585, g: 0.8296442, b: 0.7325116, a: 0}
+  color: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 0}
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.38442993
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0

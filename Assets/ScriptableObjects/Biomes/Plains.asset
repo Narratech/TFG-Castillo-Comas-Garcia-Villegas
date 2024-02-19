@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
   m_Name: Plains
   m_EditorClassIdentifier: 
-  noiseScale: 50
+  noiseScale: 141.2
   octaves: 1
-  persistance: 0.026
+  persistance: 0.05
   lacunarity: 1.74
-  heightMultiplier: 100
+  heightMultiplier: 10
   color: {r: 0.10279457, g: 0.6226415, b: 0.16412488, a: 0}
   meshHeightCurve:
     serializedVersion: 2
@@ -24,20 +24,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 0.15094376
-      inSlope: 0.35186368
-      outSlope: 0.35186368
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.15416664
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
