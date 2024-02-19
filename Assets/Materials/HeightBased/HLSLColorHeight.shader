@@ -70,6 +70,8 @@ Shader "Custom/HLSL_ColorHeight"
 			// Alturas que separan los diferentes colores
 			float baseStartHeights[maxColourCount];
 
+			float baseBlends[maxColourCount];
+
 
 			// -------------------------------------------------------------------------------- //
 			//								 VERTEX SHADER										//
@@ -128,37 +130,61 @@ Shader "Custom/HLSL_ColorHeight"
 				//else if (worldPos.x < 0)
 				//	color = fixed4(0, 0, 1, 1);
 
-				//return color;
 
 
-				//baseColours[0] = fixed4(1, 0, 0, 1);
 
-				////float3 worldPos = i.worldPos;
-				////float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
-				////fixed4 color = fixed4(1, 1, 0, 1);
 
-				//for (int i = 0; i < baseColourCount; i++)
-				//{
-				//	float drawStrength = saturate(sign(heightPercent - baseStartHeights[i]));
-				//	color = 
-				//}
+				// CAMBIO ENTRE COLORES PLANOS FUNCIONANDO
 
 				float3 worldPos = i.worldPos;
 				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
 
-				fixed4 color = fixed4(1, 1, 1, 1);
+				//fixed4 color = fixed4(1, 1, 1, 1);
 
-				for (int i = 0; i < baseColourCount; i++)
-				{
-					float thisHeight = baseStartHeights[i];
+				//for (int i = 0; i < baseColourCount; i++)
+				//{
+				//	float strenght = 5;
 
-					if (heightPercent < thisHeight) {
-						color = baseColours[i];
-						break;
-					}
+
+				//	float thisHeight = baseStartHeights[i];
+				//	if (heightPercent < thisHeight) {
+				//		color = baseColours[i] * baseColours[i];
+				//		break;
+				//	}
+				//}
+
+				//return color;
+
+
+
+
+				// GRADIENTE ENTRE 3 COLORES
+
+				fixed4 col = fixed4(0, 0, 1, 1);;
+
+				fixed4 bottomColor = baseColours[0];
+				fixed4 middleColor = baseColours[1];
+				fixed4 topColor = baseColours[2];
+
+				//fixed4 bottomColor = fixed4(1, 0, 0, 1);
+				//fixed4 middleColor = fixed4(0, 1, 0, 1);
+				//fixed4 topColor = fixed4(0, 0, 1, 1);
+
+				float middlePosition = .3f;
+
+				if (heightPercent < middlePosition) {
+					col = lerp(bottomColor, middleColor, heightPercent / middlePosition);
+				}
+				else {
+					col = lerp(middleColor, topColor, heightPercent - middlePosition);
 				}
 
-				return color;
+				//if (i.uv.y < middlePosition) {
+				//	col = lerp(bottomColor, middleColor, i.uv.y / middlePosition);
+				//	//col = fixed4(1, 0, 0, 1);;
+				//}
+
+				return col;
 			}
 			ENDHLSL
 		}
