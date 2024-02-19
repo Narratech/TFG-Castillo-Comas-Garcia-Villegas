@@ -46,6 +46,7 @@ public class MapGenerator : MonoBehaviour{
     /// GameObject Padre de todo el mapa3D que se va a generar
     /// </summary>
     public GameObject gameObjectMap3D;
+
     /// <summary>
     /// Tamaño del Mapa
     /// </summary>
@@ -57,7 +58,6 @@ public class MapGenerator : MonoBehaviour{
     //TAMAÑO DE CADA CELDA (En caso de modificacion posible solapacion de vertices)
     public float sizePerBlock = 1f;
 
-
     [Range(1, 10)]
     public int levelOfDetail;
 
@@ -68,32 +68,7 @@ public class MapGenerator : MonoBehaviour{
 
     public AnimationCurve meshHeightCurve;
 
-    /// <summary>
-    ///  El factor de escala del ruido generado.Un valor mayor producirá un ruido con detalles más finos
-    /// </summary>
-    public float noiseScale;
-    /// <summary>
-    /// El número de octavas utilizadas en el algoritmo de ruido.Cada octava es una capa de ruido que se suma al resultado final.
-    /// A medida que se agregan más octavas, el ruido generado se vuelve más detallado
-    /// </summary>
-    public int octaves;
-    /// <summary>
-    ///  La persistencia controla la amplitud de cada octava.Un valor más bajo reducirá el efecto de las octavas posteriores de las octavas posteriores
-    /// </summary>
-    [Range(0f, 1f)]
-    public float persistance;
-    /// <summary>
-    ///Un multiplicador que determina qué tan rápido aumenta la frecuencia para cada octava sucesiva en una función de ruido de Perlin
-    /// </summary>
-    public float lacunarity;
-    /// <summary>
-    /// La semilla aleatoria utilizada para generar el ruido
-    /// </summary>
-    public int seed;
-    /// <summary>
-    ///  Desplazamiento del ruido generado
-    /// </summary>
-    public Vector2 offset;
+    public NoiseSettings noiseSettings;
 
     /// <summary>
     ///  Layers de terreno que se pueden generar
@@ -138,9 +113,9 @@ public class MapGenerator : MonoBehaviour{
 
     private void OnValidate(){
         if (mapSize < 1) mapSize = 1;
-        if (lacunarity < 1) lacunarity = 1;
-        if (octaves < 0) octaves = 0;
-        if (octaves > 6) octaves = 5;
+        if (noiseSettings.lacunarity < 1) noiseSettings.lacunarity = 1;
+        if (noiseSettings.octaves < 0) noiseSettings.octaves = 0;
+        if (noiseSettings.octaves > 6) noiseSettings.octaves = 5;
         if (sizePerBlock < 1f) sizePerBlock = 1f;
     }
 
@@ -161,9 +136,10 @@ public class MapGenerator : MonoBehaviour{
             }
 
             if (drawMode == DrawMode.Cartoon)
-                noiseMap = Noise.GenerateNoiseMap(mapSize + 1, seed, noiseScale, octaves, persistance, lacunarity, offset);
+                noiseMap = 
+                    Noise.GenerateNoiseMap(mapSize + 1, noiseSettings);
             else
-                noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+                noiseMap = Noise.GenerateNoiseMap(mapSize, noiseSettings);
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -173,7 +149,7 @@ public class MapGenerator : MonoBehaviour{
                     display.ActiveMap(true);
                     break;
                 case DrawMode.ColorMap:
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, noiseMap));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
                     break;
@@ -314,7 +290,7 @@ public class MapGenerator : MonoBehaviour{
     }
 
     public void generatePerlinChunkEndLessTerrain(){
-        noiseMap = Noise.GenerateNoiseMap(chunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        noiseMap = Noise.GenerateNoiseMap(chunkSize, noiseSettings);
     }
 
     /// <summary>
