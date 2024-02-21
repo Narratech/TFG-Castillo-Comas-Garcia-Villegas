@@ -72,22 +72,24 @@ Shader "Custom/HLSL_ColorHeight"
 			float maxHeight = 28;
 
 
-			const static int maxColourCount = 8;
+			const static int maxLayerCount = 8;
 
 			// Cuantos colores quiere el usuario utilizar
-			int baseColourCount;
+			int layerCount;
 			// Colores deseados
-			fixed4 baseColours[maxColourCount];
+			fixed4 baseColours[maxLayerCount];
 			// Alturas que separan los diferentes colores
-			float baseStartHeights[maxColourCount];
+			float baseStartHeights[maxLayerCount];
 
-			float baseBlends[maxColourCount];
+			float baseBlends[maxLayerCount];
+			float baseColourStrenght[maxLayerCount];
+			float baseTexturesScales[maxLayerCount];
+
+
+			UNITY_DECLARE_TEX2DARRAY(baseTextures);
 
 
 			const static float epsilon = 1E-4;
-
-			float middlePosition = .4f;
-			float blendEffect = .2f;
 
 
 			// -------------------------------------------------------------------------------- //
@@ -120,6 +122,21 @@ Shader "Custom/HLSL_ColorHeight"
 			// Metodo mio
 			float inverseLerp(float a, float b, float value) {
 				return saturate((value - a) / (b - a));
+			}
+
+
+			float3 triplanar(float worldPos, float scale, float3 blendAxes, int textureIndex) {
+				// Triplanar mapping
+				float3 scaledWorldPos = worldPos / scale;
+
+				float3 xProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.y, scaledWorldPos.z, textureIndex)) * blendAxes.x;
+				float3 yProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.z, textureIndex)) * blendAxes.y;
+				float3 zProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.y, textureIndex)) * blendAxes.z;
+
+				float3 projection = xProjection + yProjection + zProjection;
+
+				return projection;
+				//finalColor = fixed4(projection.x, projection.y, projection.z, 1);
 			}
 
 
@@ -219,7 +236,6 @@ Shader "Custom/HLSL_ColorHeight"
 
 
 
-
 				//// COLORES SIN GRADIENTE
 				//float3 worldPos = i.worldPos;
 				//float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
@@ -268,22 +284,35 @@ Shader "Custom/HLSL_ColorHeight"
 
 				// Inicializa el color final
 				fixed4 finalColor = fixed4(0, 0, 0, 1);
+				float3 thisColour = float3(0, 0, 0);
+
+				// Blending
+				float3 blendAxes = abs(i.worldNormalWS);
+				blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
+
 
 				// Itera sobre los colores base
-				for (int j = 0; j < baseColourCount; j++)
+				for (int j = 0; j < layerCount; j++)
 				{
 					// Calcula la fuerza de dibujo basada en la altura del fragmento
 					float drawStrength = inverseLerp(-baseBlends[j]/2 - epsilon, baseBlends[j]/2, heightPercent - baseStartHeights[j]);
 
-					// Mezcla el color actual con el color base ponderado por la fuerza de dibujo
-					finalColor = finalColor * (1 - drawStrength) + baseColours[j] * drawStrength;
+
+					float3 baseColour = baseColours[j] * baseColourStrenght[j];
+					float3 textureColour = triplanar(worldPos, baseTexturesScales[j], blendAxes, j) * (1 - baseColourStrenght[j]);
+
+					//// Mezcla el color actual con el color base ponderado por la fuerza de dibujo
+					thisColour = thisColour * (1 - drawStrength) + (baseColour + textureColour) * drawStrength;
+					//finalColor = finalColor * (1 - drawStrength) + (baseColour + textureColour) * drawStrength;
 				}
+
+				float4 color = float4(thisColour.x, thisColour.y, thisColour.z, 1);
 
 				//// Triplanar mapping
 				//float3 scaledWorldPos = worldPos / testScale;
 
 				//float3 blendAxes = abs(i.worldNormalWS);
-				//
+				////blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
 				//float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
 				//float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
 				//float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
@@ -294,7 +323,7 @@ Shader "Custom/HLSL_ColorHeight"
 
 
 				// Devuelve el color final
-				return finalColor;
+				return color;
 			}
 			ENDHLSL
 		}

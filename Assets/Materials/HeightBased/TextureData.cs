@@ -1,16 +1,26 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
+
 
 [CreateAssetMenu()]
 public class TextureData : UpdatableData
 {
+	const int textureSize = 512;
+	const TextureFormat textureFormat = TextureFormat.RGB565;
 
-	public Color[] baseColours;
-	[Range(0, 1)]
-	public float[] baseStartHeights;
 
-	[Range(0, 1)]
-	public float[] baseBlends;
+
+
+	//public Color[] baseColours;
+	//[Range(0, 1)]
+	//public float[] baseStartHeights;
+
+	//[Range(0, 1)]
+	//public float[] baseBlends;
+
+	public Layer[] layers;
+
 
 
 	[Range(0, 1)]
@@ -28,10 +38,14 @@ public class TextureData : UpdatableData
 		Debug.Log("ApplyToMaterial");
 
 		// Tienen que tener exactamente los nombres de las variables dentro del shader
-		material.SetInt("baseColourCount", baseColours.Length);
-		material.SetColorArray("baseColours", baseColours);
-		material.SetFloatArray("baseStartHeights", baseStartHeights);
-		material.SetFloatArray("baseBlends", baseBlends);
+		material.SetInt("layerCount", layers.Length);
+		material.SetColorArray("baseColours", layers.Select(x => x.tint).ToArray());
+		material.SetFloatArray("baseStartHeights", layers.Select(x => x.startHeight).ToArray());
+		material.SetFloatArray("baseBlends", layers.Select(x => x.blendStrenght).ToArray());
+		material.SetFloatArray("baseColourStrenght", layers.Select(x => x.tintStrenght).ToArray());
+		material.SetFloatArray("baseTexturesScales", layers.Select(x => x.textureScale).ToArray());
+		Texture2DArray texturesArray = GenerateTextureArray(layers.Select(x => x.texture).ToArray());
+		material.SetTexture("baseTextures", texturesArray);
 
 
 		material.SetFloat("middlePosition", middlePosition);
@@ -50,4 +64,29 @@ public class TextureData : UpdatableData
 		material.SetFloat("maxHeight", maxHeight);
 	}
 
+
+	Texture2DArray GenerateTextureArray(Texture2D[] textures)
+    {
+		Texture2DArray textureArray = new Texture2DArray(textureSize, textureSize, textures.Length, textureFormat, true);
+
+        for (int i = 0; i < textures.Length; i++)
+			textureArray.SetPixels(textures[i].GetPixels(), i);
+
+		return textureArray;
+	}
+
+
+    [System.Serializable]
+    public class Layer
+    {
+        public Texture2D texture;
+        public Color tint;
+        [Range(0, 1)]
+        public float tintStrenght;
+        [Range(0, 1)]
+        public float startHeight;
+        [Range(0, 1)]
+        public float blendStrenght;
+        public float textureScale;
+    }
 }
