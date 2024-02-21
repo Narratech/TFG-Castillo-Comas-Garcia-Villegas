@@ -80,6 +80,11 @@ public class MapGenerator : MonoBehaviour{
     public ObjectInMap[] objects;
 
     /// <summary>
+    /// Generar rios 
+    /// </summary>
+    public bool createRivers = false;
+
+    /// <summary>
     ///  Generar el mapa con forma de isla
     /// </summary>
     public bool isIsland = false;
@@ -136,10 +141,13 @@ public class MapGenerator : MonoBehaviour{
             }
 
             if (drawMode == DrawMode.Cartoon)
-                noiseMap = 
-                    Noise.GenerateNoiseMap(mapSize + 1, noiseSettings);
+                noiseMap = Noise.GenerateNoiseMap(mapSize + 1, noiseSettings);
             else
                 noiseMap = Noise.GenerateNoiseMap(mapSize, noiseSettings);
+
+            if (createRivers) 
+                noiseMap = GetComponent<RiverGenerator>().GenerateRivers(null);
+
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -185,6 +193,7 @@ public class MapGenerator : MonoBehaviour{
         }
         else endlessActive = true;
     }
+
     /// <summary>
     /// Se usa para generar el mapa 2D a color
     /// </summary>
