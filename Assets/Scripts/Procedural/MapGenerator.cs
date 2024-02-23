@@ -49,7 +49,7 @@ public class MapGenerator : MonoBehaviour{
     /// <summary>
     /// Tamaño del Mapa
     /// </summary>
-    public int mapSize;
+    public long mapSize;
 
     //TAMAÑO DEL CHUNK (En caso de que se cambie, es probable de k no se genere bien la malla del mapa debido al limite de creacion de vertices de unity por malla)
     [HideInInspector]
@@ -126,15 +126,19 @@ public class MapGenerator : MonoBehaviour{
 
     float[,] noiseMap = null;
     //Sistema de chunks para la generacion del mallado del mapa
-    public Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
+    public Dictionary<Vector2, Chunk> map3D/*= new Dictionary<Vector2, Chunk>()*/;
    
 
     private void Awake(){
         clean = true;
         if(autoRegenerate) GenerateMap();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false; 
-        else map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
+        else if (GetComponent<EndlessTerrain>().enabled) endlessActive = true;
+        //else map3D = new Dictionary<Vector2, Chunk>();
+        mapSize = chunkSize;
     }
+
+    public bool IsEndlessActive() { return endlessActive; }
 
     private void OnValidate(){
         if (mapSize < 1) mapSize = 1;
@@ -144,15 +148,37 @@ public class MapGenerator : MonoBehaviour{
         if (sizePerBlock < 1f) sizePerBlock = 1f;
     }
 
+    public void GenerateEndlessMap()
+    {
+        map3D = new Dictionary<Vector2, Chunk>();
+        if (isIsland)
+        {
+            fallOffMap = new float[mapSize, mapSize];
+            fallOffMap = Noise.GenerateFallOffMap(mapSize);
+        }
+
+        mapSize = /*(long)int.MaxValue - 7*/1000;
+
+        if (drawMode == DrawMode.Cartoon)
+            noiseMap = Noise.GenerateNoiseMap(mapSize + 1, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        else
+            noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+
+        calculateChunkSize();
+    }
     /// <summary>
     /// Generar el Mapa con los parametros establecidos
     /// </summary>
     public void GenerateMap(){
-        //Borro todo lo anterior creado para crear un nuevo mapa
-        CleanMaps();
         map3D = new Dictionary<Vector2, Chunk>();
-        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
+        //if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false;
+        //else if (GetComponent<EndlessTerrain>().enabled) endlessActive = true;
+
+        if (!endlessActive)
         {
+            //Borro todo lo anterior creado para crear un nuevo mapa
+            CleanMaps();
+           
             //generar isla si se ha activado en la configuracion
             if (isIsland)
             {
@@ -164,6 +190,7 @@ public class MapGenerator : MonoBehaviour{
                 noiseMap = Noise.GenerateNoiseMap(mapSize + 1, seed, noiseScale, octaves, persistance, lacunarity, offset);
             else
                 noiseMap = Noise.GenerateNoiseMap(mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -207,7 +234,7 @@ public class MapGenerator : MonoBehaviour{
                     break;
             }
         }
-        else endlessActive = true;
+        
     }
     /// <summary>
     /// Se usa para generar el mapa 2D a color
@@ -313,9 +340,6 @@ public class MapGenerator : MonoBehaviour{
         return cellMap;
     }
 
-    public void generatePerlinChunkEndLessTerrain(){
-        noiseMap = Noise.GenerateNoiseMap(chunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
-    }
 
     /// <summary>
     /// Calcula las medidas del chunk segun las del mapa. Como maximo cada chunk sera de 50
@@ -327,7 +351,7 @@ public class MapGenerator : MonoBehaviour{
         {
             if(mapSize % divisor == 0)
             {
-                chunkSize = mapSize / divisor;
+                chunkSize = (int)mapSize / divisor;
                 if (chunkSize <= 50) break;
             }
 
@@ -339,7 +363,7 @@ public class MapGenerator : MonoBehaviour{
 
         calculateChunkSize();
 
-        int numChunks = mapSize / chunkSize;
+        int numChunks = (int)mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
 
         for (int y = 0; y < numChunks; y++){
@@ -352,9 +376,9 @@ public class MapGenerator : MonoBehaviour{
     void generateChunks_Minecraft(){
 
         calculateChunkSize();
-        //Debug.Log("tamaño de chunk: " + chunkSize);
+        Debug.Log("tamaño de chunk: " + chunkSize);
 
-        int numChunks = mapSize / chunkSize;
+        int numChunks = (int)mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
 
         for (int y = 0; y < numChunks; y++)

@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class EndlessTerrain : MonoBehaviour
 {
-    public const float maxViewDst = 300; // Distacia maxima a la que ve el jugador
+    public const float maxViewDst = 100; // Distacia maxima a la que ve el jugador
     public Transform playerTransform; //Posicion del player
 
     public static Vector2 playerPos; //Static para acceder desde otras clases mejor
@@ -15,14 +15,15 @@ public class EndlessTerrain : MonoBehaviour
     MapGenerator mapGenerator;
    
     List<Chunk> chunkVisibleLastUpdate = new List<Chunk>();
+    public Dictionary<Vector2, Chunk> map3D = new Dictionary<Vector2, Chunk>();
     private void Start()
     {
         mapGenerator = GetComponent<MapGenerator>();
         
+        //viewer.position = new Vector3(0, 0, -mapGenerator.  / chunkSize);
+        mapGenerator.GenerateEndlessMap();
         chunkSize = mapGenerator.chunkSize - 1;
         chunksVisibleViewDst = Mathf.RoundToInt(maxViewDst / chunkSize);
-        //viewer.position = new Vector3(0, 0, -mapGenerator.  / chunkSize);
-
     }
 
     void UpdateVisibleChunks()
@@ -34,29 +35,33 @@ public class EndlessTerrain : MonoBehaviour
         chunkVisibleLastUpdate.Clear();
 
         int currentChunkCoordsX = Mathf.RoundToInt(playerPos.x / chunkSize);
-        int currentChunkCoordsY = Mathf.RoundToInt(playerPos.y / chunkSize) /*+ 1*/;
+        int currentChunkCoordsY = Mathf.RoundToInt(-playerPos.y / chunkSize);
 
         for (int yOffset = -chunksVisibleViewDst; yOffset <= chunksVisibleViewDst; yOffset++)
         {
             for (int xOffset = -chunksVisibleViewDst; xOffset <= chunksVisibleViewDst; xOffset++)
             {
                 Vector2 viewedChunkCoord = new Vector2((int)(currentChunkCoordsX + xOffset), (int)(currentChunkCoordsY + yOffset));
-                
-                if (mapGenerator.map3D.ContainsKey(viewedChunkCoord))
+                if(viewedChunkCoord.x >=0 && viewedChunkCoord.y >= 0)
                 {
-                    //mirar si esta visible y si no lo esta hacerlo visible
-                    mapGenerator.map3D[viewedChunkCoord].Update(playerPos, maxViewDst);
-                    if (mapGenerator.map3D[viewedChunkCoord].isVisible())
+
+                    if (map3D.ContainsKey(viewedChunkCoord))
                     {
-                        chunkVisibleLastUpdate.Add(mapGenerator.map3D[viewedChunkCoord]);
+                        //mirar si esta visible y si no lo esta hacerlo visible
+                        map3D[viewedChunkCoord].Update(playerPos, maxViewDst);
+                        if (map3D[viewedChunkCoord].isVisible())
+                        {
+                            chunkVisibleLastUpdate.Add(map3D[viewedChunkCoord]);
+                        }
+                    }
+                    else
+                    {
+                        //llamar a mapgenerator para k genere ese chunk
+                        map3D.Add(viewedChunkCoord, new Chunk(mapGenerator, new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y), mapGenerator.sizePerBlock, mapGenerator.chunkSize, mapGenerator.gameObjectMap3D.transform, false, 0));
+
                     }
                 }
-                else
-                {
-                    //llamar a mapgenerator para k genere ese chunk
-                    mapGenerator.map3D[viewedChunkCoord] =
-                        new Chunk(mapGenerator,new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y), 0.5f, chunkSize, mapGenerator.gameObjectMap3D.transform,false,0);
-                }
+                
             }
         }
         Debug.Log("Chunk Player Position: " + currentChunkCoordsY + " " + currentChunkCoordsX);

@@ -20,7 +20,7 @@ public static  class Noise {
     /// <param name="chunkCoords">HAY Q PONER PARA K SIRVE</param>
     /// <returns></returns>
     
-    public static float[,] GenerateNoiseMap(int size, int seed, float noiseScale, int octaves, float persistance, 
+    public static float[,] GenerateNoiseMap(long size, int seed, float noiseScale, int octaves, float persistance, 
         float lacunarity, Vector2 offset){
         
         // Evitar el error al dividir entre 0
@@ -115,7 +115,7 @@ public static  class Noise {
     /// <summary>
     /// Generar un mapa de falloff para suavizar los bordes del terreno
     /// </summary>
-    public static float[,] GenerateFallOffMap(int size){
+    public static float[,] GenerateFallOffMap(long size){
         float[,] map = new float[size, size];
         
         for (int i = 0; i < size; i++){

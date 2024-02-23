@@ -12,7 +12,8 @@ public class MapGeneratorEditor : Editor{
         if (DrawDefaultInspector())
         {
             if(mapGen.autoUpdate){
-                mapGen.GenerateMap();
+                //if (mapGen.IsEndlessActive()) mapGen.GenerateEndlessMap();
+               /* else*/ mapGen.GenerateMap();
             }
             mapGen.mapSize =(int)Mathf.Floor(mapGen.mapSize / 10.0f) * 10; //Tamaño del mapa multiplo de 10
         }

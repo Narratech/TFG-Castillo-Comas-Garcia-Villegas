@@ -2,9 +2,9 @@ using UnityEngine;
 
 public static class TextureGenerator {
    
-    public static Texture2D TextureFromColorMap(Color[] colorMap, int size){
+    public static Texture2D TextureFromColorMap(Color[] colorMap, long size){
         
-        Texture2D texture = new Texture2D(size, size);
+        Texture2D texture = new Texture2D((int)size, (int)size);
         texture.filterMode = FilterMode.Point;
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.SetPixels(colorMap);

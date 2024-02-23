@@ -104,23 +104,27 @@ public class Chunk
 
     public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
     {
+        Debug.Log("Generado chunk "+posMap);
         this.posMap = posMap;
         createGameObjectChunk(parent);
         this.sizePerBlock = sizePerBlock;
-        bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
+        
 
         if (mapGenerator.getEndLessActive()) //si esta activado endless terrain se generaran los chunks de esta manera
         {
-            Vector2 pos = posMap * chunkSize;
-            bound = new Bounds(pos, Vector2.one * chunkSize);
-            Vector3 realPosition = new Vector3(pos.x, 0, pos.y);
-            chunk.transform.localPosition = realPosition;
+            Vector2 realPos = posMap * chunkSize;
+            bound = new Bounds(realPos, Vector2.one * chunkSize);
+            //Vector3 realPosition = new Vector3(pos.x, 0, pos.y);
+            //chunk.transform.localPosition = realPosition;
             SetVisible(false);
 
-            mapGenerator.generatePerlinChunkEndLessTerrain();
-            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(new Vector2Int(0, 0)) : mapGenerator.generateChunk_Minecraft(new Vector2Int(0, 0));
+            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
         }
-        else mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
+        else 
+        {
+            bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
+            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap); 
+        }
             
         
         //Creamos los respectivos materiales para cada malla
@@ -140,8 +144,8 @@ public class Chunk
             GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
         }
         else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
+        //chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
-        if (!mapGenerator.getEndLessActive()) chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
         floor.AddComponent<MeshCollider>();
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
@@ -278,9 +282,10 @@ public class Chunk
         GameObject.Destroy(floor.gameObject);
     }
 
-    public void Update(Vector2 viewPosition, float maxViewDst)
+    public void Update(Vector2 playerPos, float maxViewDst)
     {
-        float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(viewPosition));
+        Vector2 pos = new Vector2(playerPos.x, - playerPos.y);
+        float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(pos));
         SetVisible(viewerDstFromNearestEdge <= maxViewDst);
     }
 
