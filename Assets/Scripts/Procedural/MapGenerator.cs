@@ -414,17 +414,7 @@ public class MapGenerator : MonoBehaviour {
         //A lo mejor esto se puede optimizar :v
         Dictionary<Biome, float> biomeInfluence = GetBiomeInfluence(posNoise);
 
-        Biome current = null;
-        float currentMaxInfluence = 0;
-        foreach (var biome in biomeInfluence)
-        {
-            if (biome.Value >= currentMaxInfluence)
-            {
-                currentMaxInfluence = biome.Value;
-                current = biome.Key;
-            }
-        }
-        result.biome = current;
+        result.biomeInfluence = biomeInfluence;
 
         result.noise = GetCoordinatesNoise(posNoise, biomeInfluence);
         if (isIsland)
@@ -453,11 +443,14 @@ public class MapGenerator : MonoBehaviour {
     float GetActualHeight(float noiseValue, Dictionary<Biome, float> biomeInfluence)
     {
         float actualHeight = 0;
+        float maxHeightPossible = 0;
         foreach (var biome in biomeInfluence)
         {
-            actualHeight += biome.Key.NoiseToHeight(noiseValue) * heightTransition.Evaluate(biome.Value);
+            float curveResult = heightTransition.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
+            actualHeight += biome.Key.NoiseToHeight(noiseValue) * curveResult;
+            maxHeightPossible += curveResult;
         }
-        return actualHeight;
+        return actualHeight / maxHeightPossible;
     }
 
     /// <summary>
@@ -469,11 +462,14 @@ public class MapGenerator : MonoBehaviour {
     float GetCoordinatesNoise(Vector2Int posNoise, Dictionary<Biome, float> biomeInfluence)
     {
         float currentNoise = 0;
+        float maxNoisePossible = 0;
         foreach (var biome in biomeInfluence)
         {
-            currentNoise += biome.Key[posNoise.x, posNoise.y] * noiseTransition.Evaluate(biome.Value);
+            float curveResult = noiseTransition.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
+            currentNoise += biome.Key[posNoise.x, posNoise.y] * curveResult;
+            maxNoisePossible += curveResult;
         }
-        return currentNoise;
+        return currentNoise / maxNoisePossible;
     }
 
     /// <summary>
@@ -486,8 +482,16 @@ public class MapGenerator : MonoBehaviour {
     {
         Dictionary<Biome, float> result = new Dictionary<Biome, float>();
 
-        result.Add(biomes[0], posNoise.x / (float)mapSize);
-        result.Add(biomes[1], 1f - (posNoise.x / (float)mapSize));
+        float realBiome0Infl = posNoise.x / (float)mapSize;
+        result.Add(biomes[0], realBiome0Infl * biomes[0].GetWeight());
+
+        float realBiome1Infl = 1f - (posNoise.x / (float)mapSize);
+        result.Add(biomes[1], realBiome1Infl * biomes[1].GetWeight());
+
+        float maxWeights = (result[biomes[0]] + result[biomes[1]]);
+
+        result[biomes[0]] /= maxWeights;
+        result[biomes[1]] /= maxWeights;
 
         return result;
     }

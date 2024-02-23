@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Procedural/Biome")]
 
+[Serializable]
 public class Biome : ScriptableObject
 {
     [SerializeField]
@@ -30,8 +32,12 @@ public class Biome : ScriptableObject
     AnimationCurve meshHeightCurve;
 
     [SerializeField]
-    [Range(0f, 1f)]
-    float weight = 0.5f;
+    [Range(0.001f, 1f)]
+    float mult = 0.5f;
+
+    [SerializeField]
+    [Range(-1f, 1f)]
+    float offset = 0f;
 
     [SerializeField]
     Foliage[] foliages = null;
@@ -53,6 +59,16 @@ public class Biome : ScriptableObject
     public float GetMaximumHeight()
     {
         return heightMultiplier;
+    }
+
+    public float GetWeight()
+    {
+        return mult;
+    }
+
+    public float GetOffset()
+    {
+        return offset;
     }
 
     public float this[int index, int index2] {
