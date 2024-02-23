@@ -128,7 +128,7 @@ public static  class Noise {
             for (int y = 0; y < noiseMap.GetLength(1); y++)
             {
                 float noiseValue = noiseMap[x, y];
-                if (CheckNeighbours(x, y, noiseMap, (neighbourNoise) => neighbourNoise > noiseValue))
+                if (CheckNeighbours(x, y, noiseMap, (neighbourNoise) => neighbourNoise < noiseValue))
                 {
                     maximas.Add(new Vector2Int(x, y));
                 }
@@ -146,7 +146,7 @@ public static  class Noise {
             for (int y = 0; y < noiseMap.GetLength(1); y++)
             {
                 float noiseValue = noiseMap[x, y];
-                if (CheckNeighbours(x, y, noiseMap, (neighbourNoise) => neighbourNoise < noiseValue))
+                if (CheckNeighbours(x, y, noiseMap, (neighbourNoise) => neighbourNoise > noiseValue))
                 {
                     minima.Add(new Vector2Int(x, y));
                 }

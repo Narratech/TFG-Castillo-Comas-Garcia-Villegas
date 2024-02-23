@@ -44,7 +44,7 @@ public static class TextureGenerator {
     public static void ShowMaximas(float[,] noiseMap, Color[] colorMap, int size,float height)
     {
         var maximas = Noise.FindLocalMaxima(noiseMap);
-        maximas = maximas.Where(pos => noiseMap[pos.x, pos.y] > height).OrderBy(pos => noiseMap[pos.x,pos.y]).ToList();
+        maximas = maximas.Where(pos => noiseMap[pos.x, pos.y] >= height).OrderBy(pos => noiseMap[pos.x,pos.y]).ToList();
         foreach (var m in maximas)
         {
             colorMap[m.y * size + m.x] = Color.magenta;
@@ -54,7 +54,7 @@ public static class TextureGenerator {
     public static void ShowMinimas(float[,] noiseMap, Color[] colorMap, int size,float height)
     {
         var minima = Noise.FindLocalMinima(noiseMap);
-        minima = minima.Where(pos => noiseMap[pos.x, pos.y] < height).OrderBy(pos => noiseMap[pos.x, pos.y]).ToList();
+        minima = minima.Where(pos => noiseMap[pos.x, pos.y] <= height).OrderBy(pos => noiseMap[pos.x, pos.y]).ToList();
         foreach (var m in minima)
         {
             colorMap[m.y * size + m.x] = Color.yellow;

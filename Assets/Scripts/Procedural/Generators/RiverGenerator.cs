@@ -1,20 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
 
 public class RiverGenerator : MonoBehaviour
 {
-    MapGenerator mapGenerator;
+    public int riversNumAprox = 10;
     public int riverLength = 150;
     public bool bold = true;
     public bool converganceOn = true;
 
+    MapGenerator mapGenerator;
     float[,] noise;
+
     void Start(){
         mapGenerator = GetComponent<MapGenerator>();
         if ( mapGenerator == null ) 
@@ -67,11 +65,11 @@ public class RiverGenerator : MonoBehaviour
         noise = mapGenerator.getNoise();
         
         var result = Noise.FindLocalMaxima(noise); //maximas
-        var toCreate = result.Where(pos => noise[pos.x, pos.y] > mapGenerator.regions[mapGenerator.regions.Length -2].height).OrderBy(a => Guid.NewGuid()).Take(5).ToList();
+        var toCreate = result.Where(pos => noise[pos.x, pos.y] > mapGenerator.regions[mapGenerator.regions.Length -2].height).OrderBy(a => Guid.NewGuid()).Take(riversNumAprox).ToList();
         toCreate = BestPlacesToCreate(toCreate); //Hacer otra criba con aquellas casillas que alrededor no tienen otras de height inferior
         var waterMinimas = Noise.FindLocalMinima(noise);
         
-        waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(20).ToList();
+        waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(riversNumAprox * 2).ToList();
         
         foreach (var item in toCreate)
             CreateRiver(item,cells, waterMinimas);
@@ -210,6 +208,7 @@ public class RiverGenerator : MonoBehaviour
                         riverWay.AddRange(camino);
                         last = positions[contador +1];
                         contador ++;
+                        
                     }
                     else contador += 2;
                 }
