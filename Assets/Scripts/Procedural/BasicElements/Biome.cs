@@ -8,6 +8,7 @@ using UnityEngine;
 [Serializable]
 public class Biome : ScriptableObject
 {
+    [Header("Noise generation")]
     [SerializeField]
     float noiseScale = 50f;
 
@@ -22,25 +23,27 @@ public class Biome : ScriptableObject
     [SerializeField]
     float lacunarity = 12;
 
+    [Header("Biome generation")]
     [SerializeField]
-    float heightMultiplier = 100f;
+    [Range(0.001f, 1f)]
+    float weight = 0.5f;
 
-    //Temporal (?)
-    public Color color;
+    [Header("Terrain transformation")]
+    [SerializeField]
+    float maxHeight = 100f;
+    [SerializeField]
+    float minHeight = 0f;
 
     [SerializeField]
     AnimationCurve meshHeightCurve;
 
-    [SerializeField]
-    [Range(0.001f, 1f)]
-    float mult = 0.5f;
-
-    [SerializeField]
-    [Range(-1f, 1f)]
-    float offset = 0f;
-
+    [Header("Foliage settings")]
     [SerializeField]
     Foliage[] foliages = null;
+
+    [Header("Test values")]
+    //Temporal (?)
+    public Color color;
 
     float[,] noiseMap = null;
 
@@ -53,22 +56,17 @@ public class Biome : ScriptableObject
 
     public float NoiseToHeight(float noise)
     {
-        return meshHeightCurve.Evaluate(noise) * heightMultiplier;
+        return meshHeightCurve.Evaluate(noise) * (maxHeight - minHeight) + minHeight;
     }
 
     public float GetMaximumHeight()
     {
-        return heightMultiplier;
+        return minHeight;
     }
 
     public float GetWeight()
     {
-        return mult;
-    }
-
-    public float GetOffset()
-    {
-        return offset;
+        return weight;
     }
 
     public float this[int index, int index2] {

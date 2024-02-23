@@ -12,36 +12,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
   m_Name: Plains
   m_EditorClassIdentifier: 
-  noiseScale: 13.3
-  octaves: 1
+  noiseScale: 463.3
+  octaves: 0
   persistance: 0.023
   lacunarity: 90.9
-  heightMultiplier: 5
-  color: {r: 0.35893556, g: 0.6981132, b: 0.39640284, a: 0}
+  weight: 1
+  maxHeight: 3
+  minHeight: 0
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  mult: 0.512
-  offset: -0.19
   foliages: []
+  color: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 0}
