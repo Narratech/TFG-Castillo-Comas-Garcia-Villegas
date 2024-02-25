@@ -124,14 +124,34 @@ Shader "Custom/HLSL_ColorHeight"
 				return saturate((value - a) / (b - a));
 			}
 
+			//float triplanarXD(float3 worldPos) {
+			//	float3 scaledWorldPos = worldPos / testScale;
 
-			float3 triplanar(float worldPos, float scale, float3 blendAxes, int textureIndex) {
+			//	//float3 blendAxes = abs(i.worldNormalWS);
+			//	//blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
+			//	float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
+			//	float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
+			//	float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
+
+			//	float3 projection = xProjection + yProjection + zProjection;
+			//}
+
+
+			float3 triplanar(float3 worldPos, float scale, float3 blendAxes, int textureIndex) {
 				// Triplanar mapping
 				float3 scaledWorldPos = worldPos / scale;
 
-				float3 xProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.y, scaledWorldPos.z, textureIndex)) * blendAxes.x;
-				float3 yProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.z, textureIndex)) * blendAxes.y;
-				float3 zProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.y, textureIndex)) * blendAxes.z;
+				//float3 xProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.y, scaledWorldPos.z, textureIndex)) * blendAxes.x;
+				//float3 yProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.z, textureIndex)) * blendAxes.y;
+				//float3 zProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.y, textureIndex)) * blendAxes.z;
+
+
+				////float3 blendAxes = abs(i.worldNormalWS);
+				////blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
+				float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
+				float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
+				float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
+
 
 				float3 projection = xProjection + yProjection + zProjection;
 
@@ -306,20 +326,45 @@ Shader "Custom/HLSL_ColorHeight"
 					//finalColor = finalColor * (1 - drawStrength) + (baseColour + textureColour) * drawStrength;
 				}
 
-				float4 color = float4(thisColour.x, thisColour.y, thisColour.z, 1);
+				fixed4 color = fixed4(thisColour.x, thisColour.y, thisColour.z, 1);
+
+
+
+				//float3 finaColor = triplanar(worldPos, baseTexturesScales[j], blendAxes, j);
+				//color = float4(finaColor.x, finaColor.y, finaColor.z, 1);
+
+
+
+
+
+
+
+
+
+				//float3 xd = triplanar(worldPos, baseTexturesScales[j], blendAxes, j);
+				//color = fixed4(xd.x, xd.y, xd.z, 1);
+
+
+				/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 				//// Triplanar mapping
 				//float3 scaledWorldPos = worldPos / testScale;
 
-				//float3 blendAxes = abs(i.worldNormalWS);
+				////float3 blendAxes = abs(i.worldNormalWS);
 				////blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
 				//float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
 				//float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
 				//float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
 
 				//float3 projection = xProjection + yProjection + zProjection;
-				//finalColor = fixed4(projection.x, projection.y, projection.z, 1);
+				//color = fixed4(projection.x, projection.y, projection.z, 1);
+				
+				///////////////////////////////////////////////////////////////////////////////////////////////////
 
+				////color = float4(projection.x, projection.y, projection.z, 1);
+
+				
+				//color *= fixed4(0.1, 0, 0, 1);
 
 
 				// Devuelve el color final
