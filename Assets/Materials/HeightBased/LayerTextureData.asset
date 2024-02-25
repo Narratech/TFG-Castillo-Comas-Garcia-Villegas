@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   layers:
-  - texture: {fileID: 2800000, guid: 3a1c71930626cef46a0053acc4eaa432, type: 3}
+  - texture: {fileID: 2800000, guid: 01cfd3721632efa41b285bc8be5c8789, type: 3}
     tint: {r: 0.7924528, g: 0.77529544, b: 0.56368816, a: 0}
     tintStrenght: 0.543
     startHeight: 0

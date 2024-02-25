@@ -47,6 +47,8 @@ public class TextureData : UpdatableData
 		Texture2DArray texturesArray = GenerateTextureArray(layers.Select(x => x.texture).ToArray());
 		material.SetTexture("baseTextures", texturesArray);
 
+		material.SetTexture("testTexture", layers[0].texture);
+
 
 		material.SetFloat("middlePosition", middlePosition);
 		material.SetFloat("blendEffect", blendEffect);
