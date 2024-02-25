@@ -146,8 +146,6 @@ Shader "Custom/HLSL_ColorHeight"
 				//float3 zProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.y, textureIndex)) * blendAxes.z;
 
 
-				////float3 blendAxes = abs(i.worldNormalWS);
-				////blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
 				float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
 				float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
 				float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
