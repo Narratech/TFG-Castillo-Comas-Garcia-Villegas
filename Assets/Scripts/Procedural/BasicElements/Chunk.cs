@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -121,8 +120,7 @@ public class Chunk
             mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(new Vector2Int(0, 0)) : mapGenerator.generateChunk_Minecraft(new Vector2Int(0, 0));
         }
         else mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
-            
-        
+
         //Creamos los respectivos materiales para cada malla
         Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         floor.AddComponent<MeshFilter>();
@@ -146,10 +144,10 @@ public class Chunk
         floor.AddComponent<MeshCollider>();
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 
-        chunk.transform.position = new Vector3(posMap.x * chunkSize*sizePerBlock, 0, -posMap.y * chunkSize*sizePerBlock);
+        chunk.transform.position = new Vector3(posMap.x * chunkSize * sizePerBlock, 0, -posMap.y * chunkSize * sizePerBlock);
 
-        if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock+1, 0, sizePerBlock-1);
-       
+        if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock + 1, 0, sizePerBlock - 1);
+
 
         chunkObjects = new List<Transform>();
         maxHeight = mapGenerator.maxHeightPossible;
@@ -158,7 +156,7 @@ public class Chunk
         //GenerateObjects(mapCells, chunkSize);
     }
 
-   
+
     void GenerateObjects(Cell[,] cells, int chunkSize)
     {
         int lenght_0 = cells.GetLength(0);
