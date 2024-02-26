@@ -22,7 +22,7 @@ public static class ObjectsGenerator {
                     foreach (var obj in objectsToGenerate.OrderBy(o => o.Density)){
                         float noiseValue = Mathf.PerlinNoise(x * obj.NoiseScale, y * obj.NoiseScale);                       
                         //Si el objecto se puede generar en la capa 
-                        if (obj.GenerationLayer == current.type.Layer){
+                        if (obj.GenerationLayer == ""){
                             //Aplico un valor Random sobre la densidad para que sea mas aleatorio
                             float v = Random.Range(0.0f, obj.Density);
                             if (noiseValue < v){

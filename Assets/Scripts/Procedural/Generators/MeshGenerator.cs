@@ -71,7 +71,7 @@ public static class MeshGenerator{
             for (int x = 0; x < size; x++){
                 Cell cell = mapaCells[x, y];
                 if (cell != null){
-                    texture.SetPixel(x, y, cell.type.color);
+                    texture.SetPixel(x, y, cell.GetColor());
                 }
             }
         }

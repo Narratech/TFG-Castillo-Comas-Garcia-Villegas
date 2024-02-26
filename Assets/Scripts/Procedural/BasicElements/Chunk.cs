@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -150,19 +149,19 @@ public class Chunk
         floor.AddComponent<MeshCollider>();
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 
-        chunk.transform.position = new Vector3(posMap.x * chunkSize*sizePerBlock, 0, -posMap.y * chunkSize*sizePerBlock);
+        chunk.transform.position = new Vector3(posMap.x * chunkSize * sizePerBlock, 0, -posMap.y * chunkSize * sizePerBlock);
 
-        if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock+1, 0, sizePerBlock-1);
-       
+        if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock + 1, 0, sizePerBlock - 1);
+
 
         chunkObjects = new List<Transform>();
-        maxHeight = mapGenerator.heightMultiplier;
+        maxHeight = mapGenerator.maxHeightPossible;
         obj = mapGenerator.objects[0].prefab;
         densityCurve = mapGenerator.objects[0].densityCurve;
         //GenerateObjects(mapCells, chunkSize);
     }
 
-   
+
     void GenerateObjects(Cell[,] cells, int chunkSize)
     {
         int lenght_0 = cells.GetLength(0);
