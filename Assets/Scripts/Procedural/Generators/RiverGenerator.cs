@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class RiverGenerator : MonoBehaviour
@@ -56,31 +57,23 @@ public class RiverGenerator : MonoBehaviour
         PlaceRiverTile(position,startPosition);
     }
 
-    List<Vector2> RiverGrowth(List<Vector2> positions, Vector2 startPosition)
+    List<Vector2Int> RiverGrowth(List<Vector2> positions, Vector2 startPosition)
     {
-        List<Vector2> riverWay = new List<Vector2>(); //lista del camino del rio
-        Vector2 last = startPosition;
+        List<Vector2Int> riverWay = new List<Vector2Int>(); //lista del camino del rio
+        Vector2Int last = new Vector2Int((int)startPosition.x,(int)startPosition.y);
         for (int i = 0; i < positions.Count; i++)
         {
-            Vector2 pos = positions[i];
+            Vector2Int pos = new Vector2Int ((int)positions[i].x, (int)positions[i].y);
             if (casillaValida(pos))
             {
-                if (!CheckRiverGrowth(last, pos) && i + 1 < positions.Count && casillaValida(positions[i + 1])) // mirar donde puede continuar el rio
+                var portionPath = FindPath(last, pos);
+                if (portionPath != null)
                 {
-                    var camino = searchCamino(last, positions[i + 1]);
-                    if (camino != null)
-                    {
-                        riverWay.AddRange(camino);
-                        last = positions[i + 1];
-                        i++;
-                    }
-                    else i += 2;
-                }
-                else if (CheckRiverGrowth(last, pos))
-                {
-                    riverWay.Add(pos);
+
+                    riverWay.AddRange(portionPath);
                     last = pos;
                 }
+
             }
         }
         return riverWay;
@@ -96,49 +89,81 @@ public class RiverGenerator : MonoBehaviour
         return pos.x < mapGenerator.mapSize && pos.y < mapGenerator.mapSize && pos.x >= 0 && pos.y >= 0;
     }
 
-    List<Vector2> searchCamino(Vector2 start, Vector2 objetive)
+    public List<Vector2Int> FindPath(Vector2Int start, Vector2Int end)
     {
-        Queue<Vector2> queue = new Queue<Vector2>();
-        HashSet<Vector2> visited = new HashSet<Vector2>(); //Lista de elementos diplicados que no admite reapariciones del mism oelelemnto
-        Dictionary<Vector2, Vector2> parents = new Dictionary<Vector2, Vector2>();
+        //Lista de posibles casillas OPEN
+        var hashSet = new HashSet<Vector2Int>();
+        hashSet.Add(start);
 
-        queue.Enqueue(start);
-        visited.Add(start);
-        parents[start] = start;
+        //Mjeor diccionario para mantener costos g(N)
+        Dictionary<Vector2Int,float> gScore = new Dictionary<Vector2Int, float>();
 
-        while (queue.Count > 0)
+        foreach (var pos in getAllPositions())
+            gScore[pos] = float.MaxValue;
+
+        gScore[start] = 0; // Desde donde partimos
+
+        //Mantener la informacion de Cada Nodo con Nodo
+        Dictionary<Vector2Int, Vector2Int> parents = new Dictionary<Vector2Int, Vector2Int>();
+
+        while(hashSet.Count > 0)
         {
-            Vector2 node = queue.Dequeue(); //obtener el primer elemento de la cola
-
-            if (node.x == objetive.x && node.y == objetive.y) // si he llegado al objectivo
+            Vector2Int current = LowestFScore(hashSet, gScore);
+            if ( current == end)
             {
-                return ReconstructPath(parents, objetive);
+                return ReconstructPath(parents, current);
             }
 
-            foreach (Vector2 neighbor in GetNeighbors(node)) // mirar los vecinos para 
+            hashSet.Remove(current);
+
+            foreach (var neighbour in GetNeighbors(current)) //miramos vecinos
             {
-                if (!visited.Contains(neighbor))
+                float candidateNoise = gScore[current] + noise[neighbour.x,neighbour.y];
+
+                if (candidateNoise <= gScore[neighbour]) 
                 {
-                    queue.Enqueue(neighbor);
-                    visited.Add(neighbor);
-                    parents[neighbor] = node;
+                    parents[neighbour] = current;
+                    gScore[neighbour] = candidateNoise;
+                    hashSet.Add(neighbour);
                 }
             }
         }
-
-        return null; // No se encontró ningún camino
+        return null;
     }
 
-    private List<Vector2> GetNeighbors(Vector2 node)
+    IEnumerable<Vector2Int> getAllPositions()
     {
-        List<Vector2> neighbors = new List<Vector2>();
-        Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
-        int size = noise.GetLength(0);
+        for (int i = 0; i < noise.GetLength(0); i++)
+            for (int j = 0; j < noise.GetLength(1); j++)
+                yield return new Vector2Int(i,j);
+    }
+
+    Vector2Int LowestFScore( HashSet<Vector2Int> hashSet, Dictionary<Vector2Int, float> gScore)
+    {
+        Vector2Int minNode = new Vector2Int();
+        float minFScore = float.MaxValue;
+
+        foreach (var node in hashSet)
+        {
+            if (gScore[node] < minFScore)
+            {
+                minFScore = gScore[node];
+                minNode = node;
+            }
+        }
+        return minNode;
+    }
+
+    private List<Vector2Int> GetNeighbors(Vector2Int node)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+        Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+
         foreach (var dir in directions)
         {
-            int newX = (int)(node.x + dir.x);
-            int newY = (int)(node.y + dir.y);
-            Vector2 neighbor = new Vector2(newX, newY);
+            int newX = node.x + dir.x;
+            int newY = node.y + dir.y;
+            Vector2Int neighbor = new Vector2Int(newX, newY);
             if (casillaValida(neighbor) && CheckRiverGrowth(node, neighbor))
                 neighbors.Add(neighbor);
         }
@@ -146,22 +171,31 @@ public class RiverGenerator : MonoBehaviour
         return neighbors;
     }
 
-    private List<Vector2> ReconstructPath(Dictionary<Vector2, Vector2> parents, Vector2 goal)
+    List<Vector2Int> ReconstructPath(Dictionary<Vector2Int,Vector2Int> path,Vector2Int current)
     {
-        List<Vector2> path = new List<Vector2>();
-        Vector2 current = goal;
+        List<Vector2Int> riverPath = new List<Vector2Int>();
+        riverPath.Add(current);
 
-        while (current != null)
+        while (path.ContainsKey(current)) //reconstruirmos del reves
         {
-            path.Add(current);
-            current = parents[current];
+            current = path[current];
+            riverPath.Add(current);
         }
 
-        path.Reverse();
-        return path;
+        riverPath.Reverse(); //damos la vuelta
+        return riverPath;
     }
 
-    void PlaceRiverTile(List<Vector2> positons, Vector2 startPosition)
+
+
+
+
+
+
+
+
+
+    void PlaceRiverTile(List<Vector2Int> positons, Vector2 startPosition)
     {
         foreach (var pos in positons)
         {
