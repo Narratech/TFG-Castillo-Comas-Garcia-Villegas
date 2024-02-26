@@ -17,24 +17,22 @@ public static  class Noise {
     /// <param name="persistance">La persistencia controla la amplitud de cada octava. Un valor más bajo reducirá el efecto de las octavas posteriores de las octavas posteriores</param>
     /// <param name="lacunarity">El lacunaridad controla la frecuencia de cada octava. Un valor más alto aumentará la frecuencia</param>
     /// <param name="offset">La posición inicial del ruido generado</param>
-    /// <param name="chunkCoords">HAY Q PONER PARA K SIRVE</param>
     /// <returns></returns>
     
-    public static float[,] GenerateNoiseMap(long size, int seed, float noiseScale, int octaves, float persistance, 
-        float lacunarity, Vector2 offset){
+    public static float[,] GenerateNoiseMap(int size, NoiseSettings noiseSettings){
         
         // Evitar el error al dividir entre 0
-        if (noiseScale <= 0) noiseScale = 0.0001f;
+        if (noiseSettings.noiseScale <= 0) noiseSettings.noiseScale = 0.0001f;
         float[,] noiseMap = new float[size, size];
         // Crear una instancia de Random con la semilla proporcionada
-        System.Random r = new System.Random(seed);
+        System.Random r = new System.Random(noiseSettings.seed);
         
         // Generar vectores de desplazamiento para cada octava
-        Vector2[] octaveOffsets = new Vector2[octaves];
-        for (int i = 0; i < octaves; i++)
+        Vector2[] octaveOffsets = new Vector2[noiseSettings.octaves];
+        for (int i = 0; i < noiseSettings.octaves; i++)
         {
-            float offsetX = r.Next(-10000, 10000) + offset.x;
-            float offsetY = r.Next(-10000, 10000) + offset.y;
+            float offsetX = r.Next(-10000, 10000) + noiseSettings.offset.x;
+            float offsetY = r.Next(-10000, 10000) + noiseSettings.offset.y;
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
         }
         // Inicializar variables para determinar los valores máximos y mínimos de altura del ruido
@@ -52,15 +50,15 @@ public static  class Noise {
                 float frequency = 1;
                 float noiseHeight = 0;
                 // Calcular la altura del ruido para cada octava
-                for (int i = 0; i < octaves; i++)
+                for (int i = 0; i < noiseSettings.octaves; i++)
                 {
-                    float smpleX = (x - halfSize) / noiseScale * frequency + octaveOffsets[i].x;
-                    float smpleY = (y - halfSize) / noiseScale * frequency + octaveOffsets[i].y;
+                    float smpleX = (x - halfSize) / noiseSettings.noiseScale * frequency + octaveOffsets[i].x;
+                    float smpleY = (y - halfSize) / noiseSettings.noiseScale * frequency + octaveOffsets[i].y;
                     // Obtener el valor de ruido Perlin y ajustarlo al rango [-1, 1]
                     float perlinValue = Mathf.PerlinNoise(smpleX, smpleY) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
-                    amplitude *= persistance; // Va aumentando
-                    frequency *= lacunarity; // Va disminuyendo
+                    amplitude *= noiseSettings.persistance; // Va aumentando
+                    frequency *= noiseSettings.lacunarity; // Va disminuyendo
 
                 }
                 // Actualizar los valores máximos y mínimos de altura del ruido
@@ -82,40 +80,10 @@ public static  class Noise {
         return noiseMap;
     }
 
-
-    //public static List<Vector2Int> FindLocalMaxima(float[,] noiseMap){
-    //    List<Vector2Int> maximas = new List<Vector2Int>();
-
-    //    for (int x = 0; x < noiseMap.GetLength(0); x++){
-    //        for(int y = 0; y < noiseMap.GetLength(1); y++){
-    //            var noiseValue =  noiseMap[x, y];
-    //            if(CheckNeighbours(x,y,noiseMap,(neighbourNoise) => neighbourNoise < noiseValue)) { 
-    //                maximas.Add(new Vector2Int(x,y));
-    //            }
-    //        }
-    //    }
-    //    return maximas;
-    //}
-
-    //private static bool CheckNeighbours(int x, int y, float[,] noiseMap, Func<object, bool> failCondition){
-    //    foreach (var dir in directions){
-    //        var newPost = new Vector2Int(x + dir.x,y + dir.y);
-    //        if ( newPost.x <0 || newPost.x >= noiseMap.GetLength(0) || newPost.y < 0 || newPost.y >= noiseMap.GetLength(1))
-    //            continue;
-    //        if (failCondition(noiseMap[x+dir.x,y+dir.y]))return false;
-
-    //        return true;
-    //    }
-    //    return true;
-    //}
-
-
-
-
     /// <summary>
     /// Generar un mapa de falloff para suavizar los bordes del terreno
     /// </summary>
-    public static float[,] GenerateFallOffMap(long size){
+    public static float[,] GenerateFallOffMap(int size){
         float[,] map = new float[size, size];
         
         for (int i = 0; i < size; i++){
@@ -137,5 +105,67 @@ public static  class Noise {
         float a = 3;
         float b = 2.2f;
         return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow(b - b * value, a));
+    }
+
+    static List<Vector2Int> directions = new List<Vector2Int>
+    {
+        new Vector2Int(0, 1),   //N
+        new Vector2Int(1, 1),   //NE
+        new Vector2Int(1, 0),   //E
+        new Vector2Int(-1, 1),  //SE
+        new Vector2Int(-1, 0),  //S
+        new Vector2Int(-1, -1), //SW
+        new Vector2Int(0, -1),  //W
+        new Vector2Int(1, -1),  //NW
+    };
+
+    public static List<Vector2Int> FindLocalMaxima(float[,] noiseMap)
+    {
+        List<Vector2Int> maximas = new List<Vector2Int>();
+
+        for (int x = 0; x < noiseMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < noiseMap.GetLength(1); y++)
+            {
+                float noiseValue = noiseMap[x, y];
+                if (CheckNeighbours(x, y, noiseMap, (neighbourNoise) => neighbourNoise < noiseValue))
+                {
+                    maximas.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+        return maximas;
+    }
+
+    public static List<Vector2Int> FindLocalMinima(float[,] noiseMap)
+    {
+        List<Vector2Int> minima = new List<Vector2Int>();
+
+        for (int x = 0; x < noiseMap.GetLength(0); x++)
+        {
+            for (int y = 0; y < noiseMap.GetLength(1); y++)
+            {
+                float noiseValue = noiseMap[x, y];
+                if (CheckNeighbours(x, y, noiseMap, (neighbourNoise) => neighbourNoise > noiseValue))
+                {
+                    minima.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+        return minima;
+    }
+
+    private static bool CheckNeighbours(int x, int y, float[,] noiseMap, Func<float, bool> failCondition)
+    {
+        foreach (var dir in directions)
+        {
+            var newPost = new Vector2Int(x + dir.x, y + dir.y);
+            if (newPost.x < 0 || newPost.x >= noiseMap.GetLength(0) || newPost.y < 0 || newPost.y >= noiseMap.GetLength(1))
+                continue;
+            if (failCondition(noiseMap[x + dir.x, y + dir.y])) return false;
+
+            return true;
+        }
+        return true;
     }
 }
