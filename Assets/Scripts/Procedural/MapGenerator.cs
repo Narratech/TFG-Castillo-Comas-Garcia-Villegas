@@ -112,7 +112,7 @@ public class MapGenerator : MonoBehaviour{
     private void Awake(){
         clean = true;
         if(autoRegenerate) GenerateMap();
-        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false; 
+        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false;
         else map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
     }
 
@@ -193,6 +193,27 @@ public class MapGenerator : MonoBehaviour{
         }
         else endlessActive = true;
     }
+
+    public void GenerateEndlessMap()
+    {
+        map3D = new Dictionary<Vector2, Chunk>();
+        if (isIsland)
+        {
+            fallOffMap = new float[mapSize, mapSize];
+            fallOffMap = Noise.GenerateFallOffMap(mapSize);
+        }
+
+        mapSize = /*(long)int.MaxValue - 7*/1000;
+
+        if (drawMode == DrawMode.Cartoon)
+            noiseMap = Noise.GenerateNoiseMap(mapSize + 1, noiseSettings);
+        else
+            noiseMap = Noise.GenerateNoiseMap(mapSize, noiseSettings);
+
+        calculateChunkSize();
+    }
+
+
 
     /// <summary>
     /// Se usa para generar el mapa 2D a color
