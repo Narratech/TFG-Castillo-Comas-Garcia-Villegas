@@ -5,11 +5,13 @@ using UnityEngine;
 /// <summary>
 /// Generador de mapas Procedurales
 /// </summary>
-public class MapGenerator : MonoBehaviour {
+public class MapGenerator : MonoBehaviour
+{
     /// <summary>
     /// Tipo de Configuracion para la generacion
     /// </summary>
-    public enum DrawMode {
+    public enum DrawMode
+    {
         /// <summary>
         /// Generacion de un Mapa de Ruido(Solo visual 2D)
         /// </summary>
@@ -119,26 +121,29 @@ public class MapGenerator : MonoBehaviour {
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)
     bool clean = false;
     bool endlessActive = false;
-    public bool getEndLessActive() {  return endlessActive; }
+    public bool getEndLessActive() { return endlessActive; }
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
     float[,] biomeMap = null;
+    Cell[,] map = null;
 
     //Sistema de chunks para la generacion del mallado del mapa
-    public Dictionary<Vector2, Chunk> map3D= new Dictionary<Vector2, Chunk>();
+    public Dictionary<Vector2, Chunk> map3D = new Dictionary<Vector2, Chunk>();
 
     [HideInInspector]
     public float maxHeightPossible;
 
 
-    private void Awake(){
+    private void Awake()
+    {
         clean = true;
-        if(autoRegenerate) GenerateMap();
+        if (autoRegenerate) GenerateMap();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false;
         else map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
     }
 
-    private void OnValidate(){
+    private void OnValidate()
+    {
         if (mapSize < 1) mapSize = 1;
         if (sizePerBlock < 1f) sizePerBlock = 1f;
     }
@@ -146,7 +151,8 @@ public class MapGenerator : MonoBehaviour {
     /// <summary>
     /// Generar el Mapa con los parametros establecidos
     /// </summary>
-    public void GenerateMap(){
+    public void GenerateMap()
+    {
         //Borro todo lo anterior creado para crear un nuevo mapa
         CleanMaps();
         map3D = new Dictionary<Vector2, Chunk>();
@@ -172,15 +178,16 @@ public class MapGenerator : MonoBehaviour {
             {
                 foreach (var biome in biomes)
                     biome.GenerateNoiseMap(mapSize + 1, seed, offset);
+
+                map = new Cell[mapSize + 1, mapSize + 1];
             }
             else
             {
                 foreach (var biome in biomes)
                     biome.GenerateNoiseMap(mapSize, seed, offset);
-            }
 
-            if (createRivers) 
-                noiseMap = GetComponent<RiverGenerator>().GenerateRivers(null);
+                map = new Cell[mapSize, mapSize];
+            }
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -190,7 +197,7 @@ public class MapGenerator : MonoBehaviour {
                     display.ActiveMap(true);
                     break;
                 case DrawMode.ColorMap:
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, noiseMap));
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, biomeMap));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
                     break;
@@ -225,6 +232,9 @@ public class MapGenerator : MonoBehaviour {
             }
         }
         else endlessActive = true;
+
+        if (createRivers)
+            map = GetComponent<RiverGenerator>().GenerateRivers(map);
     }
 
     public void GenerateEndlessMap()
@@ -239,9 +249,15 @@ public class MapGenerator : MonoBehaviour {
         mapSize = /*(long)int.MaxValue - 7*/1000;
 
         if (drawMode == DrawMode.Cartoon)
-            noiseMap = Noise.GenerateNoiseMap(mapSize + 1, noiseSettings);
+        {
+            foreach (var biome in biomes)
+                biome.GenerateNoiseMap(mapSize + 1, seed, offset);
+        }
         else
-            noiseMap = Noise.GenerateNoiseMap(mapSize, noiseSettings);
+        {
+            foreach (var biome in biomes)
+                biome.GenerateNoiseMap(mapSize, seed, offset);
+        }
 
         calculateChunkSize();
     }
@@ -269,8 +285,9 @@ public class MapGenerator : MonoBehaviour {
     /// </summary>
     /// <param name="fallOffMap"></param>
     /// <returns></returns>
-    Color[] generateColorMap(){
-        
+    Color[] generateColorMap()
+    {
+
         Color[] colorMap = new Color[mapSize * mapSize];
 
         //Nos guardamos y vemos toda la informacion del mapa generado
@@ -296,14 +313,17 @@ public class MapGenerator : MonoBehaviour {
         return colorMap;
     }
 
-    public Cell[,] generateChunk_Minecraft(Vector2Int chunkCoord){
-        
-        Cell[,] cellMap = new Cell[chunkSize+2, chunkSize+2];
-        
+    public Cell[,] generateChunk_Minecraft(Vector2Int chunkCoord)
+    {
+
+        Cell[,] cellMap = new Cell[chunkSize + 2, chunkSize + 2];
+
         //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < chunkSize + 2; y++){
-            for (int x = 0; x < chunkSize + 2; x++){
-                bool existCellDown = x + chunkCoord.x * chunkSize -1 >=0 && y + chunkCoord.y * chunkSize - 1 >= 0;
+        for (int y = 0; y < chunkSize + 2; y++)
+        {
+            for (int x = 0; x < chunkSize + 2; x++)
+            {
+                bool existCellDown = x + chunkCoord.x * chunkSize - 1 >= 0 && y + chunkCoord.y * chunkSize - 1 >= 0;
                 bool existCellUp = x + chunkCoord.x * chunkSize - 1 < mapSize && y + chunkCoord.y * chunkSize - 1 < mapSize;
                 if (existCellDown && existCellUp)
                 {
@@ -334,43 +354,34 @@ public class MapGenerator : MonoBehaviour {
         return cellMap;
     }
 
-    public void generatePerlinChunkEndLessTerrain(){
-        noiseMap = Noise.GenerateNoiseMap(chunkSize, noiseSettings);
-    }
-
-    /// <summary>
-    /// Calcula las medidas del chunk segun las del mapa. Como maximo cada chunk sera de 50
-    /// </summary>
-    void calculateChunkSize(){
-        chunkSize = 60;
-        int divisor = 2;
-        while (divisor < mapSize)
-        {
-            if(mapSize % divisor == 0)
-            {
-                chunkSize = mapSize / divisor;
-                if (chunkSize <= 50) break;
-            }
-
-            divisor += 2;
-        }
-    }
-
-    void generateChunks_LowPoly(){
+    void generateChunks_LowPoly()
+    {
 
         calculateChunkSize();
 
         int numChunks = mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
 
-        for (int y = 0; y < numChunks; y++){
-            for (int x = 0; x < numChunks; x++){
+        for (int y = 0; y < numChunks; y++)
+        {
+            for (int x = 0; x < numChunks; x++)
+            {
+
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                map3D[chunkPos] = new Chunk(this,chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, levelOfDetail);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, levelOfDetail);
+                map3D[chunkPos] = generated;
+                for (int chunkY = 0; chunkY < chunkSize; chunkY++)
+                {
+                    for (int chunkX = 0; chunkX < chunkSize; chunkX++)
+                    {
+                        map[chunkX + x * chunkSize, chunkY + y * chunkSize] = generated.GetCell(chunkX, chunkY);
+                    }
+                }
             }
         }
     }
-    void generateChunks_Minecraft(){
+    void generateChunks_Minecraft()
+    {
 
         calculateChunkSize();
         //Debug.Log("tama�o de chunk: " + chunkSize);
@@ -383,15 +394,18 @@ public class MapGenerator : MonoBehaviour {
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                map3D[chunkPos] = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, levelOfDetail);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, levelOfDetail);
+                map3D[chunkPos] = generated;
+                for (int chunkY = 0; chunkY < chunkSize; chunkY++)
+                {
+                    for (int chunkX = 0; chunkX < chunkSize; chunkX++)
+                    {
+                        map[chunkX + x * chunkSize, chunkY + y * chunkSize] = generated.GetCell(chunkX, chunkY);
+                    }
+                }
             }
 
         }
-    }
-
-    public void generatePerlinChunkEndLessTerrain()
-    {
-        //noiseMap = Noise.GenerateNoiseMap(chunkSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
     }
 
     /// <summary>

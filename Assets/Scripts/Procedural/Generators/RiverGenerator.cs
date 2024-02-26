@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Mathematics;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class RiverGenerator : MonoBehaviour
@@ -14,56 +12,58 @@ public class RiverGenerator : MonoBehaviour
     public bool converganceOn = true;
 
     MapGenerator mapGenerator;
-    float[,] noise;
+    Cell[,] map;
 
-    void Start(){
+
+    void Start()
+    {
         mapGenerator = GetComponent<MapGenerator>();
-        if ( mapGenerator == null ) 
+        if (mapGenerator == null)
             mapGenerator = gameObject.AddComponent<MapGenerator>();
     }
 
-    public float[,] GenerateRivers(Cell[,] cells)
+    public Cell[,] GenerateRivers(Cell[,] cells)
     {
         mapGenerator = GetComponent<MapGenerator>();
-        noise = mapGenerator.getNoise();
-        
-        var result = Noise.FindLocalMaxima(noise); //maximas
-        var toCreate = result.Where(pos => noise[pos.x, pos.y] <= mapGenerator.regions[capaGeneracion].height).
-            OrderBy(a => Guid.NewGuid()).Take(UnityEngine.Random.Range(1, riversMax)).ToList();
-        var waterMinimas = Noise.FindLocalMinima(noise);
-        
-        waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(riversMax * 2).ToList();
-        
-        foreach (var item in toCreate)
-            CreateRiver(item,cells, waterMinimas);
+        map = cells;
 
-        return noise;
+        var result = Noise.FindLocalMaxima(cells); //maximas
+        var toCreate = result.Where(pos => cells[pos.x, pos.y].noise <= mapGenerator.regions[capaGeneracion].height).
+            OrderBy(a => Guid.NewGuid()).Take(UnityEngine.Random.Range(1, riversMax)).ToList();
+        var waterMinimas = Noise.FindLocalMinima(cells);
+
+        waterMinimas = waterMinimas.Where(pos => cells[pos.x, pos.y].noise < mapGenerator.regions[1].height).OrderBy(pos => cells[pos.x, pos.y].noise).Take(riversMax * 2).ToList();
+
+        foreach (var item in toCreate)
+            CreateRiver(item, cells, waterMinimas);
+
+        return cells;
     }
 
-    private void CreateRiver(Vector2Int startPosition,Cell[,] cells, List<Vector2Int> waterMinimas)
+    private void CreateRiver(Vector2Int startPosition, Cell[,] cells, List<Vector2Int> waterMinimas)
     {
         PerlinWorm worm;
         if (converganceOn)
         {
             var closestWaterPos = waterMinimas.OrderBy(pos => Vector2.Distance(pos, startPosition)).First();
-            worm = new PerlinWorm(noise[startPosition.x,startPosition.y], startPosition, closestWaterPos);
+            worm = new PerlinWorm(cells[startPosition.x, startPosition.y].noise, startPosition, closestWaterPos);
         }
         else
         {
-            worm = new PerlinWorm(noise[startPosition.x, startPosition.y], startPosition);
+            worm = new PerlinWorm(cells[startPosition.x, startPosition.y].noise, startPosition);
         }
 
         var position = RiverGrowth(worm.MoveLength(riverLength), startPosition);
-        PlaceRiverTile(position,startPosition);
+        PlaceRiverTile(position, startPosition);
     }
 
     List<Vector2Int> RiverGrowth(List<Vector2> positions, Vector2 startPosition)
     {
         List<Vector2Int> riverWay = new List<Vector2Int>(); //lista del camino del rio
-        Vector2Int last = new Vector2Int((int)startPosition.x,(int)startPosition.y);
+        Vector2Int last = new Vector2Int((int)startPosition.x, (int)startPosition.y);
         for (int i = 0; i < positions.Count; i++)
         {
-            Vector2Int pos = new Vector2Int ((int)positions[i].x, (int)positions[i].y);
+            Vector2Int pos = new Vector2Int((int)positions[i].x, (int)positions[i].y);
             if (casillaValida(pos))
             {
                 var portionPath = FindPath(last, pos);
@@ -81,7 +81,7 @@ public class RiverGenerator : MonoBehaviour
 
     bool CheckRiverGrowth(Vector2 currentPos, Vector2 candidatePosition)
     {
-        return noise[(int)currentPos.x, (int)currentPos.y] >= noise[(int)candidatePosition.x, (int)candidatePosition.y];
+        return map[(int)currentPos.x, (int)currentPos.y].noise >= map[(int)candidatePosition.x, (int)candidatePosition.y].noise;
     }
 
     bool casillaValida(Vector2 pos)
@@ -96,7 +96,7 @@ public class RiverGenerator : MonoBehaviour
         hashSet.Add(start);
 
         //Mjeor diccionario para mantener costos g(N)
-        Dictionary<Vector2Int,float> gScore = new Dictionary<Vector2Int, float>();
+        Dictionary<Vector2Int, float> gScore = new Dictionary<Vector2Int, float>();
 
         foreach (var pos in getAllPositions())
             gScore[pos] = float.MaxValue;
@@ -106,10 +106,10 @@ public class RiverGenerator : MonoBehaviour
         //Mantener la informacion de Cada Nodo con Nodo
         Dictionary<Vector2Int, Vector2Int> parents = new Dictionary<Vector2Int, Vector2Int>();
 
-        while(hashSet.Count > 0)
+        while (hashSet.Count > 0)
         {
             Vector2Int current = LowestFScore(hashSet, gScore);
-            if ( current == end)
+            if (current == end)
             {
                 return ReconstructPath(parents, current);
             }
@@ -118,9 +118,9 @@ public class RiverGenerator : MonoBehaviour
 
             foreach (var neighbour in GetNeighbors(current)) //miramos vecinos
             {
-                float candidateNoise = gScore[current] + noise[neighbour.x,neighbour.y];
+                float candidateNoise = gScore[current] + map[neighbour.x, neighbour.y].noise;
 
-                if (candidateNoise <= gScore[neighbour]) 
+                if (candidateNoise <= gScore[neighbour])
                 {
                     parents[neighbour] = current;
                     gScore[neighbour] = candidateNoise;
@@ -133,12 +133,12 @@ public class RiverGenerator : MonoBehaviour
 
     IEnumerable<Vector2Int> getAllPositions()
     {
-        for (int i = 0; i < noise.GetLength(0); i++)
-            for (int j = 0; j < noise.GetLength(1); j++)
-                yield return new Vector2Int(i,j);
+        for (int i = 0; i < map.GetLength(0); i++)
+            for (int j = 0; j < map.GetLength(1); j++)
+                yield return new Vector2Int(i, j);
     }
 
-    Vector2Int LowestFScore( HashSet<Vector2Int> hashSet, Dictionary<Vector2Int, float> gScore)
+    Vector2Int LowestFScore(HashSet<Vector2Int> hashSet, Dictionary<Vector2Int, float> gScore)
     {
         Vector2Int minNode = new Vector2Int();
         float minFScore = float.MaxValue;
@@ -171,7 +171,7 @@ public class RiverGenerator : MonoBehaviour
         return neighbors;
     }
 
-    List<Vector2Int> ReconstructPath(Dictionary<Vector2Int,Vector2Int> path,Vector2Int current)
+    List<Vector2Int> ReconstructPath(Dictionary<Vector2Int, Vector2Int> path, Vector2Int current)
     {
         List<Vector2Int> riverPath = new List<Vector2Int>();
         riverPath.Add(current);
@@ -202,22 +202,22 @@ public class RiverGenerator : MonoBehaviour
             //cells[(int)pos.x, (int)pos.y].type.color = Color.blue;
             if (pos.x < mapGenerator.mapSize && pos.y < mapGenerator.mapSize && pos.x >= 0 && pos.y >= 0)
             {
-                noise[(int)pos.x, (int)pos.y] = 0.15f;
+                map[(int)pos.x, (int)pos.y].noise = 0.15f;
 
-                if (bold && noise[(int)pos.x, (int)pos.y] < 0.75f)
+                if (bold && map[(int)pos.x, (int)pos.y].noise < 0.75f)
                 {
                     //cells[(int)pos.x+1, (int)pos.y].type.color = Color.blue;
                     //cells[(int)pos.x-1, (int)pos.y].type.color = Color.blue;
                     //cells[(int)pos.x, (int)pos.y+1].type.color = Color.blue;
                     //cells[(int)pos.x, (int)pos.y-1].type.color = Color.blue;
                     if (pos.x + 1 < mapGenerator.mapSize)
-                        noise[(int)pos.x + 1, (int)pos.y] = 0.15f;
+                        map[(int)pos.x + 1, (int)pos.y].noise = 0.15f;
                     if (pos.x - 1 >= 0)
-                        noise[(int)pos.x - 1, (int)pos.y] = 0.15f;
+                        map[(int)pos.x - 1, (int)pos.y].noise = 0.15f;
                     if (pos.y + 1 < mapGenerator.mapSize)
-                        noise[(int)pos.x, (int)pos.y + 1] = 0.15f;
+                        map[(int)pos.x, (int)pos.y + 1].noise = 0.15f;
                     if (pos.y - 1 >= 0)
-                        noise[(int)pos.x, (int)pos.y - 1] = 0.15f;
+                        map[(int)pos.x, (int)pos.y - 1].noise = 0.15f;
                 }
             }
         }

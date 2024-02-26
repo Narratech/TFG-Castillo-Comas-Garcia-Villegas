@@ -103,11 +103,11 @@ public class Chunk
 
     public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
     {
-        Debug.Log("Generado chunk "+posMap);
+        Debug.Log("Generado chunk " + posMap);
         this.posMap = posMap;
         createGameObjectChunk(parent);
         this.sizePerBlock = sizePerBlock;
-        
+
 
         if (mapGenerator.getEndLessActive()) //si esta activado endless terrain se generaran los chunks de esta manera
         {
@@ -119,13 +119,13 @@ public class Chunk
 
             mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
         }
-        else 
+        else
         {
             bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
-            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap); 
+            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
         }
-            
-        
+
+
         //Creamos los respectivos materiales para cada malla
         Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         floor.AddComponent<MeshFilter>();
@@ -159,6 +159,11 @@ public class Chunk
         obj = mapGenerator.objects[0].prefab;
         densityCurve = mapGenerator.objects[0].densityCurve;
         //GenerateObjects(mapCells, chunkSize);
+    }
+
+    public Cell GetCell(int x, int y)
+    {
+        return mapCells[x, y];
     }
 
 
@@ -283,7 +288,7 @@ public class Chunk
 
     public void Update(Vector2 playerPos, float maxViewDst)
     {
-        Vector2 pos = new Vector2(playerPos.x, - playerPos.y);
+        Vector2 pos = new Vector2(playerPos.x, -playerPos.y);
         float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(pos));
         SetVisible(viewerDstFromNearestEdge <= maxViewDst);
     }

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Procedural/Biome")]
@@ -51,7 +49,16 @@ public class Biome : ScriptableObject
     {
         if (lacunarity < 1)
             lacunarity = 1;
-        noiseMap = Noise.GenerateNoiseMap(size, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        NoiseSettings noiseSettings = new()
+        {
+            seed = seed,
+            offset = offset,
+            noiseScale = noiseScale,
+            octaves = octaves,
+            persistance = persistance,
+            lacunarity = lacunarity
+        };
+        noiseMap = Noise.GenerateNoiseMap(size, noiseSettings);
     }
 
     public float NoiseToHeight(float noise)
@@ -69,7 +76,8 @@ public class Biome : ScriptableObject
         return weight;
     }
 
-    public float this[int index, int index2] {
+    public float this[int index, int index2]
+    {
         get { return noiseMap[index, index2]; }
     }
 }
