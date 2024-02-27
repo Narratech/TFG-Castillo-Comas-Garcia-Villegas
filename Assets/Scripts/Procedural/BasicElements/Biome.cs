@@ -6,20 +6,8 @@ using UnityEngine;
 [Serializable]
 public class Biome : ScriptableObject
 {
-    [Header("Noise generation")]
     [SerializeField]
-    float noiseScale = 50f;
-
-    [SerializeField]
-    [Range(0, 5)]
-    int octaves = 2;
-
-    [SerializeField]
-    [Range(0f, 1f)]
-    float persistance = 0.5f;
-
-    [SerializeField]
-    float lacunarity = 12;
+    public NoiseSettings noiseSettings;
 
     [Header("Biome generation")]
     [SerializeField]
@@ -47,18 +35,13 @@ public class Biome : ScriptableObject
 
     public void GenerateNoiseMap(int size, int seed, Vector2 offset)
     {
-        if (lacunarity < 1)
-            lacunarity = 1;
-        NoiseSettings noiseSettings = new()
-        {
-            seed = seed,
-            offset = offset,
-            noiseScale = noiseScale,
-            octaves = octaves,
-            persistance = persistance,
-            lacunarity = lacunarity
-        };
-        noiseMap = Noise.GenerateNoiseMap(size, noiseSettings);
+        if (noiseSettings.lacunarity < 1) noiseSettings.lacunarity = 1;
+        if (noiseSettings.octaves < 0) noiseSettings.octaves = 0;
+        if (noiseSettings.octaves > 6) noiseSettings.octaves = 5;
+
+        noiseSettings.offset = offset;
+
+        noiseMap = Noise.GenerateNoiseMap(size,seed, noiseSettings);
     }
 
     public float NoiseToHeight(float noise)

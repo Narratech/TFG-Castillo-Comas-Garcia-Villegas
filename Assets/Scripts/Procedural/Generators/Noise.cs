@@ -20,14 +20,14 @@ public static class Noise
     /// <param name="offset">La posición inicial del ruido generado</param>
     /// <returns></returns>
 
-    public static float[,] GenerateNoiseMap(int size, NoiseSettings noiseSettings)
+    public static float[,] GenerateNoiseMap(int size,int seed, NoiseSettings noiseSettings)
     {
 
         // Evitar el error al dividir entre 0
         if (noiseSettings.noiseScale <= 0) noiseSettings.noiseScale = 0.0001f;
         float[,] noiseMap = new float[size, size];
         // Crear una instancia de Random con la semilla proporcionada
-        System.Random r = new System.Random(noiseSettings.seed);
+        System.Random r = new System.Random(seed);
 
         // Generar vectores de desplazamiento para cada octava
         Vector2[] octaveOffsets = new Vector2[noiseSettings.octaves];

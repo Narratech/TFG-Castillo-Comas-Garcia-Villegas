@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
   m_Name: Mountain
   m_EditorClassIdentifier: 
-  noiseScale: 43.9
-  octaves: 3
-  persistance: 0.06
-  lacunarity: 5.99
+  noiseSettings:
+    noiseScale: 43.9
+    octaves: 3
+    persistance: 0.061
+    lacunarity: 5.99
+    offset: {x: 150, y: 100}
   weight: 1
   maxHeight: 99.8
   minHeight: 5
