@@ -206,7 +206,7 @@ public class MapGenerator : MonoBehaviour
                     display.ActiveMap(true);
                     break;
                 case DrawMode.ColorMap:
-                    BuildMap(false);
+                    BuildMap(true);
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, map.NoiseMap));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
@@ -417,11 +417,6 @@ public class MapGenerator : MonoBehaviour
 
         map.SetNoiseMap(noise);
 
-        if (createRivers)
-            noise = GetComponent<RiverGenerator>().GenerateRivers(noise);
-
-        map.SetNoiseMap(noise);
-
         if (minecraft)
         {
             for (int i = 0; i < map.Size; i++)
@@ -432,6 +427,11 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
+        if (createRivers)
+            noise = GetComponent<RiverGenerator>().GenerateRivers(noise);
+
+        map.SetNoiseMap(noise);
 
         float[,] height = new float[map.Size, map.Size];
         for (int i = 0; i < map.Size; i++)

@@ -42,8 +42,8 @@ public class RiverGenerator : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
 
         var result = Noise.FindLocalMaxima(noise); //maximas
-        var toCreate = result.Where(pos => noise[pos.x, pos.y] <= mapGenerator.regions[capaGeneracion].height).
-            OrderBy(a => Guid.NewGuid()).Take(UnityEngine.Random.Range(1, riversMax)).ToList();
+        var toCreate = result.Where(pos => noise[pos.x, pos.y] >= mapGenerator.regions[capaGeneracion].height).
+            OrderBy(a => Guid.NewGuid()).Take( riversMax).ToList();
         var waterMinimas = Noise.FindLocalMinima(noise);
 
         waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(riversMax * 2).ToList();
@@ -112,7 +112,7 @@ public class RiverGenerator : MonoBehaviour
 
     bool CheckRiverGrowth(Vector2 currentPos, Vector2 candidatePosition)
     {
-        return mapGenerator.Map.NoiseMap[(int)currentPos.x, (int)currentPos.y] >= mapGenerator.Map.NoiseMap[(int)candidatePosition.x, (int)candidatePosition.y] - 0.1f;
+        return mapGenerator.Map.NoiseMap[(int)currentPos.x, (int)currentPos.y] >= mapGenerator.Map.NoiseMap[(int)candidatePosition.x, (int)candidatePosition.y];
     }
 
     bool casillaValida(Vector2 pos)
