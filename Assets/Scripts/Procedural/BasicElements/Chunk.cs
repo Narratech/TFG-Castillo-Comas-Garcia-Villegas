@@ -55,6 +55,9 @@ public class ObjectInMap
 /// </summary>
 public class Chunk
 {
+
+    MapGenerator generator;
+
     /// <summary>
     /// Posicion del chunk en el mapa
     /// </summary>
@@ -64,7 +67,6 @@ public class Chunk
     GameObject floor;
     GameObject edges;
     public GameObject objectsGenerated;
-    Cell[,] mapCells;
     float sizePerBlock;
     Bounds bound;
 
@@ -76,6 +78,8 @@ public class Chunk
     List<Transform> chunkObjects;
     float minDistance = 3;
 
+    Vector2Int horBounds = Vector2Int.zero;
+    Vector2Int verBounds = Vector2Int.zero;
 
     void generateEdgesGameObject()
     {
@@ -104,6 +108,9 @@ public class Chunk
     public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
     {
         Debug.Log("Generado chunk " + posMap);
+
+        generator = mapGenerator;
+
         this.posMap = posMap;
         createGameObjectChunk(parent);
         this.sizePerBlock = sizePerBlock;
@@ -116,15 +123,11 @@ public class Chunk
             //Vector3 realPosition = new Vector3(pos.x, 0, pos.y);
             //chunk.transform.localPosition = realPosition;
             SetVisible(false);
-
-            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
         }
         else
         {
             bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
-            mapCells = cartoon ? mapGenerator.generateChunk_LowPoly(posMap) : mapGenerator.generateChunk_Minecraft(posMap);
         }
-
 
         //Creamos los respectivos materiales para cada malla
         Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
@@ -135,6 +138,9 @@ public class Chunk
         //Generamos la malla
         if (!cartoon)
         { // si es tipo minecraft
+            horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize);
+            verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize);
+
             generateEdgesGameObject();
 
             GenerateTerrainMesh_Minecraft(sizePerBlock);
@@ -142,7 +148,12 @@ public class Chunk
             edges.AddComponent<MeshCollider>();
             GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
         }
-        else GenerateTerrainMesh_LowPoly(mapCells, levelOfDetail);
+        else
+        {
+            horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize + 1);
+            verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize + 1);
+            GenerateTerrainMesh_LowPoly(levelOfDetail);
+        }
         //chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
 
@@ -159,11 +170,6 @@ public class Chunk
         obj = mapGenerator.objects[0].prefab;
         densityCurve = mapGenerator.objects[0].densityCurve;
         //GenerateObjects(mapCells, chunkSize);
-    }
-
-    public Cell GetCell(int x, int y)
-    {
-        return mapCells[x, y];
     }
 
 
@@ -249,27 +255,24 @@ public class Chunk
     /// </summary>
     public void GenerateTerrainMesh_Minecraft(float sizePerBlock)
     {
-        int sizeAntiguo = mapCells.GetLength(0);
-        Cell[,] matrizReducida = new Cell[sizeAntiguo - 2, sizeAntiguo - 2];
+        int sizeAntiguo = horBounds.y - horBounds.x;
+        float[,] matrizReducida = new float[sizeAntiguo - 2, sizeAntiguo - 2];
 
         // Copiar los elementos relevantes a la nueva matriz
         for (int i = 1; i < sizeAntiguo - 1; i++)
-            Array.Copy(mapCells, i * sizeAntiguo + 1, matrizReducida, (i - 1) * (sizeAntiguo - 2), sizeAntiguo - 2);
+            Array.Copy(generator.Map.HeightMap, i * sizeAntiguo + 1, matrizReducida, (i - 1) * (sizeAntiguo - 2), sizeAntiguo - 2);
 
 
-        MeshGenerator.GenerateTerrainMeshChunk(matrizReducida, floor, sizePerBlock);
-        MeshGenerator.DrawEdgesChunk(mapCells, edges, sizePerBlock);
-
-        mapCells = matrizReducida;
-
+        MeshGenerator.GenerateTerrainMeshChunk(generator.Map, floor, sizePerBlock, horBounds, verBounds);
+        MeshGenerator.DrawEdgesChunk(generator.Map, edges, sizePerBlock, horBounds, verBounds);
     }
 
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh_LowPoly(Cell[,] mapaCells, int levelOfDetail)
+    public void GenerateTerrainMesh_LowPoly(int levelOfDetail)
     {
-        MeshGenerator.GenerateTerrainMeshChunk_LowPoly(mapaCells, floor, levelOfDetail);
+        MeshGenerator.GenerateTerrainMeshChunk_LowPoly(generator.Map, floor, levelOfDetail, horBounds, verBounds);
     }
 
     public void setParent(Transform parent)

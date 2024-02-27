@@ -12,8 +12,6 @@ public class RiverGenerator : MonoBehaviour
     public bool converganceOn = true;
 
     MapGenerator mapGenerator;
-    Cell[,] map;
-
 
     void Start()
     {
@@ -25,7 +23,6 @@ public class RiverGenerator : MonoBehaviour
     public Cell[,] GenerateRivers(Cell[,] cells)
     {
         mapGenerator = GetComponent<MapGenerator>();
-        map = cells;
 
         var result = Noise.FindLocalMaxima(cells); //maximas
         var toCreate = result.Where(pos => cells[pos.x, pos.y].noise <= mapGenerator.regions[capaGeneracion].height).
@@ -40,6 +37,23 @@ public class RiverGenerator : MonoBehaviour
         return cells;
     }
 
+    public float[,] GenerateRivers(float[,] noise)
+    {
+        mapGenerator = GetComponent<MapGenerator>();
+
+        var result = Noise.FindLocalMaxima(noise); //maximas
+        var toCreate = result.Where(pos => noise[pos.x, pos.y] <= mapGenerator.regions[capaGeneracion].height).
+            OrderBy(a => Guid.NewGuid()).Take(UnityEngine.Random.Range(1, riversMax)).ToList();
+        var waterMinimas = Noise.FindLocalMinima(noise);
+
+        waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(riversMax * 2).ToList();
+
+        foreach (var item in toCreate)
+            CreateRiver(item, noise, waterMinimas);
+
+        return noise;
+    }
+
     private void CreateRiver(Vector2Int startPosition, Cell[,] cells, List<Vector2Int> waterMinimas)
     {
         PerlinWorm worm;
@@ -51,6 +65,23 @@ public class RiverGenerator : MonoBehaviour
         else
         {
             worm = new PerlinWorm(cells[startPosition.x, startPosition.y].noise, startPosition);
+        }
+
+        var position = RiverGrowth(worm.MoveLength(riverLength), startPosition);
+        PlaceRiverTile(position, startPosition);
+    }
+
+    private void CreateRiver(Vector2Int startPosition, float[,] noise, List<Vector2Int> waterMinimas)
+    {
+        PerlinWorm worm;
+        if (converganceOn)
+        {
+            var closestWaterPos = waterMinimas.OrderBy(pos => Vector2.Distance(pos, startPosition)).First();
+            worm = new PerlinWorm(noise[startPosition.x, startPosition.y], startPosition, closestWaterPos);
+        }
+        else
+        {
+            worm = new PerlinWorm(noise[startPosition.x, startPosition.y], startPosition);
         }
 
         var position = RiverGrowth(worm.MoveLength(riverLength), startPosition);
@@ -81,7 +112,7 @@ public class RiverGenerator : MonoBehaviour
 
     bool CheckRiverGrowth(Vector2 currentPos, Vector2 candidatePosition)
     {
-        return map[(int)currentPos.x, (int)currentPos.y].noise >= map[(int)candidatePosition.x, (int)candidatePosition.y].noise;
+        return mapGenerator.Map.NoiseMap[(int)currentPos.x, (int)currentPos.y] >= mapGenerator.Map.NoiseMap[(int)candidatePosition.x, (int)candidatePosition.y];
     }
 
     bool casillaValida(Vector2 pos)
@@ -118,7 +149,7 @@ public class RiverGenerator : MonoBehaviour
 
             foreach (var neighbour in GetNeighbors(current)) //miramos vecinos
             {
-                float candidateNoise = gScore[current] + map[neighbour.x, neighbour.y].noise;
+                float candidateNoise = gScore[current] + mapGenerator.Map.NoiseMap[neighbour.x, neighbour.y];
 
                 if (candidateNoise <= gScore[neighbour])
                 {
@@ -133,8 +164,8 @@ public class RiverGenerator : MonoBehaviour
 
     IEnumerable<Vector2Int> getAllPositions()
     {
-        for (int i = 0; i < map.GetLength(0); i++)
-            for (int j = 0; j < map.GetLength(1); j++)
+        for (int i = 0; i < mapGenerator.Map.NoiseMap.GetLength(0); i++)
+            for (int j = 0; j < mapGenerator.Map.NoiseMap.GetLength(1); j++)
                 yield return new Vector2Int(i, j);
     }
 
@@ -202,22 +233,22 @@ public class RiverGenerator : MonoBehaviour
             //cells[(int)pos.x, (int)pos.y].type.color = Color.blue;
             if (pos.x < mapGenerator.mapSize && pos.y < mapGenerator.mapSize && pos.x >= 0 && pos.y >= 0)
             {
-                map[(int)pos.x, (int)pos.y].noise = 0.15f;
+                mapGenerator.Map.NoiseMap[(int)pos.x, (int)pos.y] = 0.15f;
 
-                if (bold && map[(int)pos.x, (int)pos.y].noise < 0.75f)
+                if (bold && mapGenerator.Map.NoiseMap[(int)pos.x, (int)pos.y] < 0.75f)
                 {
                     //cells[(int)pos.x+1, (int)pos.y].type.color = Color.blue;
                     //cells[(int)pos.x-1, (int)pos.y].type.color = Color.blue;
                     //cells[(int)pos.x, (int)pos.y+1].type.color = Color.blue;
                     //cells[(int)pos.x, (int)pos.y-1].type.color = Color.blue;
                     if (pos.x + 1 < mapGenerator.mapSize)
-                        map[(int)pos.x + 1, (int)pos.y].noise = 0.15f;
+                        mapGenerator.Map.NoiseMap[(int)pos.x + 1, (int)pos.y] = 0.15f;
                     if (pos.x - 1 >= 0)
-                        map[(int)pos.x - 1, (int)pos.y].noise = 0.15f;
+                        mapGenerator.Map.NoiseMap[(int)pos.x - 1, (int)pos.y] = 0.15f;
                     if (pos.y + 1 < mapGenerator.mapSize)
-                        map[(int)pos.x, (int)pos.y + 1].noise = 0.15f;
+                        mapGenerator.Map.NoiseMap[(int)pos.x, (int)pos.y + 1] = 0.15f;
                     if (pos.y - 1 >= 0)
-                        map[(int)pos.x, (int)pos.y - 1].noise = 0.15f;
+                        mapGenerator.Map.NoiseMap[(int)pos.x, (int)pos.y - 1] = 0.15f;
                 }
             }
         }

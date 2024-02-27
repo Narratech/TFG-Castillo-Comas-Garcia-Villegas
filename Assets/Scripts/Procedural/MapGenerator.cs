@@ -60,7 +60,7 @@ public class MapGenerator : MonoBehaviour
     public int mapSize;
 
     //TAMA�O DEL CHUNK (En caso de que se cambie, es probable de k no se genere bien la malla del mapa debido al limite de creacion de vertices de unity por malla)
-    [HideInInspector]
+
     public int chunkSize = 50;
     //TAMA�O DE CADA CELDA (En caso de modificacion posible solapacion de vertices)
     public float sizePerBlock = 1f;
@@ -125,7 +125,10 @@ public class MapGenerator : MonoBehaviour
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
     float[,] biomeMap = null;
-    Cell[,] map = null;
+
+    MapInfo map;
+
+    public MapInfo Map { get { return map; } }
 
     //Sistema de chunks para la generacion del mallado del mapa
     public Dictionary<Vector2, Chunk> map3D = new Dictionary<Vector2, Chunk>();
@@ -179,14 +182,14 @@ public class MapGenerator : MonoBehaviour
                 foreach (var biome in biomes)
                     biome.GenerateNoiseMap(mapSize + 1, seed, offset);
 
-                map = new Cell[mapSize + 1, mapSize + 1];
+                map = new MapInfo(mapSize + 1);
             }
             else
             {
                 foreach (var biome in biomes)
                     biome.GenerateNoiseMap(mapSize, seed, offset);
 
-                map = new Cell[mapSize, mapSize];
+                map = new MapInfo(mapSize);
             }
 
             MapDisplay display = GetComponent<MapDisplay>();
@@ -206,35 +209,37 @@ public class MapGenerator : MonoBehaviour
                     display.ActiveMap(true);
                     break;
                 case DrawMode.CubicMap:
+                    BuildMap();
                     generateChunks_Minecraft();
                     display.ActiveMap(false);
                     break;
                 case DrawMode.MapWithObjects:
+                    BuildMap();
                     generateChunks_Minecraft();
                     //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                     display.ActiveMap(false);
                     break;
                 case DrawMode.NoObjectsWithDisplay:
+                    BuildMap();
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                     generateChunks_Minecraft();
                     display.ActiveMap(true);
                     break;
                 case DrawMode.All:
+                    BuildMap();
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                     generateChunks_Minecraft();
                     //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                     display.ActiveMap(true);
                     break;
                 case DrawMode.Cartoon:
+                    BuildMap();
                     generateChunks_LowPoly();
                     display.ActiveMap(false);
                     break;
             }
         }
         else endlessActive = true;
-
-        if (createRivers)
-            map = GetComponent<RiverGenerator>().GenerateRivers(map);
     }
 
     public void GenerateEndlessMap()
@@ -313,47 +318,6 @@ public class MapGenerator : MonoBehaviour
         return colorMap;
     }
 
-    public Cell[,] generateChunk_Minecraft(Vector2Int chunkCoord)
-    {
-
-        Cell[,] cellMap = new Cell[chunkSize + 2, chunkSize + 2];
-
-        //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < chunkSize + 2; y++)
-        {
-            for (int x = 0; x < chunkSize + 2; x++)
-            {
-                bool existCellDown = x + chunkCoord.x * chunkSize - 1 >= 0 && y + chunkCoord.y * chunkSize - 1 >= 0;
-                bool existCellUp = x + chunkCoord.x * chunkSize - 1 < mapSize && y + chunkCoord.y * chunkSize - 1 < mapSize;
-                if (existCellDown && existCellUp)
-                {
-                    Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize - 1, y + chunkCoord.y * chunkSize - 1);
-
-                    cellMap[x, y] = BuildCell(posNoise, true);
-                }
-                else cellMap[x, y] = null;
-            }
-        }
-        return cellMap;
-    }
-    public Cell[,] generateChunk_LowPoly(Vector2Int chunkCoord)
-    {
-
-        Cell[,] cellMap = new Cell[chunkSize + 1, chunkSize + 1];
-
-        //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < chunkSize + 1; y++)
-        {
-            for (int x = 0; x < chunkSize + 1; x++)
-            {
-                Vector2Int posNoise = new Vector2Int(x + chunkCoord.x * chunkSize, y + chunkCoord.y * chunkSize);
-
-                cellMap[x, y] = BuildCell(posNoise);
-            }
-        }
-        return cellMap;
-    }
-
     void generateChunks_LowPoly()
     {
 
@@ -366,17 +330,9 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < numChunks; x++)
             {
-
                 Vector2Int chunkPos = new Vector2Int(x, y);
                 Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, levelOfDetail);
                 map3D[chunkPos] = generated;
-                for (int chunkY = 0; chunkY < chunkSize; chunkY++)
-                {
-                    for (int chunkX = 0; chunkX < chunkSize; chunkX++)
-                    {
-                        map[chunkX + x * chunkSize, chunkY + y * chunkSize] = generated.GetCell(chunkX, chunkY);
-                    }
-                }
             }
         }
     }
@@ -396,16 +352,55 @@ public class MapGenerator : MonoBehaviour
                 Vector2Int chunkPos = new Vector2Int(x, y);
                 Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, levelOfDetail);
                 map3D[chunkPos] = generated;
-                for (int chunkY = 0; chunkY < chunkSize; chunkY++)
-                {
-                    for (int chunkX = 0; chunkX < chunkSize; chunkX++)
-                    {
-                        map[chunkX + x * chunkSize, chunkY + y * chunkSize] = generated.GetCell(chunkX, chunkY);
-                    }
-                }
             }
 
         }
+    }
+
+    void BuildMap(bool minecraft = false)
+    {
+        float[,] noise = new float[map.Size, map.Size];
+        Dictionary<Biome, float>[,] influences = new Dictionary<Biome, float>[map.Size, map.Size];
+        for (int x = 0; x < map.Size; x++)
+        {
+            for (int y = 0; y < map.Size; y++)
+            {
+                influences[x, y] = GetBiomeInfluence(x, y);
+                noise[x, y] = GetCoordinatesNoise(x, y, influences[x, y]);
+            }
+        }
+
+        map.SetNoiseMap(noise);
+
+        if (createRivers)
+            noise = GetComponent<RiverGenerator>().GenerateRivers(noise);
+
+        map.SetNoiseMap(noise);
+
+        if (minecraft)
+        {
+            for (int i = 0; i < map.Size; i++)
+            {
+                for (int j = 0; j < map.Size; j++)
+                {
+                    noise[i, j] = (float)Math.Round(noise[i, j], 2);
+                }
+            }
+        }
+
+        float[,] height = new float[map.Size, map.Size];
+        for (int i = 0; i < map.Size; i++)
+        {
+            for (int j = 0; j < map.Size; j++)
+            {
+                height[i, j] = GetActualHeight(noise[i, j], influences[i, j]);
+                if (minecraft)
+                    height[i, j] = (float)(Math.Round(height[i, j], 1) * 10 * sizePerBlock);
+            }
+        }
+
+        map.SetInfluenceMap(influences);
+        map.SetHeightMap(height);
     }
 
     /// <summary>
@@ -472,32 +467,6 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    Cell BuildCell(Vector2Int posNoise, bool forMinecraft = false)
-    {
-        Cell result = new Cell();
-
-        //A lo mejor esto se puede optimizar :v
-        Dictionary<Biome, float> biomeInfluence = GetBiomeInfluence(posNoise);
-
-        result.biomeInfluence = biomeInfluence;
-
-        result.noise = GetCoordinatesNoise(posNoise, biomeInfluence);
-        if (isIsland)
-            result.noise = Mathf.Clamp01(result.noise - fallOffMap[posNoise.x, posNoise.y]);// calculo del nuevo noise con respecto al falloff
-
-        if (forMinecraft)
-        {
-            result.noise = (float)Math.Round(result.noise, 2);
-        }
-
-        result.Height = GetActualHeight(result.noise, biomeInfluence);
-
-        if (forMinecraft)
-            result.Height = (float)(Math.Round(result.Height, 1) * 10 * sizePerBlock);
-
-        return result;
-    }
-
     /// <summary>
     /// Transforma el nivel de ruido dado a coordenadas de altura 
     /// teniendo en cuenta los par�metros de los biomas influyentes
@@ -526,12 +495,23 @@ public class MapGenerator : MonoBehaviour
     /// <returns></returns>
     float GetCoordinatesNoise(Vector2Int posNoise, Dictionary<Biome, float> biomeInfluence)
     {
+        return GetCoordinatesNoise(posNoise.x, posNoise.y, biomeInfluence);
+    }
+
+    /// <summary>
+    /// (TODO) Se encargar� de devolver el ruido transformado correspondiente a todos los biomas cercanos
+    /// Ahora solo devuelve el valor del ruido correspondiente del bioma con mas influencia, sin transicion
+    /// </summary>
+    /// <param name="posNoise"></param>
+    /// <returns></returns>
+    float GetCoordinatesNoise(int x, int y, Dictionary<Biome, float> biomeInfluence)
+    {
         float currentNoise = 0;
         float maxNoisePossible = 0;
         foreach (var biome in biomeInfluence)
         {
             float curveResult = noiseTransition.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
-            currentNoise += biome.Key[posNoise.x, posNoise.y] * curveResult;
+            currentNoise += biome.Key[x, y] * curveResult;
             maxNoisePossible += curveResult;
         }
         return currentNoise / maxNoisePossible;
@@ -545,12 +525,23 @@ public class MapGenerator : MonoBehaviour
     /// <returns></returns>
     Dictionary<Biome, float> GetBiomeInfluence(Vector2Int posNoise)
     {
+        return GetBiomeInfluence(posNoise.x, posNoise.y);
+    }
+
+    /// <summary>
+    /// (TODO) Devolver� un map con los biomas actuales y su influencia en un punto concreto
+    /// De momento devuelve 1 si est� en el bioma y 0 si no, sin transici�n
+    /// </summary>
+    /// <param name="posNoise"> las coordenadas a procesar</param>
+    /// <returns></returns>
+    Dictionary<Biome, float> GetBiomeInfluence(int x, int y)
+    {
         Dictionary<Biome, float> result = new Dictionary<Biome, float>();
 
-        float realBiome0Infl = posNoise.x / (float)mapSize;
+        float realBiome0Infl = x / (float)mapSize;
         result.Add(biomes[0], realBiome0Infl * biomes[0].GetWeight());
 
-        float realBiome1Infl = 1f - (posNoise.x / (float)mapSize);
+        float realBiome1Infl = 1f - (x / (float)mapSize);
         result.Add(biomes[1], realBiome1Infl * biomes[1].GetWeight());
 
         float maxWeights = (result[biomes[0]] + result[biomes[1]]);

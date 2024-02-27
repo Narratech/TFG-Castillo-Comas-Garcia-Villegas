@@ -12,8 +12,11 @@ public static class MeshGenerator{
     /// <summary>
     /// Genera el suelo del Chunk
     /// </summary>
-    public static void GenerateTerrainMeshChunk(Cell[,] mapaCells, GameObject chunkObject, float sizePerBlock){
-        int size = mapaCells.GetLength(0);
+    public static void GenerateTerrainMeshChunk(MapInfo map, GameObject chunkObject, float sizePerBlock, Vector2Int horBounds, Vector2Int verBounds)
+    {
+        int size = horBounds.y - horBounds.x;
+
+        float[,] chunkHeightMap = map.HeightMap;
 
         float topLeftX = (size - 1) / -2f;
         float topLeftZ = (size - 1) / 2f;
@@ -23,14 +26,17 @@ public static class MeshGenerator{
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>(); //coordenadas de textura
 
-        for (int y = 0; y < size; y++){
-            for (int x = 0; x<size; x++){
-                Cell cell = mapaCells[x, y];
+        for (int relativeY = 0; relativeY < size; relativeY++){
+            int y = relativeY + verBounds.x;
+            for (int relativeX = 0; relativeX < size; relativeX++){
+                int x = relativeX + horBounds.x;
+
+                float height = chunkHeightMap[x, y];
                 //definir los vertices de la celda
-                Vector3 a = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
-                Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
-                Vector3 c = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
-                Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
+                Vector3 a = new Vector3(topLeftX + relativeX * sizePerBlock, height, topLeftZ - relativeY * sizePerBlock);
+                Vector3 b = new Vector3(topLeftX + (relativeX + 1) * sizePerBlock, height, topLeftZ - relativeY * sizePerBlock);
+                Vector3 c = new Vector3(topLeftX + relativeX * sizePerBlock, height, topLeftZ - (relativeY + 1) * sizePerBlock);
+                Vector3 d = new Vector3(topLeftX + (relativeX + 1) * sizePerBlock, height, topLeftZ - (relativeY + 1) * sizePerBlock);
 
                 Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                 Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -57,22 +63,21 @@ public static class MeshGenerator{
         meshFilter.mesh = BaseMesh;
 
         var renderer = chunkObject.GetComponent<MeshRenderer>();
-        DrawTextureChunk(mapaCells,renderer);
+        DrawTextureChunk(map, renderer, horBounds, verBounds);
     }
 
     /// <summary>
     /// Estableze el color de la cada pixel de la textura
     /// </summary>
-    public static void DrawTextureChunk(Cell[,] mapaCells, MeshRenderer renderer){
-        int size = mapaCells.GetLength(0);
+    public static void DrawTextureChunk(MapInfo map, MeshRenderer renderer, Vector2Int horBounds, Vector2Int verBounds)
+    {
+        int size = horBounds.y - horBounds.x;
 
         Texture2D texture = new Texture2D(size, size);
-        for (int y = 0; y < size; y++){
-            for (int x = 0; x < size; x++){
-                Cell cell = mapaCells[x, y];
-                if (cell != null){
-                    texture.SetPixel(x, y, cell.GetColor());
-                }
+        for (int y = verBounds.x; y < verBounds.y; y++){
+            for (int x = horBounds.x; x < horBounds.y; x++){
+                Color result = map.GetColorAt(x, y);
+                texture.SetPixel(x - size, y - size, result);
             }
         }
         texture.filterMode = FilterMode.Point;
@@ -83,34 +88,44 @@ public static class MeshGenerator{
     /// <summary>
     /// Genera y renderiza los bordes entre las celdas del terreno,(SOLO AQUELLAS Q VAN A SER VISIBLES)
     /// </summary>
-    public static void DrawEdgesChunk(Cell[,] mapaCells, GameObject edges,float sizePerBlock){
-        int size = mapaCells.GetLength(0);
+    public static void DrawEdgesChunk(MapInfo map, GameObject edges,float sizePerBlock, Vector2Int horBounds, Vector2Int verBounds)
+    {
+        int size = horBounds.y - horBounds.x;
 
-        float topLeftX = (size - 1) / -2f;
-        float topLeftZ = (size - 1) / 2f;
+        float[,] heightMap = map.HeightMap;
+        float[,] noiseMap = map.NoiseMap;
+
+        float topLeftX = (size - 1f) / -2f;
+        float topLeftZ = (size - 1f) / 2f;
 
         Mesh mesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>(); //coordenadas de textura
-        for (int y = 0;  y < size; y++){
-            for (int x = 0; x < size; x++){
-                Cell cell = mapaCells[x, y];
-                if (cell != null)
+        for (int y = 0; y < size; y++)
+        {
+            int globalY = y + verBounds.x;
+            for (int x = 0; x < size; x++)
+            {
+                int globalX = x + horBounds.x;
+                float height = heightMap[globalX, globalY];
+                float noise = noiseMap[globalX, globalY];
+                if (height != null)
                 {
-                    if (x > 0 && y!=0 && y < size - 1 && x < size -1)
+                    if (globalX > 0 && globalY >= 0 && globalY < map.Size && globalX < map.Size)
                     {
-                        Cell left = mapaCells[x - 1, y];//izquierda
+                        float leftHeight = heightMap[globalX - 1, globalY];//izquierda
+                        float leftNoise = noiseMap[globalX - 1, globalY];//izquierda
 
-                        if (left != null && left.noise < cell.noise)
+                        if (leftNoise < noise)
                         {
-                            float leftHeight = cell.Height - left.Height;
+                            float diffHeight = height - leftHeight;
 
                             //definir los vertices de la celda
-                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, cell.Height - leftHeight, topLeftZ - y * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, cell.Height - leftHeight, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -128,16 +143,19 @@ public static class MeshGenerator{
 
                         }
                     }
-                    if (x < size - 1 && y !=0 && y < size - 1 && x > 0)
+                    if (globalX < map.Size - 1 && globalY >= 0 && globalY < map.Size && globalX >= 0)
                     {
-                        Cell right = mapaCells[x + 1, y];//derecha
-                        if (right != null && right.noise < cell.noise)
+                        float rightHeight = heightMap[globalX + 1, globalY];//derecha
+                        float rightNoise = noiseMap[globalX + 1, globalY];//derecha
+
+                        if (rightNoise < noise)
                         {
-                            float rightHeight = cell.Height - right.Height;
-                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - rightHeight, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - rightHeight, topLeftZ - y * sizePerBlock);
+                            float diffHeight = height - rightHeight;
+
+                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -155,16 +173,19 @@ public static class MeshGenerator{
 
                         }
                     }
-                    if (y > 0 && x !=0 && x < size - 1 && y < size -1)
+                    if (globalY > 0 && globalX >= 0 && globalX < map.Size && globalY < map.Size)
                     {
-                        Cell down = mapaCells[x, y - 1];//abajo
-                        if (down != null && down.noise < cell.noise)
+                        float downHeight = heightMap[globalX, globalY - 1];//abajo
+                        float downNoise = noiseMap[globalX, globalY - 1];//abajo
+
+                        if (downNoise < noise)
                         {
-                            float downHeight = cell.Height - down.Height;
-                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - y * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, cell.Height - downHeight, topLeftZ - y * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - downHeight, topLeftZ - y * sizePerBlock);
+                            float diffHeight = height - downHeight;
+
+                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -182,16 +203,19 @@ public static class MeshGenerator{
 
                         }
                     }
-                    if (y < size - 1 && x != 0 && x < size - 1 && y > 0)
+                    if (globalY < map.Size - 1 && globalX >= 0 && globalX < map.Size && globalY >= 0)
                     {
-                        Cell up = mapaCells[x, y + 1];//arriba
-                        if (up != null && up.noise < cell.noise)
+                        float upHeight = heightMap[globalX, globalY + 1];//arriba
+                        float upNoise = noiseMap[globalX, globalY + 1];//arriba
+
+                        if (upNoise < noise)
                         {
-                            float upHeight = cell.Height - up.Height;
-                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, cell.Height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, cell.Height - upHeight, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, cell.Height - upHeight, topLeftZ - (y + 1) * sizePerBlock);
+                            float diffHeight = height - upHeight;
+
+                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
+                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
 
                             Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
                             Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
@@ -220,7 +244,7 @@ public static class MeshGenerator{
         meshFilter.mesh = mesh;
 
         var render = edges.GetComponent<MeshRenderer>();
-        DrawTextureChunk(mapaCells, render);
+        DrawTextureChunk(map, render, horBounds, verBounds);
     }
 
 
@@ -232,9 +256,10 @@ public static class MeshGenerator{
     }
 
 
-    public static void GenerateTerrainMeshChunk_LowPoly(Cell[,] mapaCells, GameObject chunkObject, int levelOfDetails)
+    public static void GenerateTerrainMeshChunk_LowPoly(MapInfo map, GameObject chunkObject, int levelOfDetails, Vector2Int horBounds, Vector2Int verBounds)
     {
-        int size = mapaCells.GetLength(0);
+        float[,] height = map.HeightMap;
+        int size = horBounds.y - horBounds.x;
         float topLeftX = (size - 1) / -2f;
         float topLeftZ = (size - 1) / 2f;
 
@@ -254,14 +279,14 @@ public static class MeshGenerator{
         Debug.Log("currentChunkSize * currentChunkSize: " + currentChunkSize * currentChunkSize);
         Debug.Log("size: " + size);
         Debug.Log("meshSimplificationIncrement: " + meshSimplificationIncrement);
-        for (int y = 0; y < size; y += meshSimplificationIncrement)
+        for (int y = verBounds.x; y < verBounds.y; y += meshSimplificationIncrement)
         {
-            for (int x = 0; x < size; x += meshSimplificationIncrement)
+            for (int x = horBounds.x; x < horBounds.y; x += meshSimplificationIncrement)
             {
-                vertices[vertexIndex] = new Vector3(topLeftX + x, mapaCells[x, y].Height, topLeftZ - y);
+                vertices[vertexIndex] = new Vector3(topLeftX + (x - horBounds.x), height[x, y], topLeftZ - (y - verBounds.x));
                 uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
 
-                if (x < size - meshSimplificationIncrement && y < size - meshSimplificationIncrement)
+                if (x < horBounds.y - meshSimplificationIncrement && y < verBounds.y - meshSimplificationIncrement)
                 {
                     AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + currentChunkSize + 1, vertexIndex + currentChunkSize);
                     AddTriangle(triangles, ref triangleIndex, vertexIndex + currentChunkSize + 1, vertexIndex, vertexIndex + 1);
@@ -280,6 +305,6 @@ public static class MeshGenerator{
         meshFilter.mesh = BaseMesh;
 
         var renderer = chunkObject.GetComponent<MeshRenderer>();
-        DrawTextureChunk(mapaCells, renderer);
+        DrawTextureChunk(map, renderer, horBounds, verBounds);
     }
 }
