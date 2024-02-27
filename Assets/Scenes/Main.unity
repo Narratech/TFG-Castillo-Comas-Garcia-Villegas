@@ -938,9 +938,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecdbc0b46e2186d41aa52a422a8f1014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  riversMax: 3
+  riversMax: 15
   capaGeneracion: 5
-  riverLength: 50
+  riverLength: 150
   bold: 1
   converganceOn: 1
 --- !u!21 &1893304476
