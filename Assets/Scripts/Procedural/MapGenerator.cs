@@ -21,6 +21,10 @@ public class MapGenerator : MonoBehaviour
         /// </summary>
         ColorMap,
         /// <summary>
+        /// Generacion de un Mapa de Con los Biomas establecidos(Solo visual 2D)
+        /// </summary>
+        BiomeMap,
+        /// <summary>
         /// Generacion de un Mapa de Ruido con  los bordes del terreno suavizados(Solo visual 2D)
         /// </summary>
         FallOff,
@@ -72,6 +76,7 @@ public class MapGenerator : MonoBehaviour
     /// La semilla aleatoria utilizada para generar el ruido
     /// </summary>
     public int seed;
+
     /// <summary>
     ///  Desplazamiento del ruido generado
     /// </summary>
@@ -191,16 +196,24 @@ public class MapGenerator : MonoBehaviour
 
                 map = new MapInfo(mapSize);
             }
-
+            
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
             {
                 case DrawMode.NoiseMap:
+                    BuildMap(false);
                     display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(biomeMap));
                     display.ActiveMap(true);
                     break;
                 case DrawMode.ColorMap:
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, biomeMap));
+                    BuildMap(false);
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, map.NoiseMap));
+                    display.ActiveMap(true);
+                    Debug.Log("Color Map 2D generado");
+                    break;
+                case DrawMode.BiomeMap:
+
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize, biomeMap));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
                     break;
@@ -209,31 +222,31 @@ public class MapGenerator : MonoBehaviour
                     display.ActiveMap(true);
                     break;
                 case DrawMode.CubicMap:
-                    BuildMap();
+                    BuildMap(true);
                     generateChunks_Minecraft();
                     display.ActiveMap(false);
                     break;
                 case DrawMode.MapWithObjects:
-                    BuildMap();
+                    BuildMap(true);
                     generateChunks_Minecraft();
                     //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                     display.ActiveMap(false);
                     break;
                 case DrawMode.NoObjectsWithDisplay:
-                    BuildMap();
+                    BuildMap(true);
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                     generateChunks_Minecraft();
                     display.ActiveMap(true);
                     break;
                 case DrawMode.All:
-                    BuildMap();
+                    BuildMap(true);
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
                     generateChunks_Minecraft();
                     //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                     display.ActiveMap(true);
                     break;
                 case DrawMode.Cartoon:
-                    BuildMap();
+                    BuildMap(false);
                     generateChunks_LowPoly();
                     display.ActiveMap(false);
                     break;
@@ -267,8 +280,6 @@ public class MapGenerator : MonoBehaviour
         calculateChunkSize();
     }
 
-
-
     private void GenerateBiomeMap()
     {
         if (drawMode == DrawMode.Cartoon)
@@ -291,6 +302,40 @@ public class MapGenerator : MonoBehaviour
     /// <param name="fallOffMap"></param>
     /// <returns></returns>
     Color[] generateColorMap()
+    {
+
+        Color[] colorMap = new Color[mapSize * mapSize];
+        var noiseMap = map.NoiseMap;
+        //Nos guardamos y vemos toda la informacion del mapa generado
+        for (int y = 0; y < mapSize; y++)
+        {
+            for (int x = 0; x < mapSize; x++)
+            {
+
+                if (isIsland) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
+                float currentHeight = noiseMap[x, y];
+
+                foreach (var currentRegion in regions)
+                {
+                    //recorremos y miramos que tipo de terreno se ha generado
+                    if (currentHeight <= currentRegion.height)
+                    {
+                        colorMap[y * mapSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
+                        break;
+                    }
+                }
+            }
+        }
+        return colorMap;
+    }
+
+
+    /// <summary>
+    /// Se usa para generar el mapa 2D a color de biomas
+    /// </summary>
+    /// <param name="fallOffMap"></param>
+    /// <returns></returns>
+    Color[] generateBiomeColorMap()
     {
 
         Color[] colorMap = new Color[mapSize * mapSize];
@@ -366,7 +411,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < map.Size; y++)
             {
                 influences[x, y] = GetBiomeInfluence(x, y);
-                noise[x, y] = GetCoordinatesNoise(x, y, influences[x, y]);
+                noise[x, y] =  GetCoordinatesNoise(x, y, influences[x, y]);
             }
         }
 
@@ -394,8 +439,10 @@ public class MapGenerator : MonoBehaviour
             for (int j = 0; j < map.Size; j++)
             {
                 height[i, j] = GetActualHeight(noise[i, j], influences[i, j]);
+
                 if (minecraft)
                     height[i, j] = (float)(Math.Round(height[i, j], 1) * 10 * sizePerBlock);
+                
             }
         }
 

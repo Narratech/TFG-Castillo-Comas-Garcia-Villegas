@@ -112,7 +112,7 @@ public class RiverGenerator : MonoBehaviour
 
     bool CheckRiverGrowth(Vector2 currentPos, Vector2 candidatePosition)
     {
-        return mapGenerator.Map.NoiseMap[(int)currentPos.x, (int)currentPos.y] >= mapGenerator.Map.NoiseMap[(int)candidatePosition.x, (int)candidatePosition.y];
+        return mapGenerator.Map.NoiseMap[(int)currentPos.x, (int)currentPos.y] >= mapGenerator.Map.NoiseMap[(int)candidatePosition.x, (int)candidatePosition.y] - 0.1f;
     }
 
     bool casillaValida(Vector2 pos)
