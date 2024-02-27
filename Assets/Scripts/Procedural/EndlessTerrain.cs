@@ -57,14 +57,21 @@ public class EndlessTerrain : MonoBehaviour
                     else
                     {
                         //llamar a mapgenerator para k genere ese chunk
-                        map3D.Add(viewedChunkCoord, new Chunk(mapGenerator, new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y), mapGenerator.sizePerBlock, mapGenerator.chunkSize, mapGenerator.gameObjectMap3D.transform, false, 0));
+                        map3D.Add(viewedChunkCoord, 
+                            new Chunk(
+                                mapGenerator, 
+                                new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y), 
+                                mapGenerator.sizePerBlock, 
+                                mapGenerator.chunkSize, 
+                                mapGenerator.gameObjectMap3D.transform, 
+                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false,
+                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? mapGenerator.levelOfDetail : 0));
 
                     }
                 }
                 
             }
         }
-        Debug.Log("Chunk Player Position: " + currentChunkCoordsY + " " + currentChunkCoordsX);
     }
 
     private void Update()

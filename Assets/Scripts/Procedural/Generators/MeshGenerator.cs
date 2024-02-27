@@ -31,9 +31,6 @@ public static class MeshGenerator
             {
                 int x = relativeX + horBounds.x;
 
-                Debug.Log("HeightMap size: " + chunkHeightMap.GetLength(0));
-                Debug.Log(horBounds.x + ", " + horBounds.y);
-                Debug.Log(x + ", " + y);
                 float height = chunkHeightMap[x, y];
                 //definir los vertices de la celda
                 Vector3 a = new Vector3(topLeftX + relativeX * sizePerBlock, height, topLeftZ - relativeY * sizePerBlock);

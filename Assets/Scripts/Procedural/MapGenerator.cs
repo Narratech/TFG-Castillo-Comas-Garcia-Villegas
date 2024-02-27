@@ -282,7 +282,7 @@ public class MapGenerator : MonoBehaviour
 
             map = new MapInfo(mapSize + 1);
 
-            BuildMap(true);
+            BuildMap();
         }
         else
         {
