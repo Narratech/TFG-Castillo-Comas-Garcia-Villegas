@@ -1,13 +1,11 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Mesh;
 
 /// <summary>
 /// Generador de Mallas
 /// </summary>
-public static class MeshGenerator{
+public static class MeshGenerator
+{
 
     /// <summary>
     /// Genera el suelo del Chunk
@@ -20,17 +18,22 @@ public static class MeshGenerator{
 
         float topLeftX = (size - 1) / -2f;
         float topLeftZ = (size - 1) / 2f;
-     
+
         Mesh BaseMesh = new Mesh();
         List<Vector3> vertices = new List<Vector3>();//Almacenar los vertices y triangulos de la malla
         List<int> triangles = new List<int>();
         List<Vector2> uvs = new List<Vector2>(); //coordenadas de textura
 
-        for (int relativeY = 0; relativeY < size; relativeY++){
+        for (int relativeY = 0; relativeY < size; relativeY++)
+        {
             int y = relativeY + verBounds.x;
-            for (int relativeX = 0; relativeX < size; relativeX++){
+            for (int relativeX = 0; relativeX < size; relativeX++)
+            {
                 int x = relativeX + horBounds.x;
 
+                Debug.Log("HeightMap size: " + chunkHeightMap.GetLength(0));
+                Debug.Log(horBounds.x + ", " + horBounds.y);
+                Debug.Log(x + ", " + y);
                 float height = chunkHeightMap[x, y];
                 //definir los vertices de la celda
                 Vector3 a = new Vector3(topLeftX + relativeX * sizePerBlock, height, topLeftZ - relativeY * sizePerBlock);
@@ -45,7 +48,8 @@ public static class MeshGenerator{
 
                 Vector3[] v = new Vector3[] { a, b, c, b, d, c };
                 Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
-                for (int k = 0; k < 6; k++){ //crear los triangulos                 
+                for (int k = 0; k < 6; k++)
+                { //crear los triangulos                 
                     vertices.Add(v[k]);
                     triangles.Add(triangles.Count);
                     uvs.Add(uv[k]);
@@ -74,8 +78,10 @@ public static class MeshGenerator{
         int size = horBounds.y - horBounds.x;
 
         Texture2D texture = new Texture2D(size, size);
-        for (int y = verBounds.x; y < verBounds.y; y++){
-            for (int x = horBounds.x; x < horBounds.y; x++){
+        for (int y = verBounds.x; y < verBounds.y; y++)
+        {
+            for (int x = horBounds.x; x < horBounds.y; x++)
+            {
                 Color result = map.GetColorAt(x, y);
                 texture.SetPixel(x - size, y - size, result);
             }
@@ -88,7 +94,7 @@ public static class MeshGenerator{
     /// <summary>
     /// Genera y renderiza los bordes entre las celdas del terreno,(SOLO AQUELLAS Q VAN A SER VISIBLES)
     /// </summary>
-    public static void DrawEdgesChunk(MapInfo map, GameObject edges,float sizePerBlock, Vector2Int horBounds, Vector2Int verBounds)
+    public static void DrawEdgesChunk(MapInfo map, GameObject edges, float sizePerBlock, Vector2Int horBounds, Vector2Int verBounds)
     {
         int size = horBounds.y - horBounds.x;
 
@@ -248,7 +254,8 @@ public static class MeshGenerator{
     }
 
 
-    public static void AddTriangle(List<int> triangles, ref int triangleIndex,int a, int b, int c){
+    public static void AddTriangle(List<int> triangles, ref int triangleIndex, int a, int b, int c)
+    {
         triangles[triangleIndex] = a;
         triangles[triangleIndex + 1] = b;
         triangles[triangleIndex + 2] = c;

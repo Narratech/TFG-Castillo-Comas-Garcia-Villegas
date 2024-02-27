@@ -145,9 +145,11 @@ public class MapGenerator : MonoBehaviour
     private void Awake()
     {
         clean = true;
-        if (autoRegenerate) GenerateMap();
-        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled) endlessActive = false;
-        else map3D = new Dictionary<Vector2, Chunk>(); endlessActive = true; mapSize = chunkSize;
+        if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
+            endlessActive = false;
+        else
+            map3D = new Dictionary<Vector2, Chunk>();
+        endlessActive = true;
     }
 
     private void OnValidate()
@@ -196,7 +198,7 @@ public class MapGenerator : MonoBehaviour
 
                 map = new MapInfo(mapSize);
             }
-            
+
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
             {
@@ -264,17 +266,32 @@ public class MapGenerator : MonoBehaviour
             fallOffMap = Noise.GenerateFallOffMap(mapSize);
         }
 
-        mapSize = /*(long)int.MaxValue - 7*/1000;
+
+        GenerateBiomeMap();
+
+        foreach (Biome bio in biomes)
+        {
+            if (bio.GetMaximumHeight() > maxHeightPossible)
+                maxHeightPossible = bio.GetMaximumHeight();
+        }
 
         if (drawMode == DrawMode.Cartoon)
         {
             foreach (var biome in biomes)
                 biome.GenerateNoiseMap(mapSize + 1, seed, offset);
+
+            map = new MapInfo(mapSize + 1);
+
+            BuildMap(true);
         }
         else
         {
             foreach (var biome in biomes)
                 biome.GenerateNoiseMap(mapSize, seed, offset);
+
+            map = new MapInfo(mapSize);
+
+            BuildMap(true);
         }
 
         calculateChunkSize();
@@ -404,6 +421,13 @@ public class MapGenerator : MonoBehaviour
 
     void BuildMap(bool minecraft = false)
     {
+        if (minecraft)
+            map = new MapInfo(mapSize);
+        else
+            map = new MapInfo(mapSize + 1);
+
+
+
         float[,] noise = new float[map.Size, map.Size];
         Dictionary<Biome, float>[,] influences = new Dictionary<Biome, float>[map.Size, map.Size];
         for (int x = 0; x < map.Size; x++)
@@ -411,7 +435,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < map.Size; y++)
             {
                 influences[x, y] = GetBiomeInfluence(x, y);
-                noise[x, y] =  GetCoordinatesNoise(x, y, influences[x, y]);
+                noise[x, y] = GetCoordinatesNoise(x, y, influences[x, y]);
             }
         }
 
@@ -442,7 +466,7 @@ public class MapGenerator : MonoBehaviour
 
                 if (minecraft)
                     height[i, j] = (float)(Math.Round(height[i, j], 1) * 10 * sizePerBlock);
-                
+
             }
         }
 
