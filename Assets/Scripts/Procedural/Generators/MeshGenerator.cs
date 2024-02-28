@@ -107,132 +107,125 @@ public static class MeshGenerator
         List<Vector2> uvs = new List<Vector2>(); //coordenadas de textura
         for (int y = 0; y < size; y++)
         {
-            int globalY = y + verBounds.x;
+            int globalY = y + verBounds.x; 
             for (int x = 0; x < size; x++)
             {
                 int globalX = x + horBounds.x;
                 float height = heightMap[globalX, globalY];
-                float noise = noiseMap[globalX, globalY];
-                if (height != null)
+
+                if (globalX > 0 && globalY >= 0 && globalY < map.Size && globalX < map.Size)
                 {
-                    if (globalX > 0 && globalY >= 0 && globalY < map.Size && globalX < map.Size)
+                    float leftHeight = heightMap[globalX - 1, globalY];//izquierda
+
+                    if (leftHeight < height)
                     {
-                        float leftHeight = heightMap[globalX - 1, globalY];//izquierda
-                        float leftNoise = noiseMap[globalX - 1, globalY];//izquierda
+                        float diffHeight = height - leftHeight;
 
-                        if (leftNoise < noise)
+                        //definir los vertices de la celda
+                        Vector3 a = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                        Vector3 b = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector3 c = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
+                        Vector3 d = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
+
+                        Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
+                        Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
+                        Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
+                        Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
+
+                        Vector3[] v = new Vector3[] { a, b, c, b, d, c };
+                        Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
+                        for (int k = 0; k < 6; k++)
                         {
-                            float diffHeight = height - leftHeight;
-
-                            //definir los vertices de la celda
-                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - y * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
-
-                            Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
-                            Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
-                            Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
-                            Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
-
-                            Vector3[] v = new Vector3[] { a, b, c, b, d, c };
-                            Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
-                            for (int k = 0; k < 6; k++)
-                            {
-                                vertices.Add(v[k]);
-                                triangles.Add(triangles.Count);
-                                uvs.Add(uv[k]);
-                            }
-
+                            vertices.Add(v[k]);
+                            triangles.Add(triangles.Count);
+                            uvs.Add(uv[k]);
                         }
+
                     }
-                    if (globalX < map.Size - 1 && globalY >= 0 && globalY < map.Size && globalX >= 0)
+                }
+                if (globalX < map.Size - 1 && globalY >= 0 && globalY < map.Size && globalX >= 0)
+                {
+                    float rightHeight = heightMap[globalX + 1, globalY];//derecha
+
+                    if (rightHeight < height)
                     {
-                        float rightHeight = heightMap[globalX + 1, globalY];//derecha
-                        float rightNoise = noiseMap[globalX + 1, globalY];//derecha
+                        float diffHeight = height - rightHeight;
 
-                        if (rightNoise < noise)
+                        Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                        Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
+
+                        Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
+                        Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
+                        Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
+                        Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
+
+                        Vector3[] v = new Vector3[] { a, b, c, b, d, c };
+                        Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
+                        for (int k = 0; k < 6; k++)
                         {
-                            float diffHeight = height - rightHeight;
-
-                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - y * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
-
-                            Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
-                            Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
-                            Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
-                            Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
-
-                            Vector3[] v = new Vector3[] { a, b, c, b, d, c };
-                            Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
-                            for (int k = 0; k < 6; k++)
-                            {
-                                vertices.Add(v[k]);
-                                triangles.Add(triangles.Count);
-                                uvs.Add(uv[k]);
-                            }
-
+                            vertices.Add(v[k]);
+                            triangles.Add(triangles.Count);
+                            uvs.Add(uv[k]);
                         }
+
                     }
-                    if (globalY > 0 && globalX >= 0 && globalX < map.Size && globalY < map.Size)
+                }
+                if (globalY > 0 && globalX >= 0 && globalX < map.Size && globalY < map.Size)
+                {
+                    float downHeight = heightMap[globalX, globalY - 1];//abajo
+
+                    if (downHeight < height)
                     {
-                        float downHeight = heightMap[globalX, globalY - 1];//abajo
-                        float downNoise = noiseMap[globalX, globalY - 1];//abajo
+                        float diffHeight = height - downHeight;
 
-                        if (downNoise < noise)
-                        {
-                            float diffHeight = height - downHeight;
+                        Vector3 a = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                        Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - y * sizePerBlock);
+                        Vector3 c = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
+                        Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
 
-                            Vector3 a = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - y * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - y * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - y * sizePerBlock);
+                        Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
+                        Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
+                        Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
+                        Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
 
-                            Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
-                            Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
-                            Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
-                            Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
-
-                            Vector3[] v = new Vector3[] { a, b, c, b, d, c };
-                            Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
-                            for (int k = 5; k >= 0; k--)
-                            {// INSERTARLOS AL REVES PQ SI NO SE INVIERTEN LAS NORMALES
-                                vertices.Add(v[k]);
-                                triangles.Add(triangles.Count);
-                                uvs.Add(uv[k]);
-                            }
-
+                        Vector3[] v = new Vector3[] { a, b, c, b, d, c };
+                        Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
+                        for (int k = 5; k >= 0; k--)
+                        {// INSERTARLOS AL REVES PQ SI NO SE INVIERTEN LAS NORMALES
+                            vertices.Add(v[k]);
+                            triangles.Add(triangles.Count);
+                            uvs.Add(uv[k]);
                         }
+
                     }
-                    if (globalY < map.Size - 1 && globalX >= 0 && globalX < map.Size && globalY >= 0)
+                }
+                if (globalY < map.Size - 1 && globalX >= 0 && globalX < map.Size && globalY >= 0)
+                {
+                    float upHeight = heightMap[globalX, globalY + 1];//arriba
+
+                    if (upHeight < height)
                     {
-                        float upHeight = heightMap[globalX, globalY + 1];//arriba
-                        float upNoise = noiseMap[globalX, globalY + 1];//arriba
+                        float diffHeight = height - upHeight;
 
-                        if (upNoise < noise)
-                        {
-                            float diffHeight = height - upHeight;
+                        Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector3 b = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector3 d = new Vector3(topLeftX + x * sizePerBlock,height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
 
-                            Vector3 a = new Vector3(topLeftX + (x + 1) * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 b = new Vector3(topLeftX + x * sizePerBlock, height, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 c = new Vector3(topLeftX + (x + 1) * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
-                            Vector3 d = new Vector3(topLeftX + x * sizePerBlock, height - diffHeight, topLeftZ - (y + 1) * sizePerBlock);
+                        Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
+                        Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
+                        Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
+                        Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
 
-                            Vector2 uvA = new Vector2(x / (float)size, y / (float)size); //definir coordenadas de textura correspondientes a cada v
-                            Vector2 uvB = new Vector2((x + 1) / (float)size, y / (float)size);
-                            Vector2 uvC = new Vector2(x / (float)size, (y + 1) / (float)size);
-                            Vector2 uvD = new Vector2((x + 1) / (float)size, (y + 1) / (float)size);
-
-                            Vector3[] v = new Vector3[] { a, b, c, b, d, c };
-                            Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
-                            for (int k = 5; k >= 0; k--)
-                            {// INSERTARLOS AL REVES PQ SI NO SE INVIERTEN LAS NORMALES
-                                vertices.Add(v[k]);
-                                triangles.Add(triangles.Count);
-                                uvs.Add(uv[k]);
-                            }
+                        Vector3[] v = new Vector3[] { a, b, c, b, d, c };
+                        Vector2[] uv = new Vector2[] { uvA, uvB, uvC, uvB, uvD, uvC };
+                        for (int k = 5; k >= 0; k--)
+                        {// INSERTARLOS AL REVES PQ SI NO SE INVIERTEN LAS NORMALES
+                            vertices.Add(v[k]);
+                            triangles.Add(triangles.Count);
+                            uvs.Add(uv[k]);
                         }
                     }
                 }

@@ -264,7 +264,9 @@ public class Chunk
 
 
         MeshGenerator.GenerateTerrainMeshChunk(generator.Map, floor, sizePerBlock, horBounds, verBounds);
-        MeshGenerator.DrawEdgesChunk(generator.Map, edges, sizePerBlock, horBounds, verBounds);
+        var copyHorBounds = horBounds;//copyHorBounds.x++; copyHorBounds.y--;
+        var copyVerBounds = verBounds;//copyVerBounds.x++; copyVerBounds.y--;
+        MeshGenerator.DrawEdgesChunk(generator.Map, edges, sizePerBlock, copyHorBounds, copyVerBounds);
     }
 
     /// <summary>

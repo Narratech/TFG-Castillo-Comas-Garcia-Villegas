@@ -19,8 +19,8 @@ MonoBehaviour:
     lacunarity: 5.99
     offset: {x: 150, y: 100}
   weight: 1
-  maxHeight: 200
-  minHeight: 50
+  maxHeight: 20
+  minHeight: 5
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
