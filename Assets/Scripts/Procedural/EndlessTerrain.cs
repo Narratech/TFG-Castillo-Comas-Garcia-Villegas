@@ -42,7 +42,7 @@ public class EndlessTerrain : MonoBehaviour
             for (int xOffset = -chunksVisibleViewDst; xOffset <= chunksVisibleViewDst; xOffset++)
             {
                 Vector2 viewedChunkCoord = new Vector2((int)(currentChunkCoordsX + xOffset), (int)(currentChunkCoordsY + yOffset));
-                if(viewedChunkCoord.x >=0 && viewedChunkCoord.y >= 0)
+                if(viewedChunkCoord.x >=0 && viewedChunkCoord.y >= 0 && viewedChunkCoord.x< mapGenerator.mapSize/chunkSize && viewedChunkCoord.y < mapGenerator.mapSize / chunkSize)
                 {
 
                     if (map3D.ContainsKey(viewedChunkCoord))
