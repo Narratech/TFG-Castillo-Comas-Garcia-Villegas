@@ -3,10 +3,7 @@ Shader "Custom/HLSL_ColorHeight"
 	Properties
 	{
 		//testTexture("Albedo (RGB)", 2D) = "white" {}
-		testScale("Scale", Float) = 1
-
-
-		//testTexture2("Albedo (RGB)", 2D) = "white" {}
+		//testScale("Scale", Float) = 1
 
 		//_Color ("Color", Color) = (1,1,1,1)
 		//_Glossiness ("Smoothness", Range(0,1)) = 0.5
@@ -96,7 +93,7 @@ Shader "Custom/HLSL_ColorHeight"
 			float baseTexturesScales[maxLayerCount];
 
 
-			UNITY_DECLARE_TEX2DARRAY(baseTextures);
+			//UNITY_DECLARE_TEX2DARRAY(baseTextures);
 
 
 			const static float epsilon = 1E-4;

@@ -9,25 +9,7 @@ public class TextureData : UpdatableData
 	const int textureSize = 512;
 	const TextureFormat textureFormat = TextureFormat.RGB565;
 
-
-
-
-	//public Color[] baseColours;
-	//[Range(0, 1)]
-	//public float[] baseStartHeights;
-
-	//[Range(0, 1)]
-	//public float[] baseBlends;
-
 	public Layer[] layers;
-
-
-
-	[Range(0, 1)]
-	public float middlePosition;
-	[Range(0, 1)]
-	public float blendEffect;
-
 
 	float savedMinHeight;
 	float savedMaxHeight;
@@ -47,21 +29,11 @@ public class TextureData : UpdatableData
 		Texture2DArray texturesArray = GenerateTextureArray(layers.Select(x => x.texture).ToArray());
 		material.SetTexture("baseTextures", texturesArray);
 
-		//material.SetTexture("texture_0", layers[0].texture);
-		//material.SetTexture("texture_1", layers[1].texture);
-		applyTexturesToMaterial(material);
-
-		material.SetFloat("middlePosition", middlePosition);
-		material.SetFloat("blendEffect", blendEffect);
-
+		// Aplica el array de texturas al shader
+		for (int i = 0; i < layers.Length && i < 8; i++)
+			material.SetTexture("texture_" + i, layers[i].texture);
 
 		UpdateMeshHeights(material, savedMinHeight, savedMaxHeight);
-	}
-
-	void applyTexturesToMaterial(Material material)
-    {
-        for (int i = 0; i < layers.Length && i < 8; i++)
-			material.SetTexture("texture_" + i, layers[i].texture);
 	}
 
 
