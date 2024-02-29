@@ -2,11 +2,11 @@ Shader "Custom/HLSL_ColorHeight"
 {
 	Properties
 	{
-		testTexture("Albedo (RGB)", 2D) = "white" {}
+		//testTexture("Albedo (RGB)", 2D) = "white" {}
 		testScale("Scale", Float) = 1
 
 
-		testTexture2("Albedo (RGB)", 2D) = "white" {}
+		//testTexture2("Albedo (RGB)", 2D) = "white" {}
 
 		//_Color ("Color", Color) = (1,1,1,1)
 		//_Glossiness ("Smoothness", Range(0,1)) = 0.5
@@ -63,8 +63,14 @@ Shader "Custom/HLSL_ColorHeight"
 
 
 
-			sampler2D testTexture;
-			sampler2D testTexture2;
+			sampler2D texture_0;
+			sampler2D texture_1;
+			sampler2D texture_2;
+			sampler2D texture_3;
+			sampler2D texture_4;
+			sampler2D texture_5;
+			sampler2D texture_6;
+			sampler2D texture_7;
 			float testScale;
 
 
@@ -154,26 +160,36 @@ Shader "Custom/HLSL_ColorHeight"
 				// Triplanar mapping
 				float3 scaledWorldPos = worldPos / scale;
 
-				//float3 xProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.y, scaledWorldPos.z, textureIndex)) * blendAxes.x;
-				//float3 yProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.z, textureIndex)) * blendAxes.y;
-				//float3 zProjection = UNITY_SAMPLE_TEX2DARRAY(baseTextures, float3(scaledWorldPos.x, scaledWorldPos.y, textureIndex)) * blendAxes.z;
-
-
-				//float3 xProjection = tex2D(testTexture, scaledWorldPos.yz) * blendAxes.x;
-				//float3 yProjection = tex2D(testTexture, scaledWorldPos.xz) * blendAxes.y;
-				//float3 zProjection = tex2D(testTexture, scaledWorldPos.xy) * blendAxes.z;
-				//float3 projection = xProjection + yProjection + zProjection;
-
-
-				if (textureIndex %2 == 0) {
-					return calculateProjections(testTexture, scaledWorldPos, blendAxes);
+				sampler2D useThisTexture;
+				switch (textureIndex) {
+				case 0:
+					return calculateProjections(texture_0, scaledWorldPos, blendAxes);
+					break;
+				case 1:
+					return calculateProjections(texture_1, scaledWorldPos, blendAxes);
+					break;
+				case 2:
+					return calculateProjections(texture_2, scaledWorldPos, blendAxes);
+					break;
+				case 3:
+					return calculateProjections(texture_3, scaledWorldPos, blendAxes);
+					break;
+				case 4:
+					return calculateProjections(texture_4, scaledWorldPos, blendAxes);
+					break;
+				case 5:
+					return calculateProjections(texture_5, scaledWorldPos, blendAxes);
+					break;
+				case 6:
+					return calculateProjections(texture_6, scaledWorldPos, blendAxes);
+					break;
+				case 7:
+					return calculateProjections(texture_7, scaledWorldPos, blendAxes);
+					break;
+				default:
+					return float3(0, 0, 0);
+					break;
 				}
-				else {
-					return calculateProjections(testTexture2, scaledWorldPos, blendAxes);
-				}
-
-				//return projection;
-				//finalColor = fixed4(projection.x, projection.y, projection.z, 1);
 			}
 
 

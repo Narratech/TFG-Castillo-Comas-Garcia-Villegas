@@ -47,8 +47,9 @@ public class TextureData : UpdatableData
 		Texture2DArray texturesArray = GenerateTextureArray(layers.Select(x => x.texture).ToArray());
 		material.SetTexture("baseTextures", texturesArray);
 
-		material.SetTexture("testTexture", layers[0].texture);
-
+		//material.SetTexture("texture_0", layers[0].texture);
+		//material.SetTexture("texture_1", layers[1].texture);
+		applyTexturesToMaterial(material);
 
 		material.SetFloat("middlePosition", middlePosition);
 		material.SetFloat("blendEffect", blendEffect);
@@ -56,6 +57,13 @@ public class TextureData : UpdatableData
 
 		UpdateMeshHeights(material, savedMinHeight, savedMaxHeight);
 	}
+
+	void applyTexturesToMaterial(Material material)
+    {
+        for (int i = 0; i < layers.Length && i < 8; i++)
+			material.SetTexture("texture_" + i, layers[i].texture);
+	}
+
 
 	public void UpdateMeshHeights(Material material, float minHeight, float maxHeight)
 	{
