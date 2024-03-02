@@ -123,6 +123,8 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public bool autoRegenerate = false;
 
+    public bool ShowMaximasAndMinimas = false;
+
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)
     bool clean = false;
     bool endlessActive = false;
@@ -209,7 +211,7 @@ public class MapGenerator : MonoBehaviour
                     break;
                 case DrawMode.ColorMap:
                     BuildMap(true);
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, map.NoiseMap));
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, map.NoiseMap, ShowMaximasAndMinimas));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
                     break;
@@ -260,12 +262,6 @@ public class MapGenerator : MonoBehaviour
     public void GenerateEndlessMap()
     {
         map3D = new Dictionary<Vector2, Chunk>();
-        if (isIsland)
-        {
-            fallOffMap = new float[mapSize, mapSize];
-            fallOffMap = Noise.GenerateFallOffMap(mapSize);
-        }
-
 
         GenerateBiomeMap();
 
@@ -322,15 +318,15 @@ public class MapGenerator : MonoBehaviour
     {
 
         Color[] colorMap = new Color[mapSize * mapSize];
-        var noiseMap = map.NoiseMap;
+        var heightMap = map.NoiseMap;
         //Nos guardamos y vemos toda la informacion del mapa generado
         for (int y = 0; y < mapSize; y++)
         {
             for (int x = 0; x < mapSize; x++)
             {
 
-                if (isIsland) noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
-                float currentHeight = noiseMap[x, y];
+                if (isIsland) heightMap[x, y] = Mathf.Clamp01(heightMap[x, y]);// calculo del nuevo noise con respecto al falloff
+                float currentHeight = heightMap[x, y];
 
                 foreach (var currentRegion in regions)
                 {
@@ -363,7 +359,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < mapSize; x++)
             {
 
-                if (isIsland) biomeMap[x, y] = Mathf.Clamp01(biomeMap[x, y] - fallOffMap[x, y]);// calculo del nuevo noise con respecto al falloff
+                if (isIsland) biomeMap[x, y] = Mathf.Clamp01(biomeMap[x, y]);// calculo del nuevo noise con respecto al falloff
                 float currentHeight = biomeMap[x, y];
 
                 foreach (var currentRegion in regions)
@@ -426,7 +422,11 @@ public class MapGenerator : MonoBehaviour
         else
             map = new MapInfo(mapSize + 1);
 
-
+        if (isIsland)
+        {
+            fallOffMap = new float[mapSize, mapSize];
+            fallOffMap = Noise.GenerateFallOffMap(mapSize);
+        }
 
         float[,] noise = new float[map.Size, map.Size];
         Dictionary<Biome, float>[,] influences = new Dictionary<Biome, float>[map.Size, map.Size];
@@ -435,7 +435,8 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < map.Size; y++)
             {
                 influences[x, y] = GetBiomeInfluence(x, y);
-                noise[x, y] = GetCoordinatesNoise(x, y, influences[x, y]);
+                noise[x, y] = isIsland ? GetCoordinatesNoise(x, y, influences[x, y]) - fallOffMap[x,y] : GetCoordinatesNoise(x, y, influences[x, y]);
+                
             }
         }
 
@@ -463,7 +464,7 @@ public class MapGenerator : MonoBehaviour
             for (int j = 0; j < map.Size; j++)
             {
                 height[i, j] = GetActualHeight(noise[i, j], influences[i, j]);
-
+                
                 if (minecraft)
                     height[i, j] = (float)(Math.Round(height[i, j], 1) * 10 * sizePerBlock);
 

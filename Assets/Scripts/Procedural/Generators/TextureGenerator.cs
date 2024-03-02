@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class TextureGenerator {
    
-    public static Texture2D TextureFromColorMap(Color[] colorMap, int size, float[,] noiseMap=null)
+    public static Texture2D TextureFromColorMap(Color[] colorMap, int size, float[,] noiseMap=null,bool showMaxMin = false)
     {
         
         Texture2D texture = new Texture2D(size, size);
@@ -16,8 +16,11 @@ public static class TextureGenerator {
         {
             float minH = 0.12f; 
             float maxH = 0.95f;
-            ShowMinimas(noiseMap, colorMap, size,minH);
-            ShowMaximas(noiseMap, colorMap, size, maxH);
+            if (showMaxMin)
+            {
+                ShowMinimas(noiseMap, colorMap, size, minH);
+                ShowMaximas(noiseMap, colorMap, size, maxH);
+            }
         }
 
         texture.SetPixels(colorMap);
