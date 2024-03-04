@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00e20be76664bff44b1571a76eb3a392, type: 3}
+  m_Name: Castillo
+  m_EditorClassIdentifier: 
+  typeOfPoint: 0
+  objectGenerate: {fileID: 1900316293031401602, guid: 7519b0352f3a44a4a87702b7b17f7e9e,
+    type: 3}
+  amount: 3
+  radius: 0
+  interpolation: 0
