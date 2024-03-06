@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 [CreateAssetMenu(menuName = "Procedural/InterestPoint")]
 
@@ -31,7 +32,7 @@ public class InterestPoint : ScriptableObject
     public Type_of_POI typeOfPoint;
 
     [SerializeField]
-    public GameObject objectGenerate;
+    public GameObject objectInstance;
 
     [SerializeField]
     public int amount;
@@ -47,8 +48,16 @@ public class InterestPoint : ScriptableObject
     [SerializeField]
     public bool interpolation;
 
-    void generatePoints(){
-       
+    private PoissonDiscSampler poissonDisc;
+
+    public void Generate(int mapWidth, int mapHeight)
+    {
+        poissonDisc = new PoissonDiscSampler(mapWidth, mapHeight, radius,amount);
+        var parent = new GameObject("Padre");
+        foreach (Vector2 sample in poissonDisc.Samples())
+        {
+           
+            Instantiate(objectInstance, new Vector3(sample.x, 0, sample.y), Quaternion.identity,parent.transform);
+        }
     }
-    
 }

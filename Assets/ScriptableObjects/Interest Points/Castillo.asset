@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00e20be76664bff44b1571a76eb3a392, type: 3}
   m_Name: Castillo
   m_EditorClassIdentifier: 
-  typeOfPoint: 0
-  objectGenerate: {fileID: 1900316293031401602, guid: 7519b0352f3a44a4a87702b7b17f7e9e,
+  typeOfPoint: 4
+  objectInstance: {fileID: 1900316293031401602, guid: 7519b0352f3a44a4a87702b7b17f7e9e,
     type: 3}
   amount: 3
-  radius: 0
+  radius: 50
   interpolation: 0

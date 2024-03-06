@@ -104,6 +104,8 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public ObjectInMap[] objects;
 
+    public InterestPoint[] interestPoints;
+
     /// <summary>
     /// Generar rios 
     /// </summary>
@@ -122,8 +124,14 @@ public class MapGenerator : MonoBehaviour
     /// Cuando se inicilize este componente autoregenerar el terreno
     /// </summary>
     public bool autoRegenerate = false;
-
+    /// <summary>
+    /// Pintar en el mapa 2D los puntos de maxima y minima altura
+    /// </summary>
     public bool ShowMaximasAndMinimas = false;
+    /// <summary>
+    /// Generar Puntos de Interes
+    /// </summary>
+    public bool generateInterestPoints = false;
 
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)
     bool clean = false;
@@ -248,6 +256,7 @@ public class MapGenerator : MonoBehaviour
                     generateChunks_Minecraft();
                     //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                     display.ActiveMap(true);
+                    GenerateInterestPoints();
                     break;
                 case DrawMode.Cartoon:
                     BuildMap(false);
@@ -257,6 +266,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
         else endlessActive = true;
+
     }
 
     public void GenerateEndlessMap()
@@ -628,4 +638,17 @@ public class MapGenerator : MonoBehaviour
     //{
     //    return noiseMap;
     //}
+
+    /// <summary>
+    /// Generar los puntos de interes si estan activos
+    /// </summary>
+    void GenerateInterestPoints()
+    {
+        if (!generateInterestPoints) return;
+        Debug.Log("Generando Puntos de Interés:");
+        foreach (var points in interestPoints)
+            points.Generate((int)(mapSize*sizePerBlock), (int)(mapSize* sizePerBlock));
+
+        Debug.Log("Puntos de Interes Generados");
+    }
 }
