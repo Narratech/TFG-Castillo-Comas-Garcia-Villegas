@@ -10,35 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
-  m_Name: Mountain
+  m_Name: Beach
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 43.9
+    noiseScale: 4.47
     octaves: 2
-    persistance: 0.45
-    lacunarity: 18.76
+    persistance: 0.74
+    lacunarity: 4.4
     offset: {x: 150, y: 100}
-  weight: 1
-  maxHeight: 20
-  minHeight: 5
+  weight: 0.5
+  maxHeight: 2
+  minHeight: 0
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -46,4 +46,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   foliages: []
-  color: {r: 0.4056604, g: 0.1709259, b: 0.05931826, a: 0}
+  color: {r: 0.9150943, g: 0.8659643, b: 0.2719384, a: 0}

@@ -82,11 +82,8 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public Vector2 offset;
 
-    /// <summary>
-    ///  Todos los biomas del mundo (De momento solo pilla los dos primeros)
-    /// </summary>
     [SerializeField]
-    Biome[] biomes;
+    BiomeGenerator biomeGenerator;
 
     [SerializeField]
     AnimationCurve noiseTransition;
@@ -139,8 +136,6 @@ public class MapGenerator : MonoBehaviour
     public bool getEndLessActive() { return endlessActive; }
     GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
-    float[,] biomeMap = null;
-
     MapInfo map;
 
     public MapInfo Map { get { return map; } }
@@ -186,27 +181,21 @@ public class MapGenerator : MonoBehaviour
                 fallOffMap = Noise.GenerateFallOffMap(mapSize);
             }
 
-            GenerateBiomeMap();
-
-            foreach (Biome bio in biomes)
-            {
-                if (bio.GetMaximumHeight() > maxHeightPossible)
-                    maxHeightPossible = bio.GetMaximumHeight();
-            }
+            maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
             if (drawMode == DrawMode.Cartoon)
             {
-                foreach (var biome in biomes)
-                    biome.GenerateNoiseMap(mapSize + 1, seed, offset);
+                biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
                 map = new MapInfo(mapSize + 1);
+                biomeGenerator.GenerateBiomeMap(mapSize + 1, offset);
             }
             else
             {
-                foreach (var biome in biomes)
-                    biome.GenerateNoiseMap(mapSize, seed, offset);
+                biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
                 map = new MapInfo(mapSize);
+                biomeGenerator.GenerateBiomeMap(mapSize, offset);
             }
 
             MapDisplay display = GetComponent<MapDisplay>();
@@ -214,7 +203,7 @@ public class MapGenerator : MonoBehaviour
             {
                 case DrawMode.NoiseMap:
                     BuildMap(false);
-                    display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(biomeMap));
+                    display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(map.NoiseMap));
                     display.ActiveMap(true);
                     break;
                 case DrawMode.ColorMap:
@@ -225,7 +214,7 @@ public class MapGenerator : MonoBehaviour
                     break;
                 case DrawMode.BiomeMap:
 
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize, biomeMap));
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
                     break;
@@ -273,50 +262,30 @@ public class MapGenerator : MonoBehaviour
     {
         map3D = new Dictionary<Vector2, Chunk>();
 
-        GenerateBiomeMap();
-
-        foreach (Biome bio in biomes)
-        {
-            if (bio.GetMaximumHeight() > maxHeightPossible)
-                maxHeightPossible = bio.GetMaximumHeight();
-        }
+        maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
         if (drawMode == DrawMode.Cartoon)
         {
-            foreach (var biome in biomes)
-                biome.GenerateNoiseMap(mapSize + 1, seed, offset);
+            biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
             map = new MapInfo(mapSize + 1);
+
+            biomeGenerator.GenerateBiomeMap(mapSize + 1, offset);
 
             BuildMap();
         }
         else
         {
-            foreach (var biome in biomes)
-                biome.GenerateNoiseMap(mapSize, seed, offset);
+            biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
             map = new MapInfo(mapSize);
+
+            biomeGenerator.GenerateBiomeMap(mapSize, offset);
 
             BuildMap(true);
         }
 
         calculateChunkSize();
-    }
-
-    private void GenerateBiomeMap()
-    {
-        if (drawMode == DrawMode.Cartoon)
-            biomeMap = new float[mapSize + 1, mapSize + 1];
-        else
-            biomeMap = new float[mapSize, mapSize];
-
-        for (int i = 0; i < biomeMap.GetLength(0); i++)
-        {
-            for (int j = 0; j < biomeMap.GetLength(1); j++)
-            {
-                biomeMap[i, j] = i < (biomeMap.GetLength(0) / 2) ? 0.5f : 1f;
-            }
-        }
     }
 
     /// <summary>
@@ -368,19 +337,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < mapSize; x++)
             {
-
-                if (isIsland) biomeMap[x, y] = Mathf.Clamp01(biomeMap[x, y]);// calculo del nuevo noise con respecto al falloff
-                float currentHeight = biomeMap[x, y];
-
-                foreach (var currentRegion in regions)
-                {
-                    //recorremos y miramos que tipo de terreno se ha generado
-                    if (currentHeight <= currentRegion.height)
-                    {
-                        colorMap[y * mapSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
-                        break;
-                    }
-                }
+                colorMap[y * mapSize + x] = biomeGenerator.GetBiomeAt(x, y).color;
             }
         }
         return colorMap;
@@ -618,20 +575,7 @@ public class MapGenerator : MonoBehaviour
     /// <returns></returns>
     Dictionary<Biome, float> GetBiomeInfluence(int x, int y)
     {
-        Dictionary<Biome, float> result = new Dictionary<Biome, float>();
-
-        float realBiome0Infl = x / (float)mapSize;
-        result.Add(biomes[0], realBiome0Infl * biomes[0].GetWeight());
-
-        float realBiome1Infl = 1f - (x / (float)mapSize);
-        result.Add(biomes[1], realBiome1Infl * biomes[1].GetWeight());
-
-        float maxWeights = (result[biomes[0]] + result[biomes[1]]);
-
-        result[biomes[0]] /= maxWeights;
-        result[biomes[1]] /= maxWeights;
-
-        return result;
+        return biomeGenerator.GetBiomeInfluence(x, y);
     }
 
     //public float[,] getNoise()
