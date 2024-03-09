@@ -1231,12 +1231,12 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: seed
-      value: 35
+      value: 132
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: mapSize
-      value: 1000
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1311,7 +1311,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: maxHeightPossible
-      value: 5
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1321,7 +1321,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: biomeGenerator.seed
-      value: 200
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1353,7 +1353,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: biomeGenerator.noiseSize
-      value: 57.59
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1385,7 +1385,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: biomeGenerator.influenceRange
-      value: 0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1527,6 +1527,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
+      propertyPath: noiseTransition.m_Curve.Array.data[1].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: heightTransition.m_Curve.Array.data[0].inSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: heightTransition.m_Curve.Array.data[1].inSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
       propertyPath: meshHeightCurve.m_Curve.Array.data[0].outSlope
       value: 1.0576702
       objectReference: {fileID: 0}
@@ -1539,6 +1554,21 @@ PrefabInstance:
         type: 3}
       propertyPath: meshHeightCurve.m_Curve.Array.data[1].outSlope
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: noiseTransition.m_Curve.Array.data[1].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: heightTransition.m_Curve.Array.data[0].outSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: heightTransition.m_Curve.Array.data[1].outSlope
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1563,12 +1593,12 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: heightTransition.m_Curve.Array.data[0].tangentMode
-      value: 0
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: heightTransition.m_Curve.Array.data[1].tangentMode
-      value: 0
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -2148,7 +2178,7 @@ PrefabInstance:
     - target: {fileID: 8167110233991110101, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8167110233991110101, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}

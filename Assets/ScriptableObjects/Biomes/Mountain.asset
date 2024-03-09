@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Mountain
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 43.9
-    octaves: 2
-    persistance: 0.45
-    lacunarity: 18.76
+    noiseScale: 99.7
+    octaves: 3
+    persistance: 0.11
+    lacunarity: 24.1
     offset: {x: 150, y: 100}
   weight: 1
-  maxHeight: 20
-  minHeight: 5
+  maxHeight: 60
+  minHeight: 40
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -46,4 +46,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   foliages: []
-  color: {r: 0.4056604, g: 0.1709259, b: 0.05931826, a: 0}
+  color: {r: 0.3962264, g: 0.32649222, b: 0.25978997, a: 0}

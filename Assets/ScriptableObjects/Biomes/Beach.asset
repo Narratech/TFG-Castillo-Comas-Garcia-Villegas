@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Beach
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 4.47
+    noiseScale: 161.4
     octaves: 2
-    persistance: 0.74
-    lacunarity: 4.4
+    persistance: 0.174
+    lacunarity: 1
     offset: {x: 150, y: 100}
-  weight: 0.5
-  maxHeight: 2
+  weight: 1
+  maxHeight: 10
   minHeight: 0
   meshHeightCurve:
     serializedVersion: 2
@@ -46,4 +46,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   foliages: []
-  color: {r: 0.9150943, g: 0.8659643, b: 0.2719384, a: 0}
+  color: {r: 0.8584906, g: 0.7692198, b: 0.33610713, a: 0}

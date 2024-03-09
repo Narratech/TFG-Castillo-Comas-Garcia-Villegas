@@ -273,9 +273,6 @@ public static class MeshGenerator
         int vertexIndex = 0;
         int triangleIndex = 0;
 
-        Debug.Log("currentChunkSize * currentChunkSize: " + currentChunkSize * currentChunkSize);
-        Debug.Log("size: " + size);
-        Debug.Log("meshSimplificationIncrement: " + meshSimplificationIncrement);
         for (int y = verBounds.x; y < verBounds.y; y += meshSimplificationIncrement)
         {
             for (int x = horBounds.x; x < horBounds.y; x += meshSimplificationIncrement)

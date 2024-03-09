@@ -107,7 +107,7 @@ public class Chunk
 
     public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
     {
-        Debug.Log("Generado chunk " + posMap);
+        //Debug.Log("Generado chunk " + posMap);
 
         generator = mapGenerator;
 

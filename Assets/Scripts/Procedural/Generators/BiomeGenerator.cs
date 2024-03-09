@@ -1,18 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.XR;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [Serializable]
 public class BiomeGenerator
 {
-    float[,] heat = null;
-    float[,] moisture = null;
-
-    int[,] biomeMap = null;
-
-    [SerializeField]
-    int seed = 0;
 
     [SerializeField]
     float noiseSize;
@@ -23,7 +19,9 @@ public class BiomeGenerator
     [SerializeField]
     Biome[] biomes = null;
 
-    public void GenerateBiomeMap(int size, Vector2 offset)
+    int[,] biomeMap = null;
+
+    public void GenerateBiomeMap(int seed, int size, Vector2 offset)
     {
         NoiseSettings noiseSettings = new()
         {
@@ -33,24 +31,19 @@ public class BiomeGenerator
             offset = offset,
             persistance = 1
         };
-        heat = Noise.GenerateNoiseMap(size, seed + 1, noiseSettings);
-        moisture = Noise.GenerateNoiseMap(size, seed, noiseSettings);
+        float[,] heat = Noise.GenerateNoiseMap(size, seed + 1, noiseSettings);
+        float[,] moisture = Noise.GenerateNoiseMap(size, seed, noiseSettings);
 
         biomeMap = new int[size, size];
 
-        int valueToDivideHeatMap = biomes.Length / 2 + 1;
-        int valueToDivideMoistureMap = (biomes.Length / 2) + biomes.Length % 2;
-
-        float heatThresholdValue;
-        float moistureThresholdValue;
+        float threshold = 2 / (float)biomes.Length;
 
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                heatThresholdValue = 1 / (float)valueToDivideHeatMap;
-                moistureThresholdValue = 1 / (float)valueToDivideMoistureMap;
-                int currentBiomeIndex = (int)(heat[i, j] / heatThresholdValue) + (int)(moisture[i, j] / moistureThresholdValue);
+                float positionValue = heat[i, j] + moisture[i, j];
+                int currentBiomeIndex = (int)(positionValue / threshold);
                 biomeMap[i, j] = currentBiomeIndex;
             }
         }
@@ -70,7 +63,46 @@ public class BiomeGenerator
     internal Dictionary<Biome, float> GetBiomeInfluence(int x, int y)
     {
         Dictionary<Biome, float> result = new Dictionary<Biome, float>();
-        result.Add(biomes[biomeMap[x, y]], 1f);
+
+        int numCells = 0;
+
+        float d, yDiff, threshold, radiusSq;
+        float diameter = (influenceRange * 2) + 1;
+        radiusSq = (diameter * diameter) / 4;
+
+        for (int i = -influenceRange; i <= influenceRange; i++)
+        {
+            int currentY = i + y;
+            if (!(currentY >= 0 && currentY < biomeMap.GetLength(1))) continue;
+
+            yDiff = i;
+            threshold = radiusSq - (yDiff * yDiff);
+
+            for (int j = -influenceRange; j <= influenceRange; j++)
+            {
+                int currentX = j + x;
+                if (!(currentX >= 0 && currentX < biomeMap.GetLength(0))) continue;
+
+                d = j;
+                if ((j * j) <= threshold)
+                {
+                    if (!result.ContainsKey(biomes[biomeMap[currentX, currentY]]))
+                        result.Add(biomes[biomeMap[currentX, currentY]], 0f);
+                    result[biomes[biomeMap[currentX, currentY]]] += 1f;
+                    numCells++;
+                }
+
+            }
+
+        }
+
+        foreach (var biome in biomes)
+        {
+            if (result.ContainsKey(biome))
+            {
+                result[biome] /= (float)numCells;
+            }
+        }
         return result;
     }
 

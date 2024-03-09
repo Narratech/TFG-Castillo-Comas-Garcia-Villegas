@@ -41,25 +41,38 @@ public class MapInfo
 
     public Color GetColorAt(int x, int y)
     {
-        float lerpValue = 0f;
-        bool shouldEnd = false;
-
+        float infl1 = 0f;
+        float infl2 = 0f;
         Color color1 = Color.black;
         Color color2 = Color.black;
-        foreach (var a in biomeInfluences[x, y])
+
+        bool secondPassed = false;
+
+        var influences = biomeInfluences[x, y];
+
+        foreach (var a in influences)
         {
-            if (!shouldEnd)
+            if (a.Value > infl1)
             {
                 color1 = a.Key.color;
-                lerpValue = a.Value;
+                infl1 = a.Value;
+
+                if (infl2 > 0.01f) continue;
             }
-            else
+            else if (!secondPassed)
             {
                 color2 = a.Key.color;
-                break;
+                infl2 = a.Value;
+                secondPassed = true;
+                continue;
             }
-            shouldEnd = true;
+
+            if (a.Value > infl2)
+            {
+                color2 = a.Key.color;
+                infl2 = a.Value;
+            }
         }
-        return Color.Lerp(color2, color1, lerpValue);
+        return Color.Lerp(color2, color1, infl1);
     }
 }

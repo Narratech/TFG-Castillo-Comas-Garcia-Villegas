@@ -188,14 +188,14 @@ public class MapGenerator : MonoBehaviour
                 biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
                 map = new MapInfo(mapSize + 1);
-                biomeGenerator.GenerateBiomeMap(mapSize + 1, offset);
+                biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
             }
             else
             {
                 biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
                 map = new MapInfo(mapSize);
-                biomeGenerator.GenerateBiomeMap(mapSize, offset);
+                biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
             }
 
             MapDisplay display = GetComponent<MapDisplay>();
@@ -241,7 +241,7 @@ public class MapGenerator : MonoBehaviour
                     break;
                 case DrawMode.All:
                     BuildMap(true);
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
                     generateChunks_Minecraft();
                     //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
                     display.ActiveMap(true);
@@ -270,7 +270,7 @@ public class MapGenerator : MonoBehaviour
 
             map = new MapInfo(mapSize + 1);
 
-            biomeGenerator.GenerateBiomeMap(mapSize + 1, offset);
+            biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
 
             BuildMap();
         }
@@ -280,7 +280,7 @@ public class MapGenerator : MonoBehaviour
 
             map = new MapInfo(mapSize);
 
-            biomeGenerator.GenerateBiomeMap(mapSize, offset);
+            biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
 
             BuildMap(true);
         }
@@ -337,7 +337,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < mapSize; x++)
             {
-                colorMap[y * mapSize + x] = biomeGenerator.GetBiomeAt(x, y).color;
+                colorMap[y * mapSize + (mapSize - x - 1)] = biomeGenerator.GetBiomeAt(x, y).color;
             }
         }
         return colorMap;
