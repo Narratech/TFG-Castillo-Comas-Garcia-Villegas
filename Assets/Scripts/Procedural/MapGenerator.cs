@@ -32,16 +32,8 @@ public class MapGenerator : MonoBehaviour
         /// Generacion de un Mapa de Con los layers de terreno establecidos(Solo visual 3D)
         /// </summary>
         CubicMap,
-        /// <summary>
-        /// Generacion de un Mapa de Con los layers de terreno establecidos y los Objectos puestos para generar(Solo visual 3D)
-        /// </summary>
-        MapWithObjects,
-        /// <summary>
-        /// Config de ColorMap y CubicMap
-        /// </summary>
-        NoObjectsWithDisplay,
-        All,
-        Cartoon
+        Cartoon,
+        All
     };
 
     public enum ALgorithm
@@ -52,7 +44,6 @@ public class MapGenerator : MonoBehaviour
     }
 
     public DrawMode drawMode;
-
     /// <summary>
     /// GameObject Padre de todo el mapa3D que se va a generar
     /// </summary>
@@ -63,10 +54,8 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public int mapSize;
 
-    //TAMA�O DEL CHUNK (En caso de que se cambie, es probable de k no se genere bien la malla del mapa debido al limite de creacion de vertices de unity por malla)
-
     public int chunkSize = 50;
-    //TAMA�O DE CADA CELDA (En caso de modificacion posible solapacion de vertices)
+  
     public float sizePerBlock = 1f;
 
     [Range(1, 10)]
@@ -96,17 +85,7 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public TerrainType[] regions;
 
-    /// <summary>
-    ///  Objectso que se pueden generar por el mapa
-    /// </summary>
-    public ObjectInMap[] objects;
-
     public InterestPoint[] interestPoints;
-
-    /// <summary>
-    /// Generar rios 
-    /// </summary>
-    public bool createRivers = false;
 
     /// <summary>
     ///  Generar el mapa con forma de isla
@@ -121,6 +100,14 @@ public class MapGenerator : MonoBehaviour
     /// Cuando se inicilize este componente autoregenerar el terreno
     /// </summary>
     public bool autoRegenerate = false;
+    /// <summary>
+    /// Generate Objects
+    /// </summary>
+    public bool generateObjects = false;
+    /// <summary>
+    /// Generar rios 
+    /// </summary>
+    public bool createRivers = false;
     /// <summary>
     /// Pintar en el mapa 2D los puntos de maxima y minima altura
     /// </summary>
@@ -197,7 +184,7 @@ public class MapGenerator : MonoBehaviour
                 map = new MapInfo(mapSize);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
             }
-
+            
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
             {
@@ -227,34 +214,24 @@ public class MapGenerator : MonoBehaviour
                     generateChunks_Minecraft();
                     display.ActiveMap(false);
                     break;
-                case DrawMode.MapWithObjects:
-                    BuildMap(true);
-                    generateChunks_Minecraft();
-                    //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
-                    display.ActiveMap(false);
-                    break;
-                case DrawMode.NoObjectsWithDisplay:
-                    BuildMap(true);
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize));
-                    generateChunks_Minecraft();
-                    display.ActiveMap(true);
-                    break;
-                case DrawMode.All:
-                    BuildMap(true);
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
-                    generateChunks_Minecraft();
-                    //ObjectsGenerator.GenerateObjects(mapSize, chunkSize, sizePerBlock, cellMap, map3D, objects);
-                    display.ActiveMap(true);
-                    GenerateInterestPoints();
-                    break;
                 case DrawMode.Cartoon:
                     BuildMap(false);
                     generateChunks_LowPoly();
                     display.ActiveMap(false);
                     break;
+                case DrawMode.All:
+                    BuildMap(true);
+                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
+                    generateChunks_Minecraft();
+                    display.ActiveMap(true);
+                    GenerateInterestPoints();
+                    break;
             }
         }
         else endlessActive = true;
+        map.setChunkSize(chunkSize);
+
+        if (generateObjects) ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D, sizePerBlock);
 
     }
 
@@ -407,8 +384,6 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        map.SetNoiseMap(noise);
-
         if (minecraft)
         {
             for (int i = 0; i < map.Size; i++)
@@ -419,9 +394,6 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-
-        if (createRivers)
-            noise = GetComponent<RiverGenerator>().GenerateRivers(noise);
 
         map.SetNoiseMap(noise);
 
@@ -562,26 +534,10 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     /// <param name="posNoise"> las coordenadas a procesar</param>
     /// <returns></returns>
-    Dictionary<Biome, float> GetBiomeInfluence(Vector2Int posNoise)
-    {
-        return GetBiomeInfluence(posNoise.x, posNoise.y);
-    }
-
-    /// <summary>
-    /// (TODO) Devolver� un map con los biomas actuales y su influencia en un punto concreto
-    /// De momento devuelve 1 si est� en el bioma y 0 si no, sin transici�n
-    /// </summary>
-    /// <param name="posNoise"> las coordenadas a procesar</param>
-    /// <returns></returns>
     Dictionary<Biome, float> GetBiomeInfluence(int x, int y)
     {
         return biomeGenerator.GetBiomeInfluence(x, y);
     }
-
-    //public float[,] getNoise()
-    //{
-    //    return noiseMap;
-    //}
 
     /// <summary>
     /// Generar los puntos de interes si estan activos

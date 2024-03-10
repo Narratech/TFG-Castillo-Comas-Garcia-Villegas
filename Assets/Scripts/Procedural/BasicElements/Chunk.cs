@@ -21,33 +21,9 @@ public struct TerrainType
     /// <summary>
     /// Color de Capa
     /// </summary>
-    public UnityEngine.Color color;
+    public Color color;
 }
 
-/// <summary>
-/// Objecto que se puede generar en el mapa
-/// </summary>
-[System.Serializable]
-public class ObjectInMap
-{
-    public GameObject prefab;
-
-    // Curva de densidad basada en la altura del terreno
-    public AnimationCurve densityCurve;
-
-    /// <summary>
-    /// Densidad del objecto 
-    /// </summary>               
-    public float Density = 0.1f;
-    /// <summary>
-    /// El ruido generado
-    /// </summary>
-    public float NoiseScale = 0.1f;
-    /// <summary>
-    /// Capa en la que se puede generar el Objecto
-    /// </summary>
-    public string GenerationLayer;
-}
 
 /// <summary>
 /// Un Chunk es una porcion del Mapa que contiene el suelo, objectos y bordes de una porcion del mapa generado
@@ -55,7 +31,6 @@ public class ObjectInMap
 /// </summary>
 public class Chunk
 {
-
     MapGenerator generator;
 
     /// <summary>
@@ -70,13 +45,13 @@ public class Chunk
     float sizePerBlock;
     Bounds bound;
 
-    float maxHeight;
-    GameObject obj;
-    AnimationCurve densityCurve;
+    //float maxHeight;
+    //GameObject obj;
+    //AnimationCurve densityCurve;
 
     // Objetos instanciados en este chunk
-    List<Transform> chunkObjects;
-    float minDistance = 3;
+    //List<Transform> chunkObjects;
+    //float minDistance = 3;
 
     Vector2Int horBounds = Vector2Int.zero;
     Vector2Int verBounds = Vector2Int.zero;
@@ -107,7 +82,6 @@ public class Chunk
 
     public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
     {
-        //Debug.Log("Generado chunk " + posMap);
 
         generator = mapGenerator;
 
@@ -120,9 +94,7 @@ public class Chunk
         {
             Vector2 realPos = posMap * chunkSize;
             bound = new Bounds(realPos, Vector2.one * chunkSize);
-            //Vector3 realPosition = new Vector3(pos.x, 0, pos.y);
-            //chunk.transform.localPosition = realPosition;
-            //SetVisible(false);
+            SetVisible(false);
         }
         else
         {
@@ -165,90 +137,88 @@ public class Chunk
         if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock + 1, 0, sizePerBlock - 1);
 
 
-        chunkObjects = new List<Transform>();
-        maxHeight = mapGenerator.maxHeightPossible;
-        obj = mapGenerator.objects[0].prefab;
-        densityCurve = mapGenerator.objects[0].densityCurve;
+        //chunkObjects = new List<Transform>();
+        //maxHeight = mapGenerator.maxHeightPossible;
+        //obj = mapGenerator.objects[0].prefab;
+        //densityCurve = mapGenerator.objects[0].densityCurve;
         //GenerateObjects(mapCells, chunkSize);
     }
 
 
-    void GenerateObjects(Cell[,] cells, int chunkSize)
-    {
-        int lenght_0 = cells.GetLength(0);
-        int lenght_1 = cells.GetLength(1);
+    //void GenerateObjects(Cell[,] cells, int chunkSize)
+    //{
+    //    int lenght_0 = cells.GetLength(0);
+    //    int lenght_1 = cells.GetLength(1);
 
-        float distanceBetween = (float)chunkSize / (float)lenght_0;
+    //    float distanceBetween = (float)chunkSize / (float)lenght_0;
 
-        Vector3 cornerPosition = new Vector3(chunk.transform.position.x - chunkSize / 2, 0, chunk.transform.position.z + chunkSize / 2);
+    //    Vector3 cornerPosition = new Vector3(chunk.transform.position.x - chunkSize / 2, 0, chunk.transform.position.z + chunkSize / 2);
 
-        for (int i = 0; i < lenght_0; i++)
-        {
-            for (int j = 0; j < lenght_1; j++)
-            {
-                //Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, 0, j * distanceBetween);
+    //    for (int i = 0; i < lenght_0; i++)
+    //    {
+    //        for (int j = 0; j < lenght_1; j++)
+    //        {
+    //            Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, 0, j * distanceBetween);
 
-                //Ray ray = new Ray(objPosition, Vector3.up);
-                //RaycastHit hitInfo;
+    //            Ray ray = new Ray(objPosition, Vector3.up);
+    //            RaycastHit hitInfo;
 
-                //if (Physics.Raycast(ray, out hitInfo))
-                //{
-                //    objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
-                //}
-                //else
-                //{
-                //    ray = new Ray(objPosition, Vector3.down);
+    //            if (Physics.Raycast(ray, out hitInfo))
+    //            {
+    //                objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
+    //            }
+    //            else
+    //            {
+    //                ray = new Ray(objPosition, Vector3.down);
 
-                //    if (Physics.Raycast(ray, out hitInfo))
-                //    {
-                //        objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
-                //    }
-                //}
+    //                if (Physics.Raycast(ray, out hitInfo))
+    //                {
+    //                    objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
+    //                }
+    //            }
 
-                float cellHeight = cells[i, j].Height;
+    //            float cellHeight = cells[i, j].Height;
 
-                // Transformarlo a un valor entre 0 y 1
-                float normalizedHeight = cellHeight / maxHeight;
+    //            Transformarlo a un valor entre 0 y 1
+    //            float normalizedHeight = cellHeight / maxHeight;
 
-                // Calcular probabilidad de que este objeto aparezca en esta casilla
-                float probability = densityCurve.Evaluate(normalizedHeight);
+    //            Calcular probabilidad de que este objeto aparezca en esta casilla
+    //            float probability = densityCurve.Evaluate(normalizedHeight);
 
-                // Basada en esta probabilidad, se calcula si hay un arbol o no en esta casilla
-                if (UnityEngine.Random.Range(0f, 1f) < probability)
-                {
-                    Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cellHeight, -j * distanceBetween);
+    //            Basada en esta probabilidad, se calcula si hay un arbol o no en esta casilla
+    //            if (UnityEngine.Random.Range(0f, 1f) < probability)
+    //            {
+    //                Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cellHeight, -j * distanceBetween);
 
-                    // Comprobar si este objeto esta a una distancia ilegal de otro objeto
-                    // Esto se ampliara para tener en cuenta que objeto tiene preferencia sobre otros
-                    bool validPosition = true;
-                    for (int k = 0; k < chunkObjects.Count; k++)
-                    {
-                        Vector2 thisPosition = new Vector2(objPosition.x, objPosition.z);
-                        Vector2 otherPosition = new Vector2(chunkObjects[k].position.x, chunkObjects[k].position.z);
-                        if (Vector2.Distance(thisPosition, otherPosition) < minDistance)
-                            validPosition = false;
-                    }
+    //                Comprobar si este objeto esta a una distancia ilegal de otro objeto
+    //                 Esto se ampliara para tener en cuenta que objeto tiene preferencia sobre otros
+    //                bool validPosition = true;
+    //                for (int k = 0; k < chunkObjects.Count; k++)
+    //                {
+    //                    Vector2 thisPosition = new Vector2(objPosition.x, objPosition.z);
+    //                    Vector2 otherPosition = new Vector2(chunkObjects[k].position.x, chunkObjects[k].position.z);
+    //                    if (Vector2.Distance(thisPosition, otherPosition) < minDistance)
+    //                        validPosition = false;
+    //                }
 
-                    if (validPosition)
-                    {
-                        // Generar un �ngulo aleatorio
-                        Quaternion objRotation;
-                        float randomAngle_y = UnityEngine.Random.Range(0f, 360f);
-                        float randomAngle_x = UnityEngine.Random.Range(-15f, 15f);
-                        float randomAngle_z = UnityEngine.Random.Range(-15f, 15f);
-                        objRotation = Quaternion.Euler(randomAngle_x, randomAngle_y, randomAngle_z);
+    //                if (validPosition)
+    //                {
+    //                    Generar un �ngulo aleatorio
+    //                    Quaternion objRotation;
+    //                    float randomAngle_y = UnityEngine.Random.Range(0f, 360f);
+    //                    float randomAngle_x = UnityEngine.Random.Range(-15f, 15f);
+    //                    float randomAngle_z = UnityEngine.Random.Range(-15f, 15f);
+    //                    objRotation = Quaternion.Euler(randomAngle_x, randomAngle_y, randomAngle_z);
 
-                        GameObject thisObject = Transform.Instantiate(obj, objPosition,
-                        objRotation, chunk.transform);
+    //                    GameObject thisObject = Transform.Instantiate(obj, objPosition,
+    //                    objRotation, chunk.transform);
 
-                        chunkObjects.Add(thisObject.transform);
-                    }
-                }
-            }
-        }
-    }
-
-
+    //                    chunkObjects.Add(thisObject.transform);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// Genera la maya del chunk
@@ -264,8 +234,8 @@ public class Chunk
 
 
         MeshGenerator.GenerateTerrainMeshChunk(generator.Map, floor, sizePerBlock, horBounds, verBounds);
-        var copyHorBounds = horBounds;//copyHorBounds.x++; copyHorBounds.y--;
-        var copyVerBounds = verBounds;//copyVerBounds.x++; copyVerBounds.y--;
+        var copyHorBounds = horBounds;
+        var copyVerBounds = verBounds;
         MeshGenerator.DrawEdgesChunk(generator.Map, edges, sizePerBlock, copyHorBounds, copyVerBounds);
     }
 

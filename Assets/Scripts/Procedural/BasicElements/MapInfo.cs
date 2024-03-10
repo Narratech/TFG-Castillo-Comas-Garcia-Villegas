@@ -12,9 +12,12 @@ public class MapInfo
 
     Dictionary<Biome, float>[,] biomeInfluences;
 
-    int size;
+    HashSet<Vector2> objectsInMap;
 
+    int size;
+    int chunkSize;
     public int Size => size;
+    public int ChunkSize => chunkSize;
 
     public MapInfo(int mapSize)
     {
@@ -22,22 +25,14 @@ public class MapInfo
         noiseMap = null;
         heightMap = null;
         biomeInfluences = null;
+        objectsInMap = new HashSet<Vector2>();
     }
 
-    public void SetInfluenceMap(Dictionary<Biome, float>[,] influence)
-    {
-        biomeInfluences = influence;
-    }
-
-    public void SetNoiseMap(float[,] noise)
-    {
-        noiseMap = noise;
-    }
-
-    public void SetHeightMap(float[,] height)
-    {
-        heightMap = height;
-    }
+    public void SetInfluenceMap(Dictionary<Biome, float>[,] influence) { biomeInfluences = influence; }
+    public void SetNoiseMap(float[,] noise) { noiseMap = noise; }
+    public void SetHeightMap(float[,] height) { heightMap = height; }
+    public void SetObjectsMap(HashSet<Vector2> objectsInMap){ this.objectsInMap = objectsInMap; }
+    public void setChunkSize(int chunkSize) { this.chunkSize = chunkSize; }
 
     public Color GetColorAt(int x, int y)
     {

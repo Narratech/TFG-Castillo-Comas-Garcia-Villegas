@@ -7,38 +7,56 @@ using UnityEngine;
 /// Generar Objectos en el mapa
 /// </summary>
 public static class ObjectsGenerator {
-   public static void GenerateObjects
-        (int mapSize, int chunkSize,float heightPerBlock, Cell[,] cellMap, Dictionary<Vector2,Chunk> chunks, ObjectInMap[] objectsToGenerate){
+    public static void GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float heightPerBlock)
+    {
+        var mapSize = mapInfo.Size;
+        var chunkSize = mapInfo.ChunkSize;
 
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / -2f;
 
-        for (int y = 0; y < mapSize; y++){
-            for (int x = 0; x < mapSize; x++){
+        HashSet<Vector2> objectsGenerated = new HashSet<Vector2>();
+
+        for (int y = 0; y < mapSize; y++)
+        {
+            for (int x = 0; x < mapSize; x++)
+            {
                 //Si no hay un gameObject generado anteriormente
-                if (cellMap[x, y].objectGenerated==null){
-                    Cell current = cellMap[x, y];
+                if (!objectsGenerated.Contains(new Vector2(x,y))){
+                    //Cell current = cellMap[x, y];
+
+                    //VER DE K BIOMA ES ESA CASILLA
+
+                    var currentBiome = biomeGenerator.GetBiomeAt(x, y);
+                    var objectsToGenerate = currentBiome.getFolliage();
                     //Ordeno por orden de densidad para q sea equivalente
-                    foreach (var obj in objectsToGenerate.OrderBy(o => o.Density)){
-                        float noiseValue = Mathf.PerlinNoise(x * obj.NoiseScale, y * obj.NoiseScale);                       
+                    foreach (var obj in objectsToGenerate.OrderBy(o => o.Density))
+                    {
+                        float noiseValue = Mathf.PerlinNoise(x * obj.NoiseScale, y * obj.NoiseScale);
+
                         //Si el objecto se puede generar en la capa 
-                        if (obj.GenerationLayer == ""){
+                        if (obj.GenerationLayer == "")
+                        {
                             //Aplico un valor Random sobre la densidad para que sea mas aleatorio
-                            float v = Random.Range(0.0f, obj.Density);
-                            if (noiseValue < v){
+                            float v = Random.Range(0.0f, obj.Density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
+                            if (noiseValue < v)
+                            {
 
-                                Vector2 chunkPos = new Vector2(x / chunkSize, y / chunkSize);
-                                GameObject generated= GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
+                                Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
+                                GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
 
-                                generated.transform.position = new Vector3(topLeftX+x, heightPerBlock * current.noise * 100, topLeftX - y);
+                                generated.transform.position = new Vector3( x * heightPerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x,y],  -y * heightPerBlock + chunkSize / 2 - 1);
+
                                 generated.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                                generated.transform.localScale =Vector3.one * Random.Range(0.8f, 1.2f);
+                                generated.transform.localScale = Vector3.one * Random.Range(0.8f, 1.2f);
 
-                                current.objectGenerated= generated;
+                                objectsGenerated.Add(new Vector2(x, y));
+
+
                                 break;
                             }
                         }
-                           
+
                     }
                 }
             }

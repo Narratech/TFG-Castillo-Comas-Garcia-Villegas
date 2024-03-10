@@ -28,6 +28,7 @@ public class Biome : ScriptableObject
     Foliage[] foliages = null;
 
     [Header("Test values")]
+
     //Temporal (?)
     public Color color;
 
@@ -51,6 +52,11 @@ public class Biome : ScriptableObject
 
     public float GetMaximumHeight()
     {
+        return maxHeight;
+    }
+
+    public float GetMinimumHeight()
+    {
         return minHeight;
     }
 
@@ -62,5 +68,10 @@ public class Biome : ScriptableObject
     public float this[int index, int index2]
     {
         get { return noiseMap[index, index2]; }
+    }
+
+    public Foliage[] getFolliage()
+    {
+        return foliages;
     }
 }
