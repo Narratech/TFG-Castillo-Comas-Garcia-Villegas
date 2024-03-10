@@ -292,12 +292,11 @@ public class Chunk
         GameObject.Destroy(floor.gameObject);
     }
 
-    public float Update(Vector2 playerPos, float maxViewDst)
+    public float Update(Vector2 playerPos)
     {
         Vector2 pos = new Vector2(playerPos.x, -playerPos.y);
         float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(pos));
         return viewerDstFromNearestEdge;
-        //SetVisible(viewerDstFromNearestEdge <= maxViewDst);
     }
 
     public void SetVisible(bool visible)

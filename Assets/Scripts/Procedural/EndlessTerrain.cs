@@ -52,7 +52,7 @@ public class EndlessTerrain : MonoBehaviour
                     if (map3D.ContainsKey(viewedChunkCoord))
                     {
                         //mirar si esta visible y si no lo esta hacerlo visible
-                        float viewerDstFromNearestEdge = map3D[viewedChunkCoord].Update(playerPos, maxViewDst);
+                        float viewerDstFromNearestEdge = map3D[viewedChunkCoord].Update(playerPos);
                         if (viewerDstFromNearestEdge <= maxViewDst)
                         {
                             map3D[viewedChunkCoord].delete();
