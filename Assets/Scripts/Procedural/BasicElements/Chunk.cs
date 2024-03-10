@@ -122,7 +122,7 @@ public class Chunk
             bound = new Bounds(realPos, Vector2.one * chunkSize);
             //Vector3 realPosition = new Vector3(pos.x, 0, pos.y);
             //chunk.transform.localPosition = realPosition;
-            SetVisible(false);
+            //SetVisible(false);
         }
         else
         {
@@ -286,16 +286,18 @@ public class Chunk
     public void delete()
     {
         GameObject.Destroy(chunk.gameObject);
-        GameObject.Destroy(edges.gameObject);
+        if(edges!=null)
+            GameObject.Destroy(edges.gameObject);
         GameObject.Destroy(objectsGenerated.gameObject);
         GameObject.Destroy(floor.gameObject);
     }
 
-    public void Update(Vector2 playerPos, float maxViewDst)
+    public float Update(Vector2 playerPos, float maxViewDst)
     {
         Vector2 pos = new Vector2(playerPos.x, -playerPos.y);
         float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(pos));
-        SetVisible(viewerDstFromNearestEdge <= maxViewDst);
+        return viewerDstFromNearestEdge;
+        //SetVisible(viewerDstFromNearestEdge <= maxViewDst);
     }
 
     public void SetVisible(bool visible)
