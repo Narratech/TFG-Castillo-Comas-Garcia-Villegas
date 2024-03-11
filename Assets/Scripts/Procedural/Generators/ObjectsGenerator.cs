@@ -44,11 +44,11 @@ public static class ObjectsGenerator {
 
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
-
+                                
                                 generated.transform.position = new Vector3( x * heightPerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x,y],  -y * heightPerBlock + chunkSize / 2 - 1);
 
-                                generated.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                                generated.transform.localScale = Vector3.one * Random.Range(0.8f, 1.2f);
+                                generated.transform.rotation = Quaternion.Euler(Random.Range(0, obj.rotation.x), Random.Range(0, obj.rotation.y), Random.Range(0, obj.rotation.z));
+                                generated.transform.localScale = obj.scale * Random.Range(obj.minHeight, obj.maxHeight);
 
                                 objectsGenerated.Add(new Vector2(x, y));
 

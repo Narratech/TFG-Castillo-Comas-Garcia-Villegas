@@ -36,11 +36,11 @@ public class Foliage : ScriptableObject
     [Header("Transform")]
     [ShowWhen("typeOfFoliage", TypeOfFoliage.prefab)]
     [SerializeField]
-    Vector3 rotation;
+    public Vector3 rotation;
 
     [ShowWhen("typeOfFoliage", TypeOfFoliage.prefab)]
     [SerializeField]
-    Vector3 scale;
+    public Vector3 scale = Vector3.one;
 
     [Header("Height")]
     [SerializeField]
@@ -48,11 +48,11 @@ public class Foliage : ScriptableObject
 
     [ShowWhen("useRandomHeight")]
     [SerializeField]
-    float minHeight;
+    public float minHeight = 0.8f;
 
     [ShowWhen("useRandomHeight")]
     [SerializeField]
-    float maxHeight;
+    public float maxHeight = 1.2f;
 
 
 

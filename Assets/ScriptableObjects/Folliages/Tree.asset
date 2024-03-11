@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Tree
   m_EditorClassIdentifier: 
   Name: Tree
-  typeOfFoliage: 0
+  typeOfFoliage: 1
   sprite: {fileID: 0}
   prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
   densityCurve:
@@ -51,11 +51,11 @@ MonoBehaviour:
     m_RotationOrder: 4
   Density: 0.4
   NoiseScale: 0.75
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0, y: 0, z: 0}
-  useRandomHeight: 0
-  minHeight: 0
-  maxHeight: 0
+  rotation: {x: 0, y: 360, z: 0}
+  scale: {x: 1, y: 1, z: 1}
+  useRandomHeight: 1
+  minHeight: 0.8
+  maxHeight: 1.2
   useColor: 1
   behaviour: 2
   gradient:
