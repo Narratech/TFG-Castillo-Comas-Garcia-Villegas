@@ -55,10 +55,12 @@ public class MapGenerator : MonoBehaviour
     public int mapSize;
 
     public int chunkSize = 50;
-  
+
     public float sizePerBlock = 1f;
 
-    [Range(1, 10)]
+
+    const float MAXLOD = 5f;
+    [Range(1, MAXLOD)]
     public int levelOfDetail;
 
     /// <summary>
@@ -184,7 +186,7 @@ public class MapGenerator : MonoBehaviour
                 map = new MapInfo(mapSize);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
             }
-            
+
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
             {
@@ -333,7 +335,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, levelOfDetail);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, GetMeshSimplificationValue());
                 map3D[chunkPos] = generated;
             }
         }
@@ -352,7 +354,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, levelOfDetail);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, GetMeshSimplificationValue());
                 map3D[chunkPos] = generated;
             }
 
@@ -379,8 +381,8 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < map.Size; y++)
             {
                 influences[x, y] = GetBiomeInfluence(x, y);
-                noise[x, y] = isIsland ? GetCoordinatesNoise(x, y, influences[x, y]) - fallOffMap[x,y] : GetCoordinatesNoise(x, y, influences[x, y]);
-                
+                noise[x, y] = isIsland ? GetCoordinatesNoise(x, y, influences[x, y]) - fallOffMap[x, y] : GetCoordinatesNoise(x, y, influences[x, y]);
+
             }
         }
 
@@ -403,7 +405,7 @@ public class MapGenerator : MonoBehaviour
             for (int j = 0; j < map.Size; j++)
             {
                 height[i, j] = GetActualHeight(noise[i, j], influences[i, j]);
-                
+
                 if (minecraft)
                     height[i, j] = (float)(Math.Round(height[i, j], 1) * 10 * sizePerBlock);
 
@@ -547,8 +549,45 @@ public class MapGenerator : MonoBehaviour
         if (!generateInterestPoints) return;
         Debug.Log("Generando Puntos de Interés:");
         foreach (var points in interestPoints)
-            points.Generate((int)(mapSize*sizePerBlock), (int)(mapSize* sizePerBlock));
+            points.Generate((int)(mapSize * sizePerBlock), (int)(mapSize * sizePerBlock));
 
         Debug.Log("Puntos de Interes Generados");
+    }
+
+    int GetMeshSimplificationValue()
+    {
+        return GetMeshSimplificationValue(levelOfDetail);
+    }
+
+    int GetMeshSimplificationValue(int LODlevel)
+    {
+        float simplificationRate = LODlevel / MAXLOD;
+
+        int[] divisors = GetDivisors(chunkSize);
+
+        int indexToGet = Mathf.RoundToInt(simplificationRate * (divisors.Length - 1));
+        return divisors[indexToGet];
+    }
+
+
+    // function to count the divisors 
+    static int[] GetDivisors(int n)
+    {
+        List<int> div = new List<int>();
+        for (int i = 1; i <= Math.Sqrt(n); i++)
+        {
+            if (n % i == 0)
+            {
+                // If divisors are equal, 
+                // count only one 
+                div.Add(i);
+
+                // Otherwise count both 
+                if (n / i != i)
+                    div.Add(n / i);
+            }
+        }
+
+        return div.ToArray();
     }
 }
