@@ -35,7 +35,7 @@ public static class ObjectsGenerator {
                         float noiseValue = Mathf.PerlinNoise(x * obj.NoiseScale, y * obj.NoiseScale);
 
                         //Si el objecto se puede generar en la capa 
-                        if (obj.GenerationLayer == "")
+                        //if (obj.GenerationLayer == "")
                         {
                             //Aplico un valor Random sobre la densidad para que sea mas aleatorio
                             float v = Random.Range(0.0f, obj.Density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
