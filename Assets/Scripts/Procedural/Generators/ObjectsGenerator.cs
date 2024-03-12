@@ -30,15 +30,15 @@ public static class ObjectsGenerator {
                     var currentBiome = biomeGenerator.GetBiomeAt(x, y);
                     var objectsToGenerate = currentBiome.getFolliage();
                     //Ordeno por orden de densidad para q sea equivalente
-                    foreach (var obj in objectsToGenerate.OrderBy(o => o.Density))
+                    foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                     {
-                        float noiseValue = Mathf.PerlinNoise(x * obj.NoiseScale, y * obj.NoiseScale);
+                        float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
 
                         //Si el objecto se puede generar en la capa 
                         //if (obj.GenerationLayer == "")
                         {
                             //Aplico un valor Random sobre la densidad para que sea mas aleatorio
-                            float v = Random.Range(0.0f, obj.Density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
+                            float v = Random.Range(0.0f, obj.density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
                             if (noiseValue < v)
                             {
 
@@ -47,10 +47,22 @@ public static class ObjectsGenerator {
                                 
                                 generated.transform.position = new Vector3( x * heightPerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x,y],  -y * heightPerBlock + chunkSize / 2 - 1);
 
-                                generated.transform.rotation = Quaternion.Euler(Random.Range(0, obj.rotation.x), Random.Range(0, obj.rotation.y), Random.Range(0, obj.rotation.z));
-                                generated.transform.localScale = obj.scale * Random.Range(obj.minHeight, obj.maxHeight);
+                                //ROTATION
+                                generated.transform.rotation = obj.randomRotation ? 
+                                    Quaternion.Euler(Random.Range(obj.rotation.x,obj.maxRotation.x), Random.Range(obj.rotation.y,obj.maxRotation.y), Random.Range(obj.rotation.z,obj.maxRotation.z)):
+                                    Quaternion.Euler(obj.rotation.x, obj.rotation.y, obj.rotation.z);
 
-                                objectsGenerated.Add(new Vector2(x, y));
+                                //SCALE
+                                generated.transform.localScale = obj.randomScale ? 
+                                    new Vector3(Random.Range(obj.scale.x,obj.maxScale.x), Random.Range(obj.scale.y, obj.maxScale.y), Random.Range(obj.scale.z, obj.maxScale.z)) : 
+                                    obj.scale;
+
+                                //HEIGHT
+                                if (obj.useRandomHeight)
+                                    generated.transform.localScale = new Vector3(generated.transform.localScale.x,Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
+
+                               //ADD TO LIST
+                               objectsGenerated.Add(new Vector2(x, y));
 
 
                                 break;
