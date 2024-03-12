@@ -80,7 +80,7 @@ public class Chunk
         objectsGenerated.transform.SetParent(chunk.transform);
     }
 
-    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon, int levelOfDetail)
+    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon)
     {
 
         generator = mapGenerator;
@@ -94,7 +94,6 @@ public class Chunk
         {
             Vector2 realPos = posMap * chunkSize;
             bound = new Bounds(realPos, Vector2.one * chunkSize);
-            SetVisible(false);
         }
         else
         {
@@ -124,7 +123,19 @@ public class Chunk
         {
             horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize + 1);
             verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize + 1);
-            GenerateTerrainMesh_LowPoly(levelOfDetail);
+            LODGroup groups = floor.AddComponent<LODGroup>();
+
+            LOD[] lods = new LOD[3];
+            for (int i = 0; i < lods.Length; i++)
+            {
+                MeshRenderer[] renderers = new MeshRenderer[1];
+                GenerateTerrainMesh_LowPoly(mapGenerator.GetMeshSimplificationValue(i));
+                renderers[0] = floor.GetComponent<MeshRenderer>();
+                lods[i] = new LOD(1.0F / (i + 2), renderers);
+            }
+
+            groups.SetLODs(lods);
+           
         }
         //chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
 
@@ -262,11 +273,11 @@ public class Chunk
         GameObject.Destroy(floor.gameObject);
     }
 
-    public float Update(Vector2 playerPos)
+    public void Update(Vector2 playerPos, float maxViewDst)
     {
         Vector2 pos = new Vector2(playerPos.x, -playerPos.y);
         float viewerDstFromNearestEdge = Mathf.Sqrt(bound.SqrDistance(pos));
-        return viewerDstFromNearestEdge;
+        SetVisible(viewerDstFromNearestEdge <= maxViewDst);
     }
 
     public void SetVisible(bool visible)

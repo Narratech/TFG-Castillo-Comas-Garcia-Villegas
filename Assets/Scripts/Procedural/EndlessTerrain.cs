@@ -30,7 +30,7 @@ public class EndlessTerrain : MonoBehaviour
     {
         for (int i = 0; i < chunkVisibleLastUpdate.Count; i++)
         {
-            chunkVisibleLastUpdate[i].delete();
+            chunkVisibleLastUpdate[i].SetVisible(false);
         }
         chunkVisibleLastUpdate.Clear();
 
@@ -44,34 +44,14 @@ public class EndlessTerrain : MonoBehaviour
                 Vector2 viewedChunkCoord = new Vector2((int)(currentChunkCoordsX + xOffset), (int)(currentChunkCoordsY + yOffset));
                 if(viewedChunkCoord.x >=0 && viewedChunkCoord.y >= 0 && viewedChunkCoord.x< mapGenerator.mapSize/chunkSize && viewedChunkCoord.y < mapGenerator.mapSize / chunkSize)
                 {
-                    int LOD = 1;
-                    float dist = Vector3.Distance(viewedChunkCoord, new Vector2(currentChunkCoordsX, currentChunkCoordsY));
-                    if (dist > 3) 
-                        LOD = 49;
 
                     if (map3D.ContainsKey(viewedChunkCoord))
                     {
                         //mirar si esta visible y si no lo esta hacerlo visible
-                        float viewerDstFromNearestEdge = map3D[viewedChunkCoord].Update(playerPos);
-                        if (viewerDstFromNearestEdge <= maxViewDst)
+                        map3D[viewedChunkCoord].Update(playerPos, maxViewDst);
+                        if (map3D[viewedChunkCoord].isVisible())
                         {
-                            map3D[viewedChunkCoord].delete();
-                            map3D.Remove(viewedChunkCoord);
-                            map3D[viewedChunkCoord] =
-                            new Chunk(
-                                mapGenerator,
-                                new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y),
-                                mapGenerator.sizePerBlock,
-                                mapGenerator.chunkSize,
-                                mapGenerator.gameObjectMap3D.transform,
-                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false,
-                                LOD);
-                                chunkVisibleLastUpdate.Add(map3D[viewedChunkCoord]);
-                        }
-                        else 
-                        {
-                            map3D[viewedChunkCoord].delete();
-                            //map3D.Remove(viewedChunkCoord);
+                            chunkVisibleLastUpdate.Add(map3D[viewedChunkCoord]);
                         }
                     }
                     else
@@ -84,12 +64,10 @@ public class EndlessTerrain : MonoBehaviour
                                 mapGenerator.sizePerBlock, 
                                 mapGenerator.chunkSize, 
                                 mapGenerator.gameObjectMap3D.transform, 
-                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false,
-                                LOD));
+                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false));
 
                     }
                 }
-                
             }
         }
     }

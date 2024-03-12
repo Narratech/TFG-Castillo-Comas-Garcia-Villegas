@@ -60,8 +60,8 @@ public class MapGenerator : MonoBehaviour
 
 
     const float MAXLOD = 5f;
-    [Range(1, MAXLOD)]
-    public int levelOfDetail;
+    //[Range(1, MAXLOD)]
+    //public int levelOfDetail;
 
     /// <summary>
     /// La semilla aleatoria utilizada para generar el ruido
@@ -335,7 +335,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true, GetMeshSimplificationValue());
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true/*, GetMeshSimplificationValue()*/);
                 map3D[chunkPos] = generated;
             }
         }
@@ -344,7 +344,7 @@ public class MapGenerator : MonoBehaviour
     {
 
         calculateChunkSize();
-        //Debug.Log("tama�o de chunk: " + chunkSize);
+        //Debug.Log("tamano de chunk: " + chunkSize);
 
         int numChunks = mapSize / chunkSize;
         if (mapSize % chunkSize != 0) numChunks++;
@@ -354,7 +354,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false, GetMeshSimplificationValue());
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false/*, GetMeshSimplificationValue()*/);
                 map3D[chunkPos] = generated;
             }
 
@@ -554,12 +554,12 @@ public class MapGenerator : MonoBehaviour
         Debug.Log("Puntos de Interes Generados");
     }
 
-    int GetMeshSimplificationValue()
-    {
-        return GetMeshSimplificationValue(levelOfDetail);
-    }
+    //int GetMeshSimplificationValue()
+    //{
+    //    return GetMeshSimplificationValue(levelOfDetail);
+    //}
 
-    int GetMeshSimplificationValue(int LODlevel)
+    public int GetMeshSimplificationValue(int LODlevel)
     {
         float simplificationRate = LODlevel / MAXLOD;
 
