@@ -26,6 +26,7 @@ public class Foliage : ScriptableObject
 
     public float noiseScale = 0.1f;
 
+    public int unitSpace = 0;
 
     // PREFAB PROPERTIES
     public GameObject prefab;
@@ -43,6 +44,10 @@ public class Foliage : ScriptableObject
     // HEIGHT
     public bool useRandomHeight;
     public Vector2 minMaxHeight;
+
+    void createGameObject_Sprite(){
+
+    }
 }
 
 
@@ -90,6 +95,7 @@ class FoliageEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("densityCurve"), new GUIContent("Density Curve"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("density"), new GUIContent("Density"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("noiseScale"), new GUIContent("Noise Scale"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
 
         CreateHeader("TRANSFORM");
 
@@ -144,6 +150,6 @@ class FoliageEditor : Editor
         EditorGUILayout.Space();
         EditorGUILayout.LabelField(headerText, EditorStyles.boldLabel);
     }
-
+    
 }
 #endif

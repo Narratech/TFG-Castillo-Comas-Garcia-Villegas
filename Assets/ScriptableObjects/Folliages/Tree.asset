@@ -82,6 +82,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   density: 0.4
   noiseScale: 0.75
+  unitSpace: 2
   prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
   priorityLayer: 0
   randomRotation: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// Generar Objectos en el mapa
@@ -23,12 +24,11 @@ public static class ObjectsGenerator {
             {
                 //Si no hay un gameObject generado anteriormente
                 if (!objectsGenerated.Contains(new Vector2(x,y))){
-                    //Cell current = cellMap[x, y];
 
-                    //VER DE K BIOMA ES ESA CASILLA
-
+                    //VER EL BIOMA PARA ACCEDER A LSO OBJECTOS DE ESE BIOMA
                     var currentBiome = biomeGenerator.GetBiomeAt(x, y);
                     var objectsToGenerate = currentBiome.getFolliage();
+
                     //Ordeno por orden de densidad para q sea equivalente
                     foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                     {
@@ -61,10 +61,10 @@ public static class ObjectsGenerator {
                                 if (obj.useRandomHeight)
                                     generated.transform.localScale = new Vector3(generated.transform.localScale.x,Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
 
-                               //ADD TO LIST
-                               objectsGenerated.Add(new Vector2(x, y));
-
-
+                                //ADD TO LIST
+                                Debug.Log("Tam List: " + objectsGenerated.Count);
+                                OccupySpace(new Vector2(x, y), obj.unitSpace, objectsGenerated);
+                                Debug.Log("Tam List: "+objectsGenerated.Count);
                                 break;
                             }
                         }
@@ -73,5 +73,15 @@ public static class ObjectsGenerator {
                 }
             }
         }
+
+        mapInfo.SetObjectsMap(objectsGenerated);
+    }
+    public static void OccupySpace(Vector2 pos,int unitSpace, HashSet<Vector2> objectsGenerated){
+        if (unitSpace<0||objectsGenerated.Contains(pos)) return;
+        objectsGenerated.Add(pos);
+        OccupySpace(pos + Vector2.up,    unitSpace - 1,  objectsGenerated);
+        OccupySpace(pos + Vector2.down,  unitSpace - 1,  objectsGenerated);
+        OccupySpace(pos + Vector2.left,  unitSpace - 1,  objectsGenerated);
+        OccupySpace(pos + Vector2.right, unitSpace - 1,  objectsGenerated);
     }
 }
