@@ -8,17 +8,6 @@ public class Foliage : ScriptableObject
 {
     public string name;
 
-    public enum TypeOfFoliage { texture, prefab }
-
-    public TypeOfFoliage typeOfFoliage;
-
-    // TEXTURE PROPERTIES
-    public Sprite sprite;
-    public bool useColor;
-    public enum FoliageColorBehaviour { Random, Height, Scale }
-    public FoliageColorBehaviour colorBehaviour;
-    public Gradient gradient;
-
     // DENSITY FEATURES
     public AnimationCurve densityCurve;
 
@@ -44,10 +33,6 @@ public class Foliage : ScriptableObject
     // HEIGHT
     public bool useRandomHeight;
     public Vector2 minMaxHeight;
-
-    void createGameObject_Sprite(){
-
-    }
 }
 
 
@@ -66,36 +51,15 @@ class FoliageEditor : Editor
         // Nombre
         EditorGUILayout.PropertyField(serializedObject.FindProperty("name"));
 
-        // Tipo de foliage
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("typeOfFoliage"));
-
-        // Si el tipo de foliage es una textura
-        if (thisEditor.typeOfFoliage == Foliage.TypeOfFoliage.texture)
-        {
-            CreateHeader("TEXTURES PROPERTIES");
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("sprite"), new GUIContent("Sprite"));
-
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("useColor"), new GUIContent("useColor"));
-
-            // Decidir si usar variacion de color en las texturas o no
-            if (thisEditor.useColor)
-            {
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("colorBehaviour"), new GUIContent("colorBehaviour"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("gradient"), new GUIContent("gradient"));
-            }
-        }
-        else if (thisEditor.typeOfFoliage == Foliage.TypeOfFoliage.prefab)
-        {
-            CreateHeader("PREFAB PROPERTIES");
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("priorityLayer"), new GUIContent("priorityLayer"));
-        }
+        CreateHeader("PREFAB PROPERTIES");
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("priorityLayer"), new GUIContent("priorityLayer"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
 
         CreateHeader("DENSITY FEATURES");
         EditorGUILayout.PropertyField(serializedObject.FindProperty("densityCurve"), new GUIContent("Density Curve"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("density"), new GUIContent("Density"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("noiseScale"), new GUIContent("Noise Scale"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
 
         CreateHeader("TRANSFORM");
 
@@ -150,6 +114,6 @@ class FoliageEditor : Editor
         EditorGUILayout.Space();
         EditorGUILayout.LabelField(headerText, EditorStyles.boldLabel);
     }
-    
+
 }
 #endif

@@ -62,9 +62,9 @@ public static class ObjectsGenerator {
                                     generated.transform.localScale = new Vector3(generated.transform.localScale.x,Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
 
                                 //ADD TO LIST
-                                Debug.Log("Tam List: " + objectsGenerated.Count);
+                                //Debug.Log("Tam List: " + objectsGenerated.Count);
                                 OccupySpace(new Vector2(x, y), obj.unitSpace, objectsGenerated);
-                                Debug.Log("Tam List: "+objectsGenerated.Count);
+                                //Debug.Log("Tam List: "+objectsGenerated.Count);
                                 break;
                             }
                         }
