@@ -172,20 +172,10 @@ public class MapGenerator : MonoBehaviour
 
             maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
-            if (drawMode == DrawMode.Cartoon)
-            {
-                biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
+            biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
-                map = new MapInfo(mapSize + 1);
-                biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
-            }
-            else
-            {
-                biomeGenerator.GenerateNoises(mapSize, seed, offset);
-
-                map = new MapInfo(mapSize);
-                biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
-            }
+            map = new MapInfo(mapSize);
+            biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -243,26 +233,13 @@ public class MapGenerator : MonoBehaviour
 
         maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
-        if (drawMode == DrawMode.Cartoon)
-        {
-            biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
+        biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
-            map = new MapInfo(mapSize + 1);
+        map = new MapInfo(mapSize);
 
-            biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
+        biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
 
-            BuildMap();
-        }
-        else
-        {
-            biomeGenerator.GenerateNoises(mapSize, seed, offset);
-
-            map = new MapInfo(mapSize);
-
-            biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
-
-            BuildMap(true);
-        }
+        BuildMap(drawMode != DrawMode.Cartoon);
 
         calculateChunkSize();
     }
@@ -363,10 +340,7 @@ public class MapGenerator : MonoBehaviour
 
     void BuildMap(bool minecraft = false)
     {
-        if (minecraft)
-            map = new MapInfo(mapSize);
-        else
-            map = new MapInfo(mapSize + 1);
+        map = new MapInfo(mapSize);
 
         if (isIsland)
         {
@@ -494,7 +468,7 @@ public class MapGenerator : MonoBehaviour
         foreach (var biome in biomeInfluence)
         {
             float curveResult = heightTransition.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
-            actualHeight += biome.Key.NoiseToHeight(noiseValue) * curveResult;
+            actualHeight += biome.Key.NoiseToHeight(noiseValue) * curveResult * (drawMode == DrawMode.Cartoon ? 10 : 1);
             maxHeightPossible += curveResult;
         }
         return actualHeight / maxHeightPossible;
