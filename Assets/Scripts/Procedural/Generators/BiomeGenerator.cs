@@ -32,9 +32,12 @@ public class BiomeGenerator
             persistance = 1
         };
         float[,] heat = Noise.GenerateNoiseMap(size, seed + 1, noiseSettings);
-        float[,] moisture = Noise.GenerateNoiseMap(size, seed, noiseSettings);
+        float[,] moisture = Noise.GenerateNoiseMap(size, seed + 2, noiseSettings);
 
         biomeMap = new int[size, size];
+
+
+
 
         float threshold = 2 / (float)biomes.Length;
 
@@ -43,10 +46,14 @@ public class BiomeGenerator
             for (int j = 0; j < size; j++)
             {
                 float positionValue = heat[i, j] + moisture[i, j];
+
                 int currentBiomeIndex = (int)(positionValue / threshold);
+
                 biomeMap[i, j] = currentBiomeIndex;
             }
         }
+
+
     }
 
     public Biome GetBiomeAt(int x, int y)

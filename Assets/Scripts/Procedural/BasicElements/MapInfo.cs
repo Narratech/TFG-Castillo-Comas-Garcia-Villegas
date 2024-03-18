@@ -36,38 +36,20 @@ public class MapInfo
 
     public Color GetColorAt(int x, int y)
     {
-        float infl1 = 0f;
-        float infl2 = 0f;
-        Color color1 = Color.black;
-        Color color2 = Color.black;
-
-        bool secondPassed = false;
 
         var influences = biomeInfluences[x, y];
 
+        Color result = Color.black;
+        float maxInfl = -1f;
+
         foreach (var a in influences)
         {
-            if (a.Value > infl1)
+            if (a.Value > maxInfl)
             {
-                color1 = a.Key.color;
-                infl1 = a.Value;
-
-                if (infl2 > 0.01f) continue;
-            }
-            else if (!secondPassed)
-            {
-                color2 = a.Key.color;
-                infl2 = a.Value;
-                secondPassed = true;
-                continue;
-            }
-
-            if (a.Value > infl2)
-            {
-                color2 = a.Key.color;
-                infl2 = a.Value;
+                maxInfl = a.Value;
+                result = a.Key.color;
             }
         }
-        return Color.Lerp(color2, color1, infl1);
+        return result;
     }
 }

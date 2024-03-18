@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
-  m_Name: Mountain
+  m_Name: SnowyPeak
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 9
-    octaves: 3
-    persistance: 0.22
-    lacunarity: 24.1
+    noiseScale: 2.14
+    octaves: 2
+    persistance: 0.169
+    lacunarity: 1.38
     offset: {x: 150, y: 100}
   weight: 1
-  maxHeight: 9
-  minHeight: 4
+  maxHeight: 10
+  minHeight: 8
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
@@ -46,4 +46,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   foliages: []
-  color: {r: 0.254717, g: 0.16264813, b: 0.075694196, a: 0}
+  color: {r: 0.9433962, g: 0.9433962, b: 0.9433962, a: 0}

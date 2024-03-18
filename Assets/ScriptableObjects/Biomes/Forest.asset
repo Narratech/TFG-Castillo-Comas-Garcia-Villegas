@@ -19,7 +19,7 @@ MonoBehaviour:
     lacunarity: 10.5
     offset: {x: 150, y: 100}
   weight: 1
-  maxHeight: 7.5
+  maxHeight: 4
   minHeight: 2.5
   meshHeightCurve:
     serializedVersion: 2
@@ -47,4 +47,4 @@ MonoBehaviour:
     m_RotationOrder: 4
   foliages:
   - {fileID: 11400000, guid: 87c05ff03eaa9a949a38a130cb487c9f, type: 2}
-  color: {r: 1, g: 0.008056044, b: 0.6313726, a: 0}
+  color: {r: 0.004805972, g: 0.33962262, b: 0.00600305, a: 0}
