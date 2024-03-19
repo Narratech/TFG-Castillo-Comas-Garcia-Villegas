@@ -61,7 +61,8 @@ public class EndlessTerrain : MonoBehaviour
                                 mapGenerator.sizePerBlock, 
                                 mapGenerator.chunkSize, 
                                 mapGenerator.gameObjectMap3D.transform, 
-                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false));
+                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false,mapGenerator.material)
+                               );
 
                     }
                 }

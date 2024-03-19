@@ -40,8 +40,8 @@ public static class ObjectsGenerator {
                             float v = Random.Range(0.0f, obj.density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
                             if (noiseValue < v)
                             {
-                                Vector3 posHeight = objectFloor(new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1),obj.prefab.transform.localScale/2);
-                                Debug.Log("Coords: "+ x+ " y "+ y);
+                                Vector3 posHeight = new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1);
+                                //Debug.Log("Coords: "+ x+ " y "+ y);
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
 
@@ -85,14 +85,13 @@ public static class ObjectsGenerator {
         OccupySpace(pos + Vector2.right, unitSpace - 1,  objectsGenerated);
     }
 
-    public static Vector3  objectFloor(Vector3 pos,Vector3 scale)
+    public static Vector3 objectFloor(Vector3 pos,Vector3 scale)
     {
         Ray ray = new Ray(pos + new Vector3(0,0.1f,0), Vector3.down);
         RaycastHit hitInfo;
 
         if (Physics.Raycast(ray, out hitInfo, 20f))
             return hitInfo.point + new Vector3(0,scale.y,0);
-
         else return pos;
     }
 }

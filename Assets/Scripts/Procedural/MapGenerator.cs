@@ -110,6 +110,9 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public bool generateInterestPoints = false;
 
+    public Material material;
+
+
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)
     bool clean = false;
     bool endlessActive = false;
@@ -288,7 +291,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true/*, GetMeshSimplificationValue()*/);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true/*, GetMeshSimplificationValue()*/,material);
                 map3D[chunkPos] = generated;
             }
         }
@@ -307,7 +310,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false/*, GetMeshSimplificationValue()*/);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false/*, GetMeshSimplificationValue()*/,null);
                 map3D[chunkPos] = generated;
             }
 

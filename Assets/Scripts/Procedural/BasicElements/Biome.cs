@@ -34,6 +34,8 @@ public class Biome : ScriptableObject
     //Temporal (?)
     public Color color;
 
+    public Material material;
+
     float[,] noiseMap = null;
 
     public void GenerateNoiseMap(int size, int seed, Vector2 offset)

@@ -58,7 +58,7 @@ public class Chunk
         objectsGenerated.transform.SetParent(chunk.transform);
     }
 
-    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon)
+    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon,Material mat)
     {
 
         generator = mapGenerator;
@@ -81,7 +81,7 @@ public class Chunk
         //Creamos los respectivos materiales para cada malla
         Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         floor.AddComponent<MeshFilter>();
-        floor.AddComponent<MeshRenderer>().material = sueloMaterial;
+        floor.AddComponent<MeshRenderer>().material = cartoon ? mat: sueloMaterial;
 
 
         //Generamos la malla
