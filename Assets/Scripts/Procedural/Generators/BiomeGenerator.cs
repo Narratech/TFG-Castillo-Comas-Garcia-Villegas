@@ -44,9 +44,9 @@ public class BiomeGenerator
 
         for (int i = 1; i < biomes.Length; i++)
             thresholds[i] = thresholds[i - 1] + biomes[i].density * defaultThreshold;
-        
 
        
+
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -56,7 +56,7 @@ public class BiomeGenerator
                 float positionValue = ruido * thresholds[thresholds.Length-1];
 
                 int currentBiomeIndex=0;
-                for (int x = 1; x < biomes.Length; x++)
+                for (int x = 0; x < biomes.Length; x++)
                 { 
                     if (positionValue  <= thresholds[x])
                     {
@@ -72,17 +72,6 @@ public class BiomeGenerator
         }
 
 
-    }
-
-    Tuple<int,int>[] ordenarDensity()
-    {
-        //ITEM1 INDEX DEL BIOMES ARRAY Y ITEM2 DENSIDAD DEL BIOMA
-        Tuple<int, int>[] biomesDensity = new Tuple<int,int>[biomes.Length];
-        for (int i = 0; i < biomes.Length; i++) biomesDensity[i] = new Tuple<int, int>(i, biomes[i].density);
-
-        Array.Sort(biomesDensity, (x, y) => x.Item2.CompareTo(y.Item2));
-       
-        return biomesDensity;
     }
 
     public Biome GetBiomeAt(int x, int y)
