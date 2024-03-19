@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR;
@@ -37,23 +39,56 @@ public class BiomeGenerator
         biomeMap = new int[size, size];
 
 
+        //var copyBiomes = ordenarDensity();
+
+        float defaultThreshold = 2 / (float)biomes.Length;
 
 
-        float threshold = 2 / (float)biomes.Length;
+        float[] thresholds = new float[biomes.Length];
 
+        thresholds[0] = biomes[0].density * defaultThreshold;
+
+        for (int i = 1; i < biomes.Length; i++)
+            thresholds[i] = thresholds[i - 1] + biomes[i].density * defaultThreshold;
+        
+
+       
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                float positionValue = heat[i, j] + moisture[i, j];
+                var ruido = (heat[i, j] + moisture[i, j]) / 2;
+               
+                float positionValue = ruido * thresholds[thresholds.Length-1];
 
-                int currentBiomeIndex = (int)(positionValue / threshold);
+                int currentBiomeIndex=0;
+                for (int x = 1; x < biomes.Length; x++)
+                { 
+                    if (positionValue  <= thresholds[x])
+                    {
+                        //currentBiomeIndex = biomes[x].Item1;
+                        currentBiomeIndex = x;
+                        break;
+                    }
+
+                }
 
                 biomeMap[i, j] = currentBiomeIndex;
             }
         }
 
 
+    }
+
+    Tuple<int,int>[] ordenarDensity()
+    {
+        //ITEM1 INDEX DEL BIOMES ARRAY Y ITEM2 DENSIDAD DEL BIOMA
+        Tuple<int, int>[] biomesDensity = new Tuple<int,int>[biomes.Length];
+        for (int i = 0; i < biomes.Length; i++) biomesDensity[i] = new Tuple<int, int>(i, biomes[i].density);
+
+        Array.Sort(biomesDensity, (x, y) => x.Item2.CompareTo(y.Item2));
+       
+        return biomesDensity;
     }
 
     public Biome GetBiomeAt(int x, int y)

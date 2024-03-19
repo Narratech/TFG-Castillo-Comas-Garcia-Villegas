@@ -19,6 +19,7 @@ MonoBehaviour:
     lacunarity: 1.83
     offset: {x: 150, y: 100}
   weight: 1
+  density: 2
   maxHeight: 0.54
   minHeight: -2.34
   meshHeightCurve:
