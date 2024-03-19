@@ -10,7 +10,7 @@ using UnityEngine;
 public class PoissonDiscSampler 
 {
     /// <summary>
-    /// Grid para este objecto, en este se mirara la colocacion de este objecto en funcion delradius y cellSize
+    /// Grid para este objeto, en este se mirara la colocacion de este objeto en funcion del radius y cellSize
     /// </summary>
     private Vector2[,] personalGrid;
 
@@ -37,8 +37,8 @@ public class PoissonDiscSampler
     /// Crear un Patron de Poisson Disc
     /// </summary>
     /// <param name="width"> Anchura del mapa generado</param>
-    /// <param name="height">Longitud de mapa generado</param>
-    /// <param name="radius">Cada objecto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
+    /// <param name="height"> Longitud de mapa generado</param>
+    /// <param name="radius"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
     public PoissonDiscSampler(float width,float height, float radius,int amount)
     {
         this.amount = amount;
@@ -54,14 +54,17 @@ public class PoissonDiscSampler
     public IEnumerable<Vector2> Samples()
     {
         //yield return AddSample(new Vector2(Random.value * rect.width, Random.value * rect.height));
+
+        //Hasta que se hayan gennerado tantas posiciones como objetos de ese tipo
         while (activeSamples.Count < amount) 
         {
+            //Al principio, si no hay posiciones genero una random
             if (activeSamples.Count <= 0) AddSample(new Vector2(Random.value * rect.width, Random.value * rect.height));
 
-            //Coger una posicion del la lista aleatoria
+            //Coger una posicion de la lista aleatoria
             int i = (int)Random.value * activeSamples.Count;
-
             Vector2 current = activeSamples[i];
+
             bool found = false;
             //Probar a obtener los candidatos deseados que se encuentren entre [radius,radius^2]
             for (int j = 0; j < amount; j++)
@@ -72,7 +75,7 @@ public class PoissonDiscSampler
                 //Posible Posicion
                 Vector2 candidate = current + r * new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
 
-                if ( rect.Contains(candidate) && IsFarEnough(candidate))
+                if (rect.Contains(candidate) && IsFarEnough(candidate))
                 {
                     found = true;
                     yield return AddSample(candidate);
@@ -94,6 +97,7 @@ public class PoissonDiscSampler
     /// </summary>
     Vector2 AddSample(Vector2 position)
     {
+        //if (position.y < 0) position.y *= -1;
         activeSamples.Add(position);
         var gridPosition = vector2ToGrid(position);
         personalGrid[gridPosition.x, gridPosition.y] = position;

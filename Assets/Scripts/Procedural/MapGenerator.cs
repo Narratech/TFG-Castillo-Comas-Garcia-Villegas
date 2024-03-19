@@ -475,7 +475,7 @@ public class MapGenerator : MonoBehaviour
         if (!generateInterestPoints) return;
         Debug.Log("Generando Puntos de Interés:");
         foreach (var points in interestPoints)
-            points.Generate((int)(mapSize * sizePerBlock), (int)(mapSize * sizePerBlock));
+            points.Generate((int)(mapSize * sizePerBlock), (int)(mapSize * sizePerBlock), map, sizePerBlock, chunkSize);
 
         Debug.Log("Puntos de Interes Generados");
     }

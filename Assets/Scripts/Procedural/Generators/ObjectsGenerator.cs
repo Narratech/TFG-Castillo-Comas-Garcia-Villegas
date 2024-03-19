@@ -6,7 +6,7 @@ using UnityEngine;
 /// Generar Objectos en el mapa
 /// </summary>
 public static class ObjectsGenerator {
-    public static void GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float heightPerBlock)
+    public static void GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float sizePerBlock)
     {
         var mapSize = mapInfo.Size;
         var chunkSize = mapInfo.ChunkSize;
@@ -43,7 +43,7 @@ public static class ObjectsGenerator {
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
                                 
-                                generated.transform.position = new Vector3( x * heightPerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x,y],  -y * heightPerBlock + chunkSize / 2 - 1);
+                                generated.transform.position = new Vector3( x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x,y],  -y * sizePerBlock + chunkSize / 2 - 1);
 
                                 //ROTATION
                                 generated.transform.rotation = obj.randomRotation ? 
