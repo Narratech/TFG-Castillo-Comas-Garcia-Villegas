@@ -15,7 +15,7 @@ public static class ObjectsGenerator {
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / -2f;
 
-        HashSet<Vector2> objectsGenerated = new HashSet<Vector2>();
+        HashSet<Vector2> objectsGenerated = mapInfo.getObjects();
 
         for (int y = 0; y < mapSize; y++)
         {
@@ -40,11 +40,11 @@ public static class ObjectsGenerator {
                             float v = Random.Range(0.0f, obj.density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
                             if (noiseValue < v)
                             {
-
+                                Vector3 posHeight = objectFloor(new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1));
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
-                                
-                                generated.transform.position = new Vector3( x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x,y],  -y * sizePerBlock + chunkSize / 2 - 1);
+
+                                generated.transform.position = posHeight;
 
                                 //ROTATION
                                 generated.transform.rotation = obj.randomRotation ? 
@@ -82,5 +82,16 @@ public static class ObjectsGenerator {
         OccupySpace(pos + Vector2.down,  unitSpace - 1,  objectsGenerated);
         OccupySpace(pos + Vector2.left,  unitSpace - 1,  objectsGenerated);
         OccupySpace(pos + Vector2.right, unitSpace - 1,  objectsGenerated);
+    }
+
+    public static Vector3  objectFloor(Vector3 pos)
+    {
+        Ray ray = new Ray(pos + new Vector3(0,0.1f,0), Vector3.down);
+        RaycastHit hitInfo;
+
+        Physics.Raycast(ray, out hitInfo, 20f);
+        if (Physics.Raycast(ray, out hitInfo, 20f))
+            return hitInfo.point;
+        else return pos;
     }
 }

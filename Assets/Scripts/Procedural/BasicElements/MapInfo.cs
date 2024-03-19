@@ -52,4 +52,9 @@ public class MapInfo
         }
         return result;
     }
+
+    public HashSet<Vector2> getObjects()
+    {
+        return objectsInMap;
+    }
 }
