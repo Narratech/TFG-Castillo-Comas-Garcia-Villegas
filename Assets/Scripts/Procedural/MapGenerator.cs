@@ -21,10 +21,6 @@ public class MapGenerator : MonoBehaviour
         /// </summary>
         ColorMap,
         /// <summary>
-        /// Generacion de un Mapa de Con los Biomas establecidos(Solo visual 2D)
-        /// </summary>
-        BiomeMap,
-        /// <summary>
         /// Generacion de un Mapa de Ruido con  los bordes del terreno suavizados(Solo visual 2D)
         /// </summary>
         FallOff,
@@ -81,11 +77,6 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField]
     AnimationCurve heightTransition;
-
-    /// <summary>
-    ///  Layers de terreno que se pueden generar
-    /// </summary>
-    public TerrainType[] regions;
 
     public InterestPoint[] interestPoints;
 
@@ -185,13 +176,8 @@ public class MapGenerator : MonoBehaviour
                     display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(map.NoiseMap));
                     display.ActiveMap(true);
                     break;
+              
                 case DrawMode.ColorMap:
-                    BuildMap(true);
-                    display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateColorMap(), mapSize, map.NoiseMap, ShowMaximasAndMinimas));
-                    display.ActiveMap(true);
-                    Debug.Log("Color Map 2D generado");
-                    break;
-                case DrawMode.BiomeMap:
 
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
                     display.ActiveMap(true);
@@ -243,40 +229,6 @@ public class MapGenerator : MonoBehaviour
 
         calculateChunkSize();
     }
-
-    /// <summary>
-    /// Se usa para generar el mapa 2D a color
-    /// </summary>
-    /// <param name="fallOffMap"></param>
-    /// <returns></returns>
-    Color[] generateColorMap()
-    {
-
-        Color[] colorMap = new Color[mapSize * mapSize];
-        var heightMap = map.NoiseMap;
-        //Nos guardamos y vemos toda la informacion del mapa generado
-        for (int y = 0; y < mapSize; y++)
-        {
-            for (int x = 0; x < mapSize; x++)
-            {
-
-                if (isIsland) heightMap[x, y] = Mathf.Clamp01(heightMap[x, y]);// calculo del nuevo noise con respecto al falloff
-                float currentHeight = heightMap[x, y];
-
-                foreach (var currentRegion in regions)
-                {
-                    //recorremos y miramos que tipo de terreno se ha generado
-                    if (currentHeight <= currentRegion.height)
-                    {
-                        colorMap[y * mapSize + x] = currentRegion.color;//Color del pixel que tendra la textura del displayMap
-                        break;
-                    }
-                }
-            }
-        }
-        return colorMap;
-    }
-
 
     /// <summary>
     /// Se usa para generar el mapa 2D a color de biomas

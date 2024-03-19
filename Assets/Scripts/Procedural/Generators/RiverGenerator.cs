@@ -24,15 +24,15 @@ public class RiverGenerator : MonoBehaviour
     {
         mapGenerator = GetComponent<MapGenerator>();
 
-        var result = Noise.FindLocalMaxima(cells); //maximas
-        var toCreate = result.Where(pos => cells[pos.x, pos.y].noise <= mapGenerator.regions[capaGeneracion].height).
-            OrderBy(a => Guid.NewGuid()).Take(UnityEngine.Random.Range(1, riversMax)).ToList();
-        var waterMinimas = Noise.FindLocalMinima(cells);
+        //var result = Noise.FindLocalMaxima(cells); //maximas
+        //var toCreate = result.Where(pos => cells[pos.x, pos.y].noise <= mapGenerator.regions[capaGeneracion].height).
+        //    OrderBy(a => Guid.NewGuid()).Take(UnityEngine.Random.Range(1, riversMax)).ToList();
+        //var waterMinimas = Noise.FindLocalMinima(cells);
 
-        waterMinimas = waterMinimas.Where(pos => cells[pos.x, pos.y].noise < mapGenerator.regions[1].height).OrderBy(pos => cells[pos.x, pos.y].noise).Take(riversMax * 2).ToList();
+        //waterMinimas = waterMinimas.Where(pos => cells[pos.x, pos.y].noise < mapGenerator.regions[1].height).OrderBy(pos => cells[pos.x, pos.y].noise).Take(riversMax * 2).ToList();
 
-        foreach (var item in toCreate)
-            CreateRiver(item, cells, waterMinimas);
+        //foreach (var item in toCreate)
+        //    CreateRiver(item, cells, waterMinimas);
 
         return cells;
     }
@@ -41,15 +41,15 @@ public class RiverGenerator : MonoBehaviour
     {
         mapGenerator = GetComponent<MapGenerator>();
 
-        var result = Noise.FindLocalMaxima(noise); //maximas
-        var toCreate = result.Where(pos => noise[pos.x, pos.y] >= mapGenerator.regions[capaGeneracion].height).
-            OrderBy(a => Guid.NewGuid()).Take( riversMax).ToList();
-        var waterMinimas = Noise.FindLocalMinima(noise);
+        //var result = Noise.FindLocalMaxima(noise); //maximas
+        //var toCreate = result.Where(pos => noise[pos.x, pos.y] >= mapGenerator.regions[capaGeneracion].height).
+        //    OrderBy(a => Guid.NewGuid()).Take( riversMax).ToList();
+        //var waterMinimas = Noise.FindLocalMinima(noise);
 
-        waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(riversMax * 2).ToList();
+        //waterMinimas = waterMinimas.Where(pos => noise[pos.x, pos.y] < mapGenerator.regions[1].height).OrderBy(pos => noise[pos.x, pos.y]).Take(riversMax * 2).ToList();
 
-        foreach (var item in toCreate)
-            CreateRiver(item, noise, waterMinimas);
+        //foreach (var item in toCreate)
+        //    CreateRiver(item, noise, waterMinimas);
 
         return noise;
     }

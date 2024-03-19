@@ -1,29 +1,7 @@
 using System;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-/// <summary>
-/// Capa de terreno que se puede generar
-/// </summary>
-[System.Serializable]
-public struct TerrainType
-{
-    /// <summary>
-    /// Nombre Capa De Terreno
-    /// </summary>
-    public string Layer;
-    /// <summary>
-    /// Altura
-    /// </summary>
-    [Range(0f, 1f)]
-    public float height;
-    /// <summary>
-    /// Color de Capa
-    /// </summary>
-    public Color color;
-}
-
 
 /// <summary>
 /// Un Chunk es una porcion del Mapa que contiene el suelo, objectos y bordes de una porcion del mapa generado
