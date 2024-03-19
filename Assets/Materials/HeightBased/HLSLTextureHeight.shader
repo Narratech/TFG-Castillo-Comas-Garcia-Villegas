@@ -59,7 +59,7 @@ Shader "Custom/HLSL_ColorHeight"
 			sampler2D texture_7;
 
 			// Altura minima y maxima entre las que se calculan las texturas
-			float minHeight = 0;
+			float minHeight = 10;
 			float maxHeight = 28;
 
 			const static int maxLayerCount = 8;
@@ -161,7 +161,7 @@ Shader "Custom/HLSL_ColorHeight"
 			{
 				// TEXTURAS
 				float3 worldPos = i.worldPos;
-				float heightPercent = inverseLerp(3.5f, 27, worldPos.y);
+				float heightPercent = inverseLerp(10, 60, worldPos.y);
 
 				// Inicializa el color final
 				float3 thisColour = float3(0, 0, 0);

@@ -17,45 +17,63 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.01047492
+      time: -0.008727789
       value: 0.4687964
-      inSlope: 1.8470715
-      outSlope: 1.8470715
+      inSlope: 0.083664045
+      outSlope: 0.083664045
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.13495478
+      outWeight: 0.5620325
     - serializedVersion: 3
-      time: 0.4422968
-      value: 0.8912448
-      inSlope: 0.079134256
-      outSlope: 0.079134256
+      time: 0.20519087
+      value: 0.54455245
+      inSlope: 1.2081215
+      outSlope: 1.2081215
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4754694
+      value: 0.7380542
+      inSlope: 0.09331983
+      outSlope: 0.09331983
       tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.7528808
+      value: 0.59122175
+      inSlope: -1.3233329
+      outSlope: -1.3233329
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.98950195
       value: 0.4672928
-      inSlope: -1.625664
-      outSlope: -1.625664
+      inSlope: -0.07063728
+      outSlope: -0.07063728
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.088641144
+      inWeight: 0.9336009
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  density: 1
+  density: 2
   noiseScale: 0.75
   unitSpace: 0
   prefab: {fileID: 8491970159030730699, guid: 917fb26beee5b5e42b300232f0e81c82, type: 3}
   priorityLayer: 0
   randomRotation: 1
-  rotation: {x: -35, y: 0, z: -35}
-  maxRotation: {x: 35, y: 360, z: 35}
+  rotation: {x: -15, y: 0, z: -15}
+  maxRotation: {x: 15, y: 360, z: 15}
   randomScale: 1
-  scale: {x: 0.9, y: 0.9, z: 0.9}
-  maxScale: {x: 1.1, y: 1.1, z: 1.1}
+  scale: {x: 2.5, y: 2.5, z: 2.5}
+  maxScale: {x: 3.5, y: 3.5, z: 3.5}
   useRandomHeight: 1
-  minMaxHeight: {x: 0.8, y: 1.2}
+  minMaxHeight: {x: 2.5, y: 3.5}
