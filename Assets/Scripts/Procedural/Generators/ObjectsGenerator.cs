@@ -7,9 +7,9 @@ using static UnityEditor.PlayerSettings;
 /// Generar Objectos en el mapa
 /// </summary>
 public static class ObjectsGenerator {
-    public static void GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float sizePerBlock)
+    public static void GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float sizePerBlock,int mapSize)
     {
-        var mapSize = mapInfo.Size;
+        //var mapSize = mapInfo.Size;
         var chunkSize = mapInfo.ChunkSize;
 
         float topLeftX = (mapSize - 1) / -2f;
@@ -17,7 +17,7 @@ public static class ObjectsGenerator {
 
         HashSet<Vector2> objectsGenerated = mapInfo.getObjects();
 
-        for (int y = 0; y < mapSize; y++)
+        for (int y = 0; y <  mapSize; y++)
         {
             for (int x = 0; x < mapSize; x++)
             {
@@ -40,7 +40,8 @@ public static class ObjectsGenerator {
                             float v = Random.Range(0.0f, obj.density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y]- currentBiome.GetMinimumHeight()/(currentBiome.GetMaximumHeight() -currentBiome.GetMinimumHeight())));
                             if (noiseValue < v)
                             {
-                                Vector3 posHeight = objectFloor(new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1));
+                                Vector3 posHeight = objectFloor(new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1),obj.prefab.transform.localScale/2);
+                                Debug.Log("Coords: "+ x+ " y "+ y);
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
 
@@ -84,14 +85,14 @@ public static class ObjectsGenerator {
         OccupySpace(pos + Vector2.right, unitSpace - 1,  objectsGenerated);
     }
 
-    public static Vector3  objectFloor(Vector3 pos)
+    public static Vector3  objectFloor(Vector3 pos,Vector3 scale)
     {
         Ray ray = new Ray(pos + new Vector3(0,0.1f,0), Vector3.down);
         RaycastHit hitInfo;
 
-        Physics.Raycast(ray, out hitInfo, 20f);
         if (Physics.Raycast(ray, out hitInfo, 20f))
-            return hitInfo.point;
+            return hitInfo.point + new Vector3(0,scale.y,0);
+
         else return pos;
     }
 }

@@ -219,7 +219,8 @@ public class MapGenerator : MonoBehaviour
         else endlessActive = true;
         map.setChunkSize(chunkSize);
 
-        if (generateObjects) ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D, sizePerBlock);
+        if (generateObjects)
+            ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D, drawMode == DrawMode.Cartoon ? 1 : sizePerBlock, drawMode == DrawMode.Cartoon ? mapSize-1: mapSize);
 
     }
 
