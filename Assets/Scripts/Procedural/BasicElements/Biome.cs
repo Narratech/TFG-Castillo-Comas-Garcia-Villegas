@@ -14,7 +14,7 @@ public class Biome : ScriptableObject
     [Range(0.001f, 1f)]
     float weight = 0.5f;
 
-    public int density = 1;
+    public float density = 1;
 
     [Header("Terrain transformation")]
     [SerializeField]

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Plains
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 119.4
+    noiseScale: 343.5
     octaves: 3
     persistance: 0.257
     lacunarity: 4.9
     offset: {x: 150, y: 100}
   weight: 1
-  density: 1
+  density: 2
   maxHeight: 3
   minHeight: 2
   meshHeightCurve:

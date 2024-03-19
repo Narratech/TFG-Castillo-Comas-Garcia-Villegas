@@ -83,12 +83,12 @@ public class Chunk
         floor.AddComponent<MeshFilter>();
         floor.AddComponent<MeshRenderer>().material = sueloMaterial;
 
-        horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize);
-        verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize);
 
         //Generamos la malla
         if (!cartoon)
         { // si es tipo minecraft
+            horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize);
+            verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize);
 
             generateEdgesGameObject();
 
@@ -99,6 +99,8 @@ public class Chunk
         }
         else
         {
+            horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize + 1);
+            verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize + 1);
             LODGroup groups = floor.AddComponent<LODGroup>();
 
             LOD[] lods = new LOD[3];

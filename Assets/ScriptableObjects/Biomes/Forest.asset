@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Forest
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 109
+    noiseScale: 225
     octaves: 2
     persistance: 0.09
     lacunarity: 10.5

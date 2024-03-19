@@ -163,10 +163,20 @@ public class MapGenerator : MonoBehaviour
 
             maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
-            biomeGenerator.GenerateNoises(mapSize, seed, offset);
+            if (drawMode == DrawMode.Cartoon)
+            {
+                biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
-            map = new MapInfo(mapSize);
-            biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
+                map = new MapInfo(mapSize + 1);
+                biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
+            }
+            else
+            {
+                biomeGenerator.GenerateNoises(mapSize, seed, offset);
+
+                map = new MapInfo(mapSize);
+                biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
+            }
 
             MapDisplay display = GetComponent<MapDisplay>();
             switch (drawMode)
@@ -219,13 +229,26 @@ public class MapGenerator : MonoBehaviour
 
         maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
-        biomeGenerator.GenerateNoises(mapSize, seed, offset);
+        if (drawMode == DrawMode.Cartoon)
+        {
+            biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
-        map = new MapInfo(mapSize);
+            map = new MapInfo(mapSize + 1);
 
-        biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
+            biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
 
-        BuildMap(drawMode != DrawMode.Cartoon);
+            BuildMap();
+        }
+        else
+        {
+            biomeGenerator.GenerateNoises(mapSize, seed, offset);
+
+            map = new MapInfo(mapSize);
+
+            biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
+
+            BuildMap(true);
+        }
 
         calculateChunkSize();
     }
@@ -292,7 +315,10 @@ public class MapGenerator : MonoBehaviour
 
     void BuildMap(bool minecraft = false)
     {
-        map = new MapInfo(mapSize);
+        if (minecraft)
+            map = new MapInfo(mapSize);
+        else
+            map = new MapInfo(mapSize + 1);
 
         if (isIsland)
         {

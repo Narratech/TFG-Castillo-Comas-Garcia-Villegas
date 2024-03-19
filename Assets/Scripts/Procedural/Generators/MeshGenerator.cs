@@ -256,59 +256,34 @@ public static class MeshGenerator
     public static void GenerateTerrainMeshChunk_LowPoly(MapInfo map, GameObject chunkObject, int levelOfDetails, Vector2Int horBounds, Vector2Int verBounds)
     {
         float[,] height = map.HeightMap;
-
-        int sizeX = horBounds.y - horBounds.x;
-        int sizeY = horBounds.y - horBounds.x;
-
-        if (verBounds.y < height.GetLength(1))
-            sizeY++;
-
-        if (horBounds.y < height.GetLength(0))
-            sizeX++;
-
-        float topLeftX = (sizeX - 1) / -2f;
-        float topLeftZ = (sizeY - 1) / 2f;
+        int size = horBounds.y - horBounds.x;
+        float topLeftX = (size - 1) / -2f;
+        float topLeftZ = (size - 1) / 2f;
 
         int meshSimplificationIncrement = levelOfDetails;
+        int currentChunkSize = (int)(((float)size / (float)meshSimplificationIncrement) + 0.9999f);
 
-        int currentChunkSizeX = sizeX / meshSimplificationIncrement;
-        int currentChunkSizeY = sizeY / meshSimplificationIncrement;
-
-        if (verBounds.y < height.GetLength(1))
-            currentChunkSizeY++;
-
-        if (horBounds.y < height.GetLength(0))
-            currentChunkSizeX++;
-
-        int triangle = (sizeX - 1) * (sizeY - 1) * 6;
+        int triangle = (size - 1) * (size - 1) * 6;
 
         Mesh BaseMesh = new Mesh();
-        List<Vector3> vertices = new List<Vector3>(new Vector3[currentChunkSizeX * currentChunkSizeY]);//Almacenar los vertices y triangulos de la malla
+        List<Vector3> vertices = new List<Vector3>(new Vector3[currentChunkSize * currentChunkSize]);//Almacenar los vertices y triangulos de la malla
         List<int> triangles = new List<int>(new int[triangle]);
-        List<Vector2> uvs = new List<Vector2>(new Vector2[currentChunkSizeX * currentChunkSizeY]); //coordenadas de textura
+        List<Vector2> uvs = new List<Vector2>(new Vector2[currentChunkSize * currentChunkSize]); //coordenadas de textura
 
         int vertexIndex = 0;
         int triangleIndex = 0;
 
-        int y = 0, x = 0;
-
-        for (int relY = 0; relY <= sizeY; relY += meshSimplificationIncrement)
+        for (int y = verBounds.x; y < verBounds.y; y += meshSimplificationIncrement)
         {
-            y = relY + verBounds.x;
-            if (y >= height.GetLength(1)) { continue; }
-
-            for (int relX = 0; relX <= sizeX; relX += meshSimplificationIncrement)
+            for (int x = horBounds.x; x < horBounds.y; x += meshSimplificationIncrement)
             {
-                x = relX + horBounds.x;
-                if (x >= height.GetLength(0)) { continue; }
-
                 vertices[vertexIndex] = new Vector3(topLeftX + (x - horBounds.x), height[x, y], topLeftZ - (y - verBounds.x));
-                uvs[vertexIndex] = new Vector2(x / (float)sizeX, y / (float)sizeY);
+                uvs[vertexIndex] = new Vector2(x / (float)size, y / (float)size);
 
                 if (x < horBounds.y - meshSimplificationIncrement && y < verBounds.y - meshSimplificationIncrement)
                 {
-                    AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + currentChunkSizeX + 1, vertexIndex + currentChunkSizeX);
-                    AddTriangle(triangles, ref triangleIndex, vertexIndex + currentChunkSizeX + 1, vertexIndex, vertexIndex + 1);
+                    AddTriangle(triangles, ref triangleIndex, vertexIndex, vertexIndex + currentChunkSize + 1, vertexIndex + currentChunkSize);
+                    AddTriangle(triangles, ref triangleIndex, vertexIndex + currentChunkSize + 1, vertexIndex, vertexIndex + 1);
                 }
 
                 vertexIndex++;
