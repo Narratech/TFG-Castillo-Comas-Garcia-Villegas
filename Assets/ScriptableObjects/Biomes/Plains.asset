@@ -46,5 +46,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  foliages: []
+  foliages:
+  - {fileID: 11400000, guid: 61c602daff17d9e4fa4be473a9ae386c, type: 2}
   color: {r: 0.30015132, g: 0.8962264, b: 0.40066597, a: 0}

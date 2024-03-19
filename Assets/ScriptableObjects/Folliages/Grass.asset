@@ -12,84 +12,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
   m_Name: Grass
   m_EditorClassIdentifier: 
-  name: 
-  typeOfFoliage: 1
-  sprite: {fileID: 0}
-  useColor: 1
-  colorBehaviour: 1
-  gradient:
-    serializedVersion: 2
-    key0: {r: 0, g: 1, b: 0.21568629, a: 1}
-    key1: {r: 0.8289236, g: 0.8962264, b: 0.34242615, a: 1}
-    key2: {r: 0.89161146, g: 0.6367924, b: 1, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 14071
-    ctime1: 34888
-    ctime2: 56283
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 2
-    m_ColorSpace: -1
-    m_NumColorKeys: 3
-    m_NumAlphaKeys: 2
+  name: Grass
   densityCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.0013049584
-      outSlope: 0.0013049584
-      tangentMode: 34
+      time: -0.01047492
+      value: 0.4687964
+      inSlope: 1.8470715
+      outSlope: 1.8470715
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
+      outWeight: 0.13495478
+    - serializedVersion: 3
+      time: 0.4422968
+      value: 0.8912448
+      inSlope: 0.079134256
+      outSlope: 0.079134256
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.9104879
-      value: 0.0011881487
-      inSlope: 0.01974495
-      outSlope: 0.01974495
+      time: 0.98950195
+      value: 0.4672928
+      inSlope: -1.625664
+      outSlope: -1.625664
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.15145275
-      outWeight: 0.15537426
-    - serializedVersion: 3
-      time: 1.0000057
-      value: 1.003091
-      inSlope: 0.13062203
-      outSlope: 0.13062203
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.071273424
-      outWeight: 0.33333334
+      inWeight: 0.088641144
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  density: 0.4
+  density: 1
   noiseScale: 0.75
-  unitSpace: 2
-  prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
+  unitSpace: 0
+  prefab: {fileID: 8491970159030730699, guid: 917fb26beee5b5e42b300232f0e81c82, type: 3}
   priorityLayer: 0
-  randomRotation: 0
-  rotation: {x: 0, y: 0, z: 0}
-  maxRotation: {x: 0, y: 0, z: 0}
-  randomScale: 0
-  scale: {x: 1, y: 1, z: 1}
-  maxScale: {x: 0, y: 0, z: 0}
+  randomRotation: 1
+  rotation: {x: -35, y: 0, z: -35}
+  maxRotation: {x: 35, y: 360, z: 35}
+  randomScale: 1
+  scale: {x: 0.9, y: 0.9, z: 0.9}
+  maxScale: {x: 1.1, y: 1.1, z: 1.1}
   useRandomHeight: 1
   minMaxHeight: {x: 0.8, y: 1.2}
