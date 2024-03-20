@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEditor.PlayerSettings;
 
 /// <summary>
@@ -41,9 +42,11 @@ public static class ObjectsGenerator {
                             if (noiseValue < v)
                             {
                                 Vector3 posHeight = new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1);
-                                //Debug.Log("Coords: "+ x+ " y "+ y);
+
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
+
+                                //posHeight = objectFloor(posHeight, obj.prefab.transform.localScale);
 
                                 generated.transform.position = posHeight;
 
@@ -87,11 +90,30 @@ public static class ObjectsGenerator {
 
     public static Vector3 objectFloor(Vector3 pos,Vector3 scale)
     {
-        Ray ray = new Ray(pos + new Vector3(0,0.1f,0), Vector3.down);
+        Ray ray = new Ray(pos, Vector3.down*20);
         RaycastHit hitInfo;
 
-        if (Physics.Raycast(ray, out hitInfo, 20f))
-            return hitInfo.point + new Vector3(0,scale.y,0);
+        //GameObject lineObject = new GameObject("LineObject");
+        //LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+
+        //// Definir los puntos del rayo visual
+        //Vector3 endPoint = pos+ Vector3.down * 20;
+
+        //// Configurar las propiedades del Line Renderer
+        //lineRenderer.positionCount = 2; // Dos puntos para el inicio y el fin
+        //lineRenderer.SetPosition(0, pos);
+        //lineRenderer.SetPosition(1, endPoint);
+
+        //// Opcional: Ajustar otras propiedades del Line Renderer, como el material, el ancho del rayo, etc.
+        //lineRenderer.startWidth = 0.1f;
+        //lineRenderer.endWidth = 0.1f;
+
+
+        if (Physics.Raycast(ray, out hitInfo,20f))
+        {
+            Debug.Log("Collision "+hitInfo.collider.name);
+            return hitInfo.point + new Vector3(0, scale.y, 0);
+        }
         else return pos;
     }
 }

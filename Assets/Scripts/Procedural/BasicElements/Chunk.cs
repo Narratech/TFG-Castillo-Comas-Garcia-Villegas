@@ -42,6 +42,7 @@ public class Chunk
         Material edgesMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         edges.AddComponent<MeshFilter>();
         edges.AddComponent<MeshRenderer>().material = edgesMaterial;
+        GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
     }
 
     void createGameObjectChunk(Transform parent)
@@ -96,34 +97,38 @@ public class Chunk
 
             edges.AddComponent<MeshCollider>();
             GameObjectUtility.SetStaticEditorFlags(edges, StaticEditorFlags.BatchingStatic);
+            floor.AddComponent<MeshCollider>();
         }
         else
         {
             horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize + 1);
             verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize + 1);
             LODGroup groups = floor.AddComponent<LODGroup>();
-
             LOD[] lods = new LOD[3];
             for (int i = 0; i < lods.Length; i++)
             {
                 MeshRenderer[] renderers = new MeshRenderer[1];
                 GenerateTerrainMesh_LowPoly(mapGenerator.GetMeshSimplificationValue(i));
+
+                if ( i == 0) floor.AddComponent<MeshCollider>();
+
                 renderers[0] = floor.GetComponent<MeshRenderer>();
                 lods[i] = new LOD(1.0F / (i + 2), renderers);
             }
-
+            
             groups.SetLODs(lods);
            
         }
         //chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
-
-
-        floor.AddComponent<MeshCollider>();
+       
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 
         chunk.transform.position = new Vector3(posMap.x * chunkSize * sizePerBlock, 0, -posMap.y * chunkSize * sizePerBlock);
 
-        if (!cartoon) edges.transform.localPosition = new Vector3(-sizePerBlock + 1, 0, sizePerBlock - 1);
+        if (!cartoon) { 
+            edges.transform.localPosition = new Vector3(-sizePerBlock + 1, 0, sizePerBlock - 1); 
+            //edges.AddComponent<MeshCollider>();
+        }
 
 
         //chunkObjects = new List<Transform>();

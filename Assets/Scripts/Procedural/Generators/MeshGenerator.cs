@@ -64,7 +64,6 @@ public static class MeshGenerator
         meshFilter.mesh = BaseMesh;
 
         var renderer = chunkObject.GetComponent<MeshRenderer>();
-        chunkObject.AddComponent<MeshCollider>();
         DrawTextureChunk(map, renderer, horBounds, verBounds);
     }
 
