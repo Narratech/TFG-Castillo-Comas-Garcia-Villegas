@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,8 +9,12 @@ using static UnityEditor.PlayerSettings;
 /// Generar Objectos en el mapa
 /// </summary>
 public static class ObjectsGenerator {
-    public static void GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float sizePerBlock,int mapSize)
+    public static IEnumerator GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks, float sizePerBlock,int mapSize)
     {
+        bool done = false;
+        // Espera un frame
+        yield return null; // Tema de que se creen bien los colliders de la malla del mapa
+
         //var mapSize = mapInfo.Size;
         var chunkSize = mapInfo.ChunkSize;
 
@@ -46,7 +51,7 @@ public static class ObjectsGenerator {
                                 Vector2 chunkPos = new Vector2((int)(x / chunkSize),(int)(y / chunkSize));
                                 GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
 
-                                //posHeight = objectFloor(posHeight, obj.prefab.transform.localScale);
+                                posHeight = objectFloor(posHeight, obj.subsidence_in_the_ground);
 
                                 generated.transform.position = posHeight;
 
@@ -78,6 +83,8 @@ public static class ObjectsGenerator {
         }
 
         mapInfo.SetObjectsMap(objectsGenerated);
+
+        yield return new WaitWhile(() => done == false);
     }
     public static void OccupySpace(Vector2 pos,int unitSpace, HashSet<Vector2> objectsGenerated){
         if (unitSpace<0||objectsGenerated.Contains(pos)) return;
@@ -88,8 +95,9 @@ public static class ObjectsGenerator {
         OccupySpace(pos + Vector2.right, unitSpace - 1,  objectsGenerated);
     }
 
-    public static Vector3 objectFloor(Vector3 pos,Vector3 scale)
+    public static Vector3 objectFloor(Vector3 pos, float subsidence_in_the_ground)
     {
+
         Ray ray = new Ray(pos, Vector3.down*20);
         RaycastHit hitInfo;
 
@@ -111,8 +119,8 @@ public static class ObjectsGenerator {
 
         if (Physics.Raycast(ray, out hitInfo,20f))
         {
-            Debug.Log("Collision "+hitInfo.collider.name);
-            return hitInfo.point + new Vector3(0, scale.y, 0);
+            //Debug.Log("Collision "+hitInfo.collider.name);
+            return hitInfo.point - new Vector3(0, subsidence_in_the_ground, 0);
         }
         else return pos;
     }

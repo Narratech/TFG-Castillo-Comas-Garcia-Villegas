@@ -20,6 +20,9 @@ public class Foliage : ScriptableObject
     public int priorityLayer;
 
     // TRANSFORM
+
+    public float subsidence_in_the_ground = 0f; // % del objecto que se puede hundir en el suelo
+
     public bool randomRotation;
     public Vector3 rotation;
     public Vector3 maxRotation;
@@ -61,7 +64,8 @@ class FoliageEditor : Editor
 
         CreateHeader("TRANSFORM");
 
-
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("subsidence_in_the_ground"), new GUIContent("subsidence_in_the_ground"));
+        
         // ROTACION
         // Elegir si se quiere rotacion aleatoria entre 2 puntos o constante
         EditorGUILayout.PropertyField(serializedObject.FindProperty("randomRotation"), new GUIContent("Random Rotation"));
