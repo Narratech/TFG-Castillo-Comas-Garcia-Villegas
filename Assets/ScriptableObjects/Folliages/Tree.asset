@@ -50,7 +50,7 @@ MonoBehaviour:
   noiseScale: 0.75
   unitSpace: 2
   prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
-  priorityLayer: 0
+  folliage: 0
   subsidence_in_the_ground: 0.4
   randomRotation: 1
   rotation: {x: -20, y: 0, z: -20}

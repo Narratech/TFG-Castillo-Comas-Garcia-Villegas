@@ -68,7 +68,8 @@ MonoBehaviour:
   noiseScale: 0.75
   unitSpace: 0
   prefab: {fileID: 8491970159030730699, guid: 917fb26beee5b5e42b300232f0e81c82, type: 3}
-  priorityLayer: 0
+  folliage: 0
+  subsidence_in_the_ground: 0
   randomRotation: 1
   rotation: {x: -15, y: 0, z: -15}
   maxRotation: {x: 15, y: 360, z: 15}

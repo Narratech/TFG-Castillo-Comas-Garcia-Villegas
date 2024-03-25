@@ -17,12 +17,10 @@ public class Foliage : ScriptableObject
 
     // PREFAB PROPERTIES
     public GameObject prefab;
-    public int priorityLayer;
-
-    // TRANSFORM
-
+    public bool folliage = false;
     public float subsidence_in_the_ground = 0f; // % del objecto que se puede hundir en el suelo
-
+    
+    // TRANSFORM
     public bool randomRotation;
     public Vector3 rotation;
     public Vector3 maxRotation;
@@ -54,8 +52,13 @@ class FoliageEditor : Editor
 
         CreateHeader("PREFAB PROPERTIES");
         EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("priorityLayer"), new GUIContent("priorityLayer"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
+
+        if (!thisEditor.folliage)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("subsidence_in_the_ground"), new GUIContent("Subsidence in the ground"));
+        }
 
         CreateHeader("DENSITY FEATURES");
         EditorGUILayout.PropertyField(serializedObject.FindProperty("densityCurve"), new GUIContent("Density Curve"));
@@ -63,8 +66,6 @@ class FoliageEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("noiseScale"), new GUIContent("Noise Scale"));
 
         CreateHeader("TRANSFORM");
-
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("subsidence_in_the_ground"), new GUIContent("subsidence_in_the_ground"));
         
         // ROTACION
         // Elegir si se quiere rotacion aleatoria entre 2 puntos o constante
