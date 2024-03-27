@@ -192,7 +192,6 @@ public class MapGenerator : MonoBehaviour
                     break;
               
                 case DrawMode.ColorMap:
-
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
                     display.ActiveMap(true);
                     Debug.Log("Color Map 2D generado");
@@ -205,11 +204,13 @@ public class MapGenerator : MonoBehaviour
                     BuildMap(true);
                     generateChunks_Minecraft();
                     display.ActiveMap(false);
+                    GenerateInterestPoints();
                     break;
                 case DrawMode.Cartoon:
                     BuildMap(false);
                     generateChunks_LowPoly();
                     display.ActiveMap(false);
+                    GenerateInterestPoints();
                     break;
                 case DrawMode.All:
                     BuildMap(true);
