@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Castillo
   m_EditorClassIdentifier: 
   typeOfPoint: 4
-  objectInstance: {fileID: 1900316293031401602, guid: 7519b0352f3a44a4a87702b7b17f7e9e,
+  objectInstance: {fileID: 6290602745211109076, guid: af080e85528d4d14dbdc1c93b357957f,
     type: 3}
   amount: 3
   radius: 50
