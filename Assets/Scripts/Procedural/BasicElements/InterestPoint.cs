@@ -55,8 +55,9 @@ public class InterestPoint : ScriptableObject
     {
         Dictionary<Vector2, bool> objectPositions = map.getObjects();
         poissonDisc = new PoissonDiscSampler(mapWidth, mapHeight, radius,amount);
+        List<Vector2> points = poissonDisc.Samples();
         var parent = new GameObject("Padre");
-        foreach (Vector2 sample in poissonDisc.Samples())
+        foreach (Vector2 sample in points)
         {
             float z = map.HeightMap[(int)sample.x, (int)sample.y];
             Vector3  pos = new Vector3(sample.x * sizePerBlock - chunkSize / 2 + 1, 

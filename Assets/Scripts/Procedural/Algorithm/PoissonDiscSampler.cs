@@ -10,9 +10,9 @@ using UnityEngine;
 public class PoissonDiscSampler 
 {
     /// <summary>
-    /// Grid para este objeto, en este se mirara la colocacion de este objeto en funcion del radius y cellSize
+    /// Grid para este objeto, en este se mirara la colocacion de este objeto en funcion del radius_ y cellSize
     /// </summary>
-    private Vector2[,] personalGrid;
+    private int [,] grid;
 
     private readonly Rect rect;
     /// <summary>
@@ -20,9 +20,10 @@ public class PoissonDiscSampler
     /// </summary>
     private int amount;
     /// <summary>
-    /// radio al cuadrado para generar los objecto con distancioa de separacion de maximo radius^2
+    /// radio al cuadrado para generar los objecto con distancioa de separacion de maximo radius_^2
     /// </summary>
-    private readonly float radius2;  // radius squared
+    private readonly float radius2;  // radius_ squared
+    private float radius;
     /// <summary>
     /// Tamaño de la "casilla"
     /// </summary>
@@ -32,77 +33,73 @@ public class PoissonDiscSampler
     /// <summary>
     /// Lista de posiciones para los objectos generados
     /// </summary>
-    private List<Vector2> activeSamples = new List<Vector2>();
+    private List<Vector2> points = new List<Vector2>();
+    private List<Vector2> spawnPoints = new List<Vector2>();
     /// <summary>
     /// Crear un Patron de Poisson Disc
     /// </summary>
     /// <param name="width"> Anchura del mapa generado</param>
     /// <param name="height"> Longitud de mapa generado</param>
-    /// <param name="radius"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
-    public PoissonDiscSampler(float width,float height, float radius,int amount)
+    /// <param name="radius_"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
+    public PoissonDiscSampler(float width,float height, float radius_,int amount)
     {
         this.amount = amount;
         rect = new Rect(0,0,width,height);
-        radius2 = radius * radius;
-        cellSize = radius / Mathf.Sqrt(2);
-        personalGrid = new Vector2[Mathf.CeilToInt(width / cellSize), Mathf.CeilToInt(width / cellSize)];
+        radius = radius_;
+        radius2 = radius_ * radius_;
+        cellSize = radius_ / Mathf.Sqrt(2);
+        grid = new int[Mathf.CeilToInt(width / cellSize), Mathf.CeilToInt(height / cellSize)];
+
+        spawnPoints.Add(new Vector2(width/2, height/2));
     }
 
     /// <summary>
     /// Devuelve una secuencia de posibles posiciones que respetan la distancia establecida anteriormente
     /// </summary>
-    public IEnumerable<Vector2> Samples()
+    public List<Vector2> Samples()
     {
-        //yield return AddSample(new Vector2(Random.value * rect.width, Random.value * rect.height));
 
-        //Hasta que se hayan gennerado tantas posiciones como objetos de ese tipo
-        while (activeSamples.Count < amount) 
+        while (spawnPoints.Count > 0)
         {
-            //Al principio, si no hay posiciones genero una random
-            if (activeSamples.Count <= 0) AddSample(new Vector2(Random.value * rect.width, Random.value * rect.height));
+            int spawnIndex = Random.Range(0, spawnPoints.Count);
+            Vector2 spawnCentre = spawnPoints[spawnIndex];
+            bool candidateAccepted = false;
 
-            //Coger una posicion de la lista aleatoria
-            int i = (int)Random.value * activeSamples.Count;
-            Vector2 current = activeSamples[i];
-
-            bool found = false;
-            //Probar a obtener los candidatos deseados que se encuentren entre [radius,radius^2]
-            for (int j = 0; j < amount; j++)
+            for (int i = 0; i < amount; i++)
             {
-                float angle = 2 * Mathf.PI * Random.value;
-                //Generar un numero aleatorio que este dentro de los radios establecidos, por asi decirlo es como generar un numero aletorio que este dentro de un anillo
-                float r = Mathf.Sqrt(Random.value * 3 * radius2 + radius2);
-                //Posible Posicion
-                Vector2 candidate = current + r * new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-
-                if (rect.Contains(candidate) && IsFarEnough(candidate))
+                float angle = Random.value * Mathf.PI * 2;
+                Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
+                Vector2 candidate = spawnCentre + dir * Random.Range(radius, 2 * radius);
+                if (IsValid(candidate) && points.Count < amount)
                 {
-                    found = true;
-                    yield return AddSample(candidate);
+                    points.Add(candidate);
+                    spawnPoints.Add(candidate);
+                    grid[(int)(candidate.x / cellSize), (int)(candidate.y / cellSize)] = points.Count;
+                    candidateAccepted = true;
                     break;
                 }
             }
-            // Si no encontramos un candidato válido tras "amount" intentos, eliminamos esta muestra de la cola de muestras activas
-            if (!found)
+            if (!candidateAccepted)
             {
-                activeSamples[i] = activeSamples[activeSamples.Count - 1];
-                activeSamples.RemoveAt(activeSamples.Count - 1);
-               
+                spawnPoints.RemoveAt(spawnIndex);
             }
+
         }
+
+        return points;
     }
 
     /// <summary>
     /// Añade la posicion del objecto a la cola de posiciones activas
     /// </summary>
-    Vector2 AddSample(Vector2 position)
-    {
-        //if (position.y < 0) position.y *= -1;
-        activeSamples.Add(position);
-        var gridPosition = vector2ToGrid(position);
-        personalGrid[gridPosition.x, gridPosition.y] = position;
-        return position;
-    }
+    //Vector2 AddSample(Vector2 position)
+    //{
+    //    //if (position.y < 0) position.y *= -1;
+    //    points.Add(position);
+    //    var gridPosition = vector2ToGrid(position);
+    //    grid[gridPosition.x, gridPosition.y] = position;
+    //    return position;
+    //}
 
     /// <summary>
     /// Conversion de la posicion del objecto para poder guardarlo en el grid
@@ -118,28 +115,59 @@ public class PoissonDiscSampler
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    bool IsFarEnough(Vector2 position)
+    //bool IsFarEnough(Vector2 position)
+    //{
+    //    var gridPos = vector2ToGrid(position);
+
+    //    int xmin = Mathf.Max(0, gridPos.x - 2);
+    //    int ymin = Mathf.Max(0, gridPos.y - 2);
+    //    int xmax = Mathf.Min(gridPos.x + 2, grid.GetLength(0) - 1);
+    //    int ymax = Mathf.Min(gridPos.y + 2, grid.GetLength(1) - 1);
+
+    //    for (int y = ymin; y <= ymax; y++)
+    //    {
+    //        for (int x = xmin; x <= xmax; x++)
+    //        {
+    //            // Utilizamos el vector cero para denotar una celda sin rellenar en la cuadrícula
+    //            if (grid[x, y] != Vector2.zero)
+    //            {
+    //                var d = grid[x, y] - position;
+    //                return d.x * d.x + d.y * d.y < radius2;
+    //            }
+    //        }
+    //    }
+    //    return true;
+    //    //Nota: Si tomamos (0,0) como muestra, esta sera ignorada
+    //}
+
+    bool IsValid(Vector2 candidate)
     {
-        var gridPos = vector2ToGrid(position);
-
-        int xmin = Mathf.Max(0, gridPos.x - 2);
-        int ymin = Mathf.Max(0, gridPos.y - 2);
-        int xmax = Mathf.Min(gridPos.x + 2, personalGrid.GetLength(0) - 1);
-        int ymax = Mathf.Min(gridPos.y + 2, personalGrid.GetLength(1) - 1);
-
-        for (int y = ymin; y <= ymax; y++)
+        if (candidate.x >= 0 && candidate.x < rect.width && candidate.y >= 0 && candidate.y < rect.height)
         {
-            for (int x = xmin; x <= xmax; x++)
+            int cellX = (int)(candidate.x / cellSize);
+            int cellY = (int)(candidate.y / cellSize);
+            int searchStartX = Mathf.Max(0, cellX - 2);
+            int searchEndX = Mathf.Min(cellX + 2, grid.GetLength(0) - 1);
+            int searchStartY = Mathf.Max(0, cellY - 2);
+            int searchEndY = Mathf.Min(cellY + 2, grid.GetLength(1) - 1);
+
+            for (int x = searchStartX; x <= searchEndX; x++)
             {
-                // Utilizamos el vector cero para denotar una celda sin rellenar en la cuadrícula
-                if (personalGrid[x, y] != Vector2.zero)
+                for (int y = searchStartY; y <= searchEndY; y++)
                 {
-                    var d = personalGrid[x, y] - position;
-                    return d.x * d.x + d.y * d.y < radius2;
+                    int pointIndex = grid[x, y] - 1;
+                    if (pointIndex != -1)
+                    {
+                        float sqrDst = (candidate - points[pointIndex]).sqrMagnitude;
+                        if (sqrDst < radius * radius)
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
+            return true;
         }
-        return true;
-        //Nota: Si tomamos (0,0) como muestra, esta sera ignorada
+        return false;
     }
 }
