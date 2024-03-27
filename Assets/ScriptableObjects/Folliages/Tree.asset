@@ -59,4 +59,4 @@ MonoBehaviour:
   useRandomHeight: 1
   minMaxHeight: {x: 0.8, y: 1.2}
   environment_rotation: 0
-  subsidence_in_the_ground: 0.2
+  subsidence_in_the_ground: 0

@@ -63,7 +63,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  density: 0.1
+  density: 2
   noiseScale: 0.75
   unitSpace: 0
   prefab: {fileID: 8491970159030730699, guid: 917fb26beee5b5e42b300232f0e81c82, type: 3}
@@ -77,4 +77,4 @@ MonoBehaviour:
   useRandomHeight: 1
   minMaxHeight: {x: 2.5, y: 3.5}
   environment_rotation: 1
-  subsidence_in_the_ground: 0.1
+  subsidence_in_the_ground: 0.05

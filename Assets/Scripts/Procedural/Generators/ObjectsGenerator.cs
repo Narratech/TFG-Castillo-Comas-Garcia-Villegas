@@ -70,10 +70,14 @@ public static class ObjectsGenerator {
                             //HEIGHT
                             if (obj.useRandomHeight)
                                 generated.transform.localScale = new Vector3(generated.transform.localScale.x, UnityEngine.Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
-                            
-                           
-                            
+
+                            if (!mapInfo.Cartoon)
+                            {
+                                posHeight.x += sizePerBlock / 2f;
+                                posHeight.z -= sizePerBlock / 2f - 1;
+                            }
                             generated.transform.position = posHeight;
+
 
                             //ADD TO LIST
                             OccupySpace(new Vector2(x, y), obj.unitSpace, obj.folliage, objectsGenerated);
