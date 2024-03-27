@@ -221,7 +221,8 @@ public class MapGenerator : MonoBehaviour
             }
         }
         else endlessActive = true;
-        map.setChunkSize(chunkSize);
+        if(!endlessActive)
+            map.setChunkSize(chunkSize);
 
         if (generateObjects)
             StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D,  
