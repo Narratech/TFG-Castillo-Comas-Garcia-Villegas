@@ -9,13 +9,6 @@ using UnityEngine.Profiling;
 [Serializable]
 public class InterestPoint : ScriptableObject
 {
-    /*COSAS QUE INTERNAMENTE NECESITARE
-        - Acceso a las Cells de cada chunk para saber si esa "casilla ya ha sido ocupada por otro objecto"
-        - USO DEL PATRON POISSON DISC para poder distribuir los puntos de interes siguiendo una serie de condiciones especificas como la distancia entre puntos
-        - 
-    */
-
-
     /// <summary>
     /// Type Of Intesrest Point
     /// </summary>
