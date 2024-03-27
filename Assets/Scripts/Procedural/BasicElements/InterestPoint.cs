@@ -44,12 +44,13 @@ public class InterestPoint : ScriptableObject
     private PoissonDiscSampler poissonDisc;
 
     //Se deberia generar el objeto dentro del Chunk correspondiente dependiendo de la posicion
-    public void Generate(int mapWidth, int mapHeight, MapInfo map, float sizePerBlock, int chunkSize)
+    public void Generate(int mapWidth, int mapHeight, MapInfo map, float sizePerBlock, int chunkSize, Transform grandParent)
     {
         Dictionary<Vector2, bool> objectPositions = map.getObjects();
         poissonDisc = new PoissonDiscSampler(mapWidth, mapHeight, radius,amount);
         List<Vector2> points = poissonDisc.Samples();
-        var parent = new GameObject("Padre");
+        var parent = new GameObject("InterestPoint_" + this.name);
+        parent.transform.parent = grandParent;
         foreach (Vector2 sample in points)
         {
             float z = map.HeightMap[(int)sample.x, (int)sample.y];
