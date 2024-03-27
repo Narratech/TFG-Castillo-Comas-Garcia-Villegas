@@ -59,7 +59,7 @@ public class Chunk
         objectsGenerated.transform.SetParent(chunk.transform);
     }
 
-    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent, bool cartoon,Material mat)
+    public Chunk(MapGenerator mapGenerator, Vector2Int posMap, float sizePerBlock, int chunkSize, Transform parent,Material mat)
     {
 
         generator = mapGenerator;
@@ -82,11 +82,11 @@ public class Chunk
         //Creamos los respectivos materiales para cada malla
         Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         floor.AddComponent<MeshFilter>();
-        floor.AddComponent<MeshRenderer>().material = cartoon ? mat: sueloMaterial;
+        floor.AddComponent<MeshRenderer>().material = mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? mat: sueloMaterial;
 
 
         //Generamos la malla
-        if (!cartoon)
+        if (!(mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon))
         { // si es tipo minecraft
             horBounds = new Vector2Int(posMap.x * chunkSize, (posMap.x * chunkSize) + chunkSize);
             verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize);
@@ -124,95 +124,7 @@ public class Chunk
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 
         chunk.transform.position = new Vector3(posMap.x * chunkSize * sizePerBlock, 0, -posMap.y * chunkSize * sizePerBlock);
-
-        if (!cartoon) { 
-            edges.transform.localPosition = new Vector3(-sizePerBlock + 1, 0, sizePerBlock - 1); 
-            //edges.AddComponent<MeshCollider>();
-        }
-
-
-        //chunkObjects = new List<Transform>();
-        //maxHeight = mapGenerator.maxHeightPossible;
-        //obj = mapGenerator.objects[0].prefab;
-        //densityCurve = mapGenerator.objects[0].densityCurve;
-        //GenerateObjects(mapCells, chunkSize);
     }
-
-
-    //void GenerateObjects(Cell[,] cells, int chunkSize)
-    //{
-    //    int lenght_0 = cells.GetLength(0);
-    //    int lenght_1 = cells.GetLength(1);
-
-    //    float distanceBetween = (float)chunkSize / (float)lenght_0;
-
-    //    Vector3 cornerPosition = new Vector3(chunk.transform.position.x - chunkSize / 2, 0, chunk.transform.position.z + chunkSize / 2);
-
-    //    for (int i = 0; i < lenght_0; i++)
-    //    {
-    //        for (int j = 0; j < lenght_1; j++)
-    //        {
-    //            Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, 0, j * distanceBetween);
-
-    //            Ray ray = new Ray(objPosition, Vector3.up);
-    //            RaycastHit hitInfo;
-
-    //            if (Physics.Raycast(ray, out hitInfo))
-    //            {
-    //                objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
-    //            }
-    //            else
-    //            {
-    //                ray = new Ray(objPosition, Vector3.down);
-
-    //                if (Physics.Raycast(ray, out hitInfo))
-    //                {
-    //                    objPosition = new Vector3(hitInfo.point.x, hitInfo.point.y, hitInfo.point.z);
-    //                }
-    //            }
-
-    //            float cellHeight = cells[i, j].Height;
-
-    //            Transformarlo a un valor entre 0 y 1
-    //            float normalizedHeight = cellHeight / maxHeight;
-
-    //            Calcular probabilidad de que este objeto aparezca en esta casilla
-    //            float probability = densityCurve.Evaluate(normalizedHeight);
-
-    //            Basada en esta probabilidad, se calcula si hay un arbol o no en esta casilla
-    //            if (UnityEngine.Random.Range(0f, 1f) < probability)
-    //            {
-    //                Vector3 objPosition = cornerPosition + new Vector3(i * distanceBetween, cellHeight, -j * distanceBetween);
-
-    //                Comprobar si este objeto esta a una distancia ilegal de otro objeto
-    //                 Esto se ampliara para tener en cuenta que objeto tiene preferencia sobre otros
-    //                bool validPosition = true;
-    //                for (int k = 0; k < chunkObjects.Count; k++)
-    //                {
-    //                    Vector2 thisPosition = new Vector2(objPosition.x, objPosition.z);
-    //                    Vector2 otherPosition = new Vector2(chunkObjects[k].position.x, chunkObjects[k].position.z);
-    //                    if (Vector2.Distance(thisPosition, otherPosition) < minDistance)
-    //                        validPosition = false;
-    //                }
-
-    //                if (validPosition)
-    //                {
-    //                    Generar un �ngulo aleatorio
-    //                    Quaternion objRotation;
-    //                    float randomAngle_y = UnityEngine.Random.Range(0f, 360f);
-    //                    float randomAngle_x = UnityEngine.Random.Range(-15f, 15f);
-    //                    float randomAngle_z = UnityEngine.Random.Range(-15f, 15f);
-    //                    objRotation = Quaternion.Euler(randomAngle_x, randomAngle_y, randomAngle_z);
-
-    //                    GameObject thisObject = Transform.Instantiate(obj, objPosition,
-    //                    objRotation, chunk.transform);
-
-    //                    chunkObjects.Add(thisObject.transform);
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// Genera la maya del chunk

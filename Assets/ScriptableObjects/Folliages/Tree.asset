@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
   m_Name: Tree
   m_EditorClassIdentifier: 
-  name: 
   densityCurve:
     serializedVersion: 2
     m_Curve:
@@ -51,7 +50,6 @@ MonoBehaviour:
   unitSpace: 2
   prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
   folliage: 0
-  subsidence_in_the_ground: 0.4
   randomRotation: 1
   rotation: {x: -20, y: 0, z: -20}
   maxRotation: {x: 20, y: 360, z: 20}
@@ -60,3 +58,5 @@ MonoBehaviour:
   maxScale: {x: 1.2, y: 1.2, z: 1.2}
   useRandomHeight: 1
   minMaxHeight: {x: 0.8, y: 1.2}
+  environment_rotation: 0
+  subsidence_in_the_ground: 0.2

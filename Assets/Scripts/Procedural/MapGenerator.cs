@@ -50,6 +50,7 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public int mapSize;
 
+    [HideInInspector]
     public int chunkSize = 50;
 
     public float sizePerBlock = 1f;
@@ -170,14 +171,14 @@ public class MapGenerator : MonoBehaviour
             {
                 biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
-                map = new MapInfo(mapSize + 1);
+                map = new MapInfo(mapSize + 1,true,sizePerBlock);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
             }
             else
             {
                 biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
-                map = new MapInfo(mapSize);
+                map = new MapInfo(mapSize,false,sizePerBlock);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
             }
 
@@ -223,9 +224,9 @@ public class MapGenerator : MonoBehaviour
         map.setChunkSize(chunkSize);
 
         if (generateObjects)
-            StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D, 
-                drawMode == DrawMode.Cartoon ? 1 : sizePerBlock, 
-                drawMode == DrawMode.Cartoon ? mapSize-1: mapSize));
+            StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D,  
+                drawMode == DrawMode.Cartoon ? mapSize-1: mapSize
+                ));
 
     }
 
@@ -239,7 +240,7 @@ public class MapGenerator : MonoBehaviour
         {
             biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
-            map = new MapInfo(mapSize + 1);
+            map = new MapInfo(mapSize + 1, true, sizePerBlock);
 
             biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
 
@@ -249,7 +250,7 @@ public class MapGenerator : MonoBehaviour
         {
             biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
-            map = new MapInfo(mapSize);
+            map = new MapInfo(mapSize, false,sizePerBlock);
 
             biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
 
@@ -293,7 +294,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, true/*, GetMeshSimplificationValue()*/,material);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform,material);
                 map3D[chunkPos] = generated;
             }
         }
@@ -312,7 +313,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, false/*, GetMeshSimplificationValue()*/,null);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform,null);
                 map3D[chunkPos] = generated;
             }
 
@@ -321,10 +322,7 @@ public class MapGenerator : MonoBehaviour
 
     void BuildMap(bool minecraft = false)
     {
-        if (minecraft)
-            map = new MapInfo(mapSize);
-        else
-            map = new MapInfo(mapSize + 1);
+        map =  !minecraft ? new MapInfo(mapSize + 1, true, sizePerBlock) : new MapInfo(mapSize, false, sizePerBlock);
 
         if (isIsland)
         {

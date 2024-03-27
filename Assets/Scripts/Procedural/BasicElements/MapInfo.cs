@@ -16,12 +16,19 @@ public class MapInfo
 
     int size;
     int chunkSize;
-    public int Size => size;
-    public int ChunkSize => chunkSize;
+    float sizePerBlock;
+    bool cartoon;
 
-    public MapInfo(int mapSize)
+    public int Size => size;
+    public float SizePerBlock => sizePerBlock;
+    public int ChunkSize => chunkSize;
+    public bool Cartoon => cartoon;
+
+    public MapInfo(int mapSize,bool cartoon,float sizePerBlock)
     {
         size = mapSize;
+        this.cartoon = cartoon;
+        this.sizePerBlock = sizePerBlock;
         noiseMap = null;
         heightMap = null;
         biomeInfluences = null;

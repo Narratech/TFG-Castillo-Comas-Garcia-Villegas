@@ -4,8 +4,6 @@ using UnityEditor;
 [CreateAssetMenu(menuName = "Procedural/Foliage")]
 public class Foliage : ScriptableObject
 {
-    public string name;
-
     // DENSITY FEATURES
     public AnimationCurve densityCurve;
 
@@ -18,7 +16,6 @@ public class Foliage : ScriptableObject
     // PREFAB PROPERTIES
     public GameObject prefab;
     public bool folliage = false;
-    public float subsidence_in_the_ground = 0f; // % del objecto que se puede hundir en el suelo
     
     // TRANSFORM
     public bool randomRotation;
@@ -32,6 +29,10 @@ public class Foliage : ScriptableObject
     // HEIGHT
     public bool useRandomHeight;
     public Vector2 minMaxHeight;
+
+    //ADVANCED SETTINGS
+    public bool environment_rotation; //rotacion con el enviroment cuestas y cosas asi
+    public float subsidence_in_the_ground = 0f; // % del objecto que se puede hundir en el suelo
 }
 
 
@@ -47,17 +48,14 @@ class FoliageEditor : Editor
         if (thisEditor == null)
             return;
 
-        // Nombre
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("name"));
-
         CreateHeader("PREFAB PROPERTIES");
         EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
+
         EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
 
         if (!thisEditor.folliage)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("subsidence_in_the_ground"), new GUIContent("Subsidence in the ground"));
         }
 
         CreateHeader("DENSITY FEATURES");
@@ -106,6 +104,10 @@ class FoliageEditor : Editor
 
         serializedObject.ApplyModifiedProperties();
 
+        CreateHeader("Advanced Settings");
+
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("environment_rotation"), new GUIContent("Environment Rotation"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("subsidence_in_the_ground"), new GUIContent("Subsidence in the ground"));
         //DrawDefaultInspector();
     }
 

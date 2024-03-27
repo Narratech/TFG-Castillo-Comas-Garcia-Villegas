@@ -60,8 +60,8 @@ public class EndlessTerrain : MonoBehaviour
                                 new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y), 
                                 mapGenerator.sizePerBlock, 
                                 mapGenerator.chunkSize, 
-                                mapGenerator.gameObjectMap3D.transform, 
-                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? true : false,mapGenerator.material)
+                                mapGenerator.gameObjectMap3D.transform,
+                                mapGenerator.material)
                                );
 
                     }
