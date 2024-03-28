@@ -532,17 +532,13 @@ public class MapGenerator : MonoBehaviour
     static int[] GetDivisors(int n)
     {
         List<int> div = new List<int>();
-        for (int i = 1; i <= Math.Sqrt(n); i++)
+        for (int i = 1; i <= n / 2; i++)
         {
             if (n % i == 0)
             {
                 // If divisors are equal, 
                 // count only one 
                 div.Add(i);
-
-                // Otherwise count both 
-                if (n / i != i)
-                    div.Add(n / i);
             }
         }
 

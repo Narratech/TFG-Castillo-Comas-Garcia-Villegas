@@ -107,13 +107,19 @@ public class Chunk
             LOD[] lods = new LOD[3];
             for (int i = 0; i < lods.Length; i++)
             {
-                MeshRenderer[] renderers = new MeshRenderer[1];
-                GenerateTerrainMesh_LowPoly(mapGenerator.GetMeshSimplificationValue(i));
+                GameObject child = new GameObject();
+                child.transform.parent = floor.transform;
+
+                child.AddComponent<MeshRenderer>().material = mat;
+                child.AddComponent<MeshFilter>();
+
+                GenerateTerrainMesh_LowPoly(child, mapGenerator.GetMeshSimplificationValue(i));
 
                 if ( i == 0) floor.AddComponent<MeshCollider>();
 
-                renderers[0] = floor.GetComponent<MeshRenderer>();
-                lods[i] = new LOD(1.0F / (i + 2), renderers);
+                MeshRenderer[] a = { child.GetComponent<MeshRenderer>() };
+
+                lods[i] = new LOD(1.0F / (i + 2), a);
             }
             
             groups.SetLODs(lods);
@@ -148,9 +154,9 @@ public class Chunk
     /// <summary>
     /// Genera la maya del chunk
     /// </summary>
-    public void GenerateTerrainMesh_LowPoly(int levelOfDetail)
+    public void GenerateTerrainMesh_LowPoly(GameObject o, int levelOfDetail)
     {
-        MeshGenerator.GenerateTerrainMeshChunk_LowPoly(generator.Map, floor, levelOfDetail, horBounds, verBounds);
+        MeshGenerator.GenerateTerrainMeshChunk_LowPoly(generator.Map, o, levelOfDetail, horBounds, verBounds);
     }
 
     public void setParent(Transform parent)
