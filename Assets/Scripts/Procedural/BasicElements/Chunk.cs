@@ -108,7 +108,7 @@ public class Chunk
             for (int i = 0; i < lods.Length; i++)
             {
                 GameObject child = new GameObject();
-                child.transform.parent = floor.transform;
+                child.transform.SetParent(floor.transform);
 
                 child.AddComponent<MeshRenderer>().material = mat;
                 child.AddComponent<MeshFilter>();

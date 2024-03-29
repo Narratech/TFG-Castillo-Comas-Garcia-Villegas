@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 /// <summary>
 /// Generador de mapas Procedurales
@@ -40,10 +42,13 @@ public class MapGenerator : MonoBehaviour
     }
 
     public DrawMode drawMode;
+
     /// <summary>
     /// GameObject Padre de todo el mapa3D que se va a generar
     /// </summary>
     public GameObject gameObjectMap3D;
+
+    private GameObject trashMaps;
 
     /// <summary>
     /// Tama�o del Mapa
@@ -55,10 +60,7 @@ public class MapGenerator : MonoBehaviour
 
     public float sizePerBlock = 1f;
 
-
     const float MAXLOD = 5f;
-    //[Range(1, MAXLOD)]
-    //public int levelOfDetail;
 
     /// <summary>
     /// La semilla aleatoria utilizada para generar el ruido
@@ -113,12 +115,10 @@ public class MapGenerator : MonoBehaviour
 
     public Material material;
 
-
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)
     bool clean = false;
     bool endlessActive = false;
     public bool getEndLessActive() { return endlessActive; }
-    GameObject trashMaps;// GUARDARME MAPAS ANTERIORES "BASURA"
 
     MapInfo map;
 
@@ -153,7 +153,8 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         //Borro todo lo anterior creado para crear un nuevo mapa
-        CleanMaps();
+       StartCoroutine(CleanMaps());
+
         map3D = new Dictionary<Vector2, Chunk>();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
         {
@@ -171,14 +172,14 @@ public class MapGenerator : MonoBehaviour
             {
                 biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
 
-                map = new MapInfo(mapSize + 1,true,sizePerBlock);
+                map = new MapInfo(mapSize + 1, true, sizePerBlock);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
             }
             else
             {
                 biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
-                map = new MapInfo(mapSize,false,sizePerBlock);
+                map = new MapInfo(mapSize, false, sizePerBlock);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
             }
 
@@ -190,7 +191,7 @@ public class MapGenerator : MonoBehaviour
                     display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(map.NoiseMap));
                     display.ActiveMap(true);
                     break;
-              
+
                 case DrawMode.ColorMap:
                     display.DrawTextureMap(TextureGenerator.TextureFromColorMap(generateBiomeColorMap(), mapSize));
                     display.ActiveMap(true);
@@ -222,18 +223,19 @@ public class MapGenerator : MonoBehaviour
             }
         }
         else endlessActive = true;
-        if(!endlessActive)
+        if (!endlessActive)
             map.setChunkSize(chunkSize);
 
         if (generateObjects)
-            StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D,  
-                drawMode == DrawMode.Cartoon ? mapSize-1: mapSize
+            StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D,
+                drawMode == DrawMode.Cartoon ? mapSize - 1 : mapSize
                 ));
 
     }
 
     public void GenerateEndlessMap()
     {
+        //CleanMaps();
         map3D = new Dictionary<Vector2, Chunk>();
 
         maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
@@ -252,7 +254,7 @@ public class MapGenerator : MonoBehaviour
         {
             biomeGenerator.GenerateNoises(mapSize, seed, offset);
 
-            map = new MapInfo(mapSize, false,sizePerBlock);
+            map = new MapInfo(mapSize, false, sizePerBlock);
 
             biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
 
@@ -296,14 +298,14 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform,material);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, material);
                 map3D[chunkPos] = generated;
             }
         }
     }
+
     void generateChunks_Minecraft()
     {
-
         calculateChunkSize();
         //Debug.Log("tamano de chunk: " + chunkSize);
 
@@ -315,7 +317,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < numChunks; x++)
             {
                 Vector2Int chunkPos = new Vector2Int(x, y);
-                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform,null);
+                Chunk generated = new Chunk(this, chunkPos, sizePerBlock, chunkSize, gameObjectMap3D.transform, null);
                 map3D[chunkPos] = generated;
             }
 
@@ -324,7 +326,7 @@ public class MapGenerator : MonoBehaviour
 
     void BuildMap(bool minecraft = false)
     {
-        map =  !minecraft ? new MapInfo(mapSize + 1, true, sizePerBlock) : new MapInfo(mapSize, false, sizePerBlock);
+        map = !minecraft ? new MapInfo(mapSize + 1, true, sizePerBlock) : new MapInfo(mapSize, false, sizePerBlock);
 
         if (isIsland)
         {
@@ -393,49 +395,53 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    /// <summary>
-    ///  Si yo creo un mapa y lo actualizo, la basura se va quedando ahi pero desactivada(SOLO FUERA DE EJECUCION),
-    ///  en ejecucion se elimina el mapa anterior
-    /// </summary>
-    void CleanMaps()
+    IEnumerator CleanMaps()
     {
         if (clean)
         {
-            foreach (var chunk in map3D)
-                chunk.Value.delete();
-            map3D.Clear();
             if (gameObjectMap3D.transform.childCount > 0)
             {
-                foreach (Transform childTransform in gameObjectMap3D.transform)
-                {
-                    GameObject.Destroy(childTransform.gameObject);
-                }
+
+                #if UNITY_EDITOR
+                    UnityEngine.Object.DestroyImmediate(gameObjectMap3D);
+                #else
+                    UnityEngine.Object.Destroy(gameObjectMap3D);
+                #endif
+
+                gameObjectMap3D = new GameObject("Mapa3D");
+                gameObjectMap3D.transform.SetParent(transform);
+                gameObjectMap3D.transform.SetSiblingIndex(1);
             }
         }
-        else if (map3D.Count > 0)
+        else
         {
-
             if (trashMaps == null)
             { //POR SI QUIERES ELIMIANR TODA LA BASURA DE GOLPE Q SEA COMODO
-                trashMaps = new GameObject("TrashMaps"); trashMaps.transform.SetParent(transform);
-                trashMaps.SetActive(false);
+                trashMaps = GameObject.Find("TrashMaps");
+                if (trashMaps == null)
+                {
+                    trashMaps = new GameObject("TrashMaps");
+                    trashMaps.transform.SetParent(transform);
+                    trashMaps.SetActive(false);
+                }
             }
 
-            int numChilds = trashMaps.transform.childCount;
-            GameObject mapDeprecated = new GameObject("MapDeprecated " + numChilds);
-            mapDeprecated.transform.SetParent(trashMaps.transform);
-            foreach (var chunk in map3D)
-                chunk.Value.setParent(mapDeprecated.transform);
-            map3D.Clear();
             //Por si queda algo en el hijo
             if (gameObjectMap3D.transform.childCount > 0)
             {
-                foreach (Transform childTransform in gameObjectMap3D.transform)
-                {
-                    GameObject.Destroy(childTransform.gameObject);
-                }
+                System.DateTime horaActual = System.DateTime.Now;
+                gameObjectMap3D.name = "MapDeprecated " + horaActual.ToString("HH:mm:ss");
+
+                gameObjectMap3D.transform.SetParent(trashMaps.transform);
+                var basura = gameObjectMap3D;
+                gameObjectMap3D = new GameObject("Mapa3D");
+               
+                gameObjectMap3D.transform.SetParent(transform);
+                gameObjectMap3D.transform.SetSiblingIndex(1);
             }
         }
+        // Espera un frame
+        yield return new WaitWhile(() => gameObjectMap3D.transform.parent != transform);
     }
 
     /// <summary>
@@ -511,11 +517,6 @@ public class MapGenerator : MonoBehaviour
 
         Debug.Log("Puntos de Interes Generados");
     }
-
-    //int GetMeshSimplificationValue()
-    //{
-    //    return GetMeshSimplificationValue(levelOfDetail);
-    //}
 
     public int GetMeshSimplificationValue(int LODlevel)
     {
