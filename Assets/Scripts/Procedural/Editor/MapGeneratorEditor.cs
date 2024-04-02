@@ -6,6 +6,12 @@ using UnityEditor;
 public class MapGeneratorEditor : Editor{
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.Space();
+        GUILayout.Label("Procedural Map Creator", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 16 });
+        GUILayout.Label("By Cabeza Hovos", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Normal, fontSize = 12 });
+        GUILayout.Label("version 1.0.1", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Normal, fontSize = 12 });
+        EditorGUILayout.Space();
+
         MapGenerator mapGen = (MapGenerator)target;
         if (mapGen == null)
             return;
