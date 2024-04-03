@@ -85,7 +85,7 @@ public class BiomeGenerator
             biome.GenerateNoiseMap(mapSize, seed, offset);
     }
 
-    internal Dictionary<Biome, float> GetBiomeInfluence(int x, int y)
+    internal Dictionary<Biome, float> GenerateBiomeInfluence(int x, int y)
     {
         Dictionary<Biome, float> result = new Dictionary<Biome, float>();
 

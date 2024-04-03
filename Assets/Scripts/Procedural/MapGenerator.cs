@@ -337,7 +337,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < map.Size; y++)
             {
-                influences[x, y] = GetBiomeInfluence(x, y);
+                influences[x, y] = biomeGenerator.GenerateBiomeInfluence(x, y);
                 noise[x, y] = isIsland ? GetCoordinatesNoise(x, y, influences[x, y]) - fallOffMap[x, y] : GetCoordinatesNoise(x, y, influences[x, y]);
 
             }
@@ -491,15 +491,27 @@ public class MapGenerator : MonoBehaviour
         return currentNoise / maxNoisePossible;
     }
 
-    /// <summary>
-    /// (TODO) Devolver� un map con los biomas actuales y su influencia en un punto concreto
-    /// De momento devuelve 1 si est� en el bioma y 0 si no, sin transici�n
-    /// </summary>
-    /// <param name="posNoise"> las coordenadas a procesar</param>
-    /// <returns></returns>
-    Dictionary<Biome, float> GetBiomeInfluence(int x, int y)
+    public Dictionary<Biome, float> GetBiomeInfluencesAt(Vector3 globalPosition)
     {
-        return biomeGenerator.GetBiomeInfluence(x, y);
+        return GetBiomeInfluencesAt(globalPosition.x, globalPosition.z);
+    }
+
+    public Dictionary<Biome, float> GetBiomeInfluencesAt(Vector2 globalPosition)
+    {
+        return GetBiomeInfluencesAt(globalPosition.x, globalPosition.y);
+    }
+
+    public Dictionary<Biome, float> GetBiomeInfluencesAt(float x, float y)
+    {
+        float topLeftX = chunkSize / 2;
+        float topLeftZ = chunkSize / 2;
+
+        int indexX = Mathf.Clamp(Mathf.RoundToInt((x + topLeftX) - transform.position.x), 0, map.Size - 1);
+        int indexY = Mathf.Clamp(Mathf.RoundToInt((-y + topLeftZ) + transform.position.z), 0, map.Size - 1);
+
+        Debug.Log("x: " + indexX + ", y: " + indexY);
+
+        return map.BiomeInfluences[indexX, indexY];
     }
 
     /// <summary>

@@ -12,6 +12,8 @@ public class MapInfo
 
     Dictionary<Biome, float>[,] biomeInfluences;
 
+    public Dictionary<Biome, float>[,] BiomeInfluences => biomeInfluences;
+
     Dictionary<Vector2,bool> objectsInMap;
 
     int size;

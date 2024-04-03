@@ -114,9 +114,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7456053474703868949}
-  - {fileID: 5559982950988509876}
   - {fileID: 6597648623063328732}
+  - {fileID: 5559982950988509876}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -136,91 +135,33 @@ MonoBehaviour:
   gameObjectMap3D: {fileID: 7347230949463286448}
   mapSize: 50
   chunkSize: 50
-  levelOfDetail: 1
-  heightMultiplayer: 31.91
-  meshHeightCurve:
+  sizePerBlock: 1
+  seed: 185
+  offset: {x: 176, y: 190}
+  biomeGenerator:
+    noiseSize: 0
+    influenceRange: 10
+    biomes: []
+  noiseTransition:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.51266396
-      value: 0.34687042
-      inSlope: -0.3625491
-      outSlope: -0.3625491
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.95691115
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  noiseScale: 100
-  octaves: 2
-  persistance: 0.347
-  lacunarity: 12
-  seed: 185
-  offset: {x: 176, y: 190}
-  regions:
-  - Layer: DeepWater
-    height: 0
-    color: {r: 0.21933961, g: 0.21933961, b: 0.5, a: 0}
-  - Layer: ShallowWater
-    height: 0.173
-    color: {r: 0.3724635, g: 0.4668822, b: 0.5849056, a: 0}
-  - Layer: Sand
-    height: 0.3
-    color: {r: 0.9150943, g: 0.8711151, b: 0.6517889, a: 0}
-  - Layer: Grass
-    height: 0.473
-    color: {r: 0.23268957, g: 0.49019608, b: 0.13333334, a: 0}
-  - Layer: Grass2
-    height: 0.599
-    color: {r: 0.07342472, g: 0.2830189, b: 0, a: 0}
-  - Layer: Rock
-    height: 0.7
-    color: {r: 0.5377358, g: 0.29479805, b: 0.1764706, a: 0}
-  - Layer: Rock2
-    height: 0.824
-    color: {r: 0.18867922, g: 0.11157057, b: 0.06852971, a: 0}
-  - Layer: Snow
-    height: 1
-    color: {r: 1, g: 1, b: 1, a: 0}
-  objects:
-  - prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310,
-      type: 3}
-    Density: 0.15
-    NoiseScale: 0.75
-    GenerationLayer: Grass
-  - prefab: {fileID: 6941765000743290380, guid: c60edd51c065ceb46b345849a03bc106,
-      type: 3}
-    Density: 0.1
-    NoiseScale: 0.75
-    GenerationLayer: Grass
-  - prefab: {fileID: 1576488453971893466, guid: a778b631c6253a04899cb31bad047c81,
-      type: 3}
-    Density: 0.2
-    NoiseScale: 0.75
-    GenerationLayer: Rock2
-  useFallOff: 0
+  heightTransition:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  interestPoints: []
+  isIsland: 0
   autoUpdate: 0
   autoRegenerate: 0
+  generateObjects: 0
+  generateInterestPoints: 0
+  material: {fileID: 0}
+  maxHeightPossible: 0
 --- !u!114 &5248894046562199692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,38 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd4a1204aacc5ea41be9d3b01ff16040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewer: {fileID: 7456053474703868949}
---- !u!1 &3739816465307167786
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7456053474703868949}
-  m_Layer: 0
-  m_Name: Viewer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7456053474703868949
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3739816465307167786}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5234133774820441089}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  playerTransform: {fileID: 0}
 --- !u!1 &7347230949463286448
 GameObject:
   m_ObjectHideFlags: 0

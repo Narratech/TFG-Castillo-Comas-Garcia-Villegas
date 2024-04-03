@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Procedural/Biome")]
@@ -75,5 +76,10 @@ public class Biome : ScriptableObject
     public Foliage[] getFolliage()
     {
         return foliages;
+    }
+
+    public static implicit operator string(Biome a)
+    {
+        return a.name;
     }
 }
