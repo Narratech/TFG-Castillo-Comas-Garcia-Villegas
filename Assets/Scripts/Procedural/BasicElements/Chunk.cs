@@ -23,14 +23,6 @@ public class Chunk
     float sizePerBlock;
     Bounds bound;
 
-    //float maxHeight;
-    //GameObject obj;
-    //AnimationCurve densityCurve;
-
-    // Objetos instanciados en este chunk
-    //List<Transform> chunkObjects;
-    //float minDistance = 3;
-
     Vector2Int horBounds = Vector2Int.zero;
     Vector2Int verBounds = Vector2Int.zero;
 

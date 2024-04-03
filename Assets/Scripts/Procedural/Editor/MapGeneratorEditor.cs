@@ -15,7 +15,7 @@ public class MapGeneratorEditor : Editor{
         GUILayout.Label("By Cabeza Hovos", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Normal, fontSize = 12 });
         GUILayout.Label("version 1.0.1", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Normal, fontSize = 12 });
         EditorGUILayout.Space();
-
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         ////
         EditorGUILayout.Space();
         GUILayout.Label("Basics Elements", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
