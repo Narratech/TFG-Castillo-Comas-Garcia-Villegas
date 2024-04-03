@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -101,14 +102,6 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public bool generateObjects = false;
     /// <summary>
-    /// Generar rios 
-    /// </summary>
-    public bool createRivers = false;
-    /// <summary>
-    /// Pintar en el mapa 2D los puntos de maxima y minima altura
-    /// </summary>
-    public bool ShowMaximasAndMinimas = false;
-    /// <summary>
     /// Generar Puntos de Interes
     /// </summary>
     public bool generateInterestPoints = false;
@@ -184,6 +177,10 @@ public class MapGenerator : MonoBehaviour
             }
 
             MapDisplay display = GetComponent<MapDisplay>();
+
+            if (display==null)
+                display = transform.AddComponent<MapDisplay>();
+
             switch (drawMode)
             {
                 case DrawMode.NoiseMap:
@@ -527,7 +524,6 @@ public class MapGenerator : MonoBehaviour
         int indexToGet = Mathf.RoundToInt(simplificationRate * (divisors.Length - 1));
         return divisors[indexToGet];
     }
-
 
     // function to count the divisors 
     static int[] GetDivisors(int n)
