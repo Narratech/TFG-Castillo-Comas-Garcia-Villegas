@@ -66,10 +66,10 @@ public class Chunk
             Vector2 realPos = posMap * chunkSize;
             bound = new Bounds(realPos, Vector2.one * chunkSize);
         }
+
         else
-        {
             bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
-        }
+        
 
         //Creamos los respectivos materiales para cada malla
         Material sueloMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
@@ -117,7 +117,6 @@ public class Chunk
             groups.SetLODs(lods);
            
         }
-        //chunk.transform.position = new Vector3(posMap.x * chunkSize, 0, -posMap.y * chunkSize);
        
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
 

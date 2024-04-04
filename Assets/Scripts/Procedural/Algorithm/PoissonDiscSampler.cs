@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,18 +36,18 @@ public class PoissonDiscSampler
     /// <summary>
     /// Crear un Patron de Poisson Disc
     /// </summary>
-    /// <param name="width"> Anchura del mapa generado</param>
-    /// <param name="height"> Longitud de mapa generado</param>
+    /// <param name="size"> Anchura del mapa generado</param>
+    /// <param name="size"> Longitud de mapa generado</param>
     /// <param name="radius_"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
-    public PoissonDiscSampler(float width,float height, float radius_,int amount)
+    public PoissonDiscSampler(float size, float radius_, int amount)
     {
         this.amount = amount;
-        rect = new Rect(0,0,width,height);
+        rect = new Rect(0, 0, size, size);
         radius = radius_;
         cellSize = radius_ / Mathf.Sqrt(2);
-        grid = new int[Mathf.CeilToInt(width / cellSize), Mathf.CeilToInt(height / cellSize)];
+        grid = new int[Mathf.CeilToInt(size / cellSize), Mathf.CeilToInt(size / cellSize)];
 
-        spawnPoints.Add(new Vector2(width/2, height/2));
+        spawnPoints.Add(new Vector2(size/2, size/2));
     }
 
     /// <summary>

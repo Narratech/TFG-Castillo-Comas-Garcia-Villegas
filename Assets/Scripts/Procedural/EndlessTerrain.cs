@@ -16,8 +16,6 @@ public class EndlessTerrain : MonoBehaviour
     private void Start()
     {
         mapGenerator = GetComponent<MapGenerator>();
-        
-        //viewer.position = new Vector3(0, 0, -mapGenerator.  / chunkSize);
         mapGenerator.GenerateEndlessMap();
         chunkSize = mapGenerator.chunkSize - 1;
         chunksVisibleViewDst = Mathf.RoundToInt(maxViewDst / chunkSize);

@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 [CreateAssetMenu(menuName = "Procedural/InterestPoint")]
 
@@ -44,10 +42,10 @@ public class InterestPoint : ScriptableObject
     private PoissonDiscSampler poissonDisc;
 
     //Se deberia generar el objeto dentro del Chunk correspondiente dependiendo de la posicion
-    public void Generate(int mapWidth, int mapHeight, MapInfo map, float sizePerBlock, int chunkSize, Transform grandParent)
+    public void Generate(int mapSize, MapInfo map, float sizePerBlock, int chunkSize, Transform grandParent)
     {
         Dictionary<Vector2, bool> objectPositions = map.getObjects();
-        poissonDisc = new PoissonDiscSampler(mapWidth, mapHeight, radius,amount);
+        poissonDisc = new PoissonDiscSampler(mapSize, radius,amount);
         List<Vector2> points = poissonDisc.Samples();
         var parent = new GameObject("InterestPoint_" + this.name);
         parent.transform.parent = grandParent;

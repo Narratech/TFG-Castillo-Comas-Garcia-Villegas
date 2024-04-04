@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.XR;
 
 /// <summary>
 /// Generador de mapas Procedurales
@@ -237,6 +236,7 @@ public class MapGenerator : MonoBehaviour
 
         maxHeightPossible = biomeGenerator.GetMaximumPossibleHeight();
 
+
         if (drawMode == DrawMode.Cartoon)
         {
             biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
@@ -259,6 +259,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         calculateChunkSize();
+        GenerateInterestPoints();
     }
 
     /// <summary>
@@ -522,7 +523,7 @@ public class MapGenerator : MonoBehaviour
         if (!generateInterestPoints) return;
         Debug.Log("Generando Puntos de Interés:");
         foreach (var points in interestPoints)
-            points.Generate((int)(mapSize * sizePerBlock), (int)(mapSize * sizePerBlock), map, sizePerBlock, chunkSize, gameObjectMap3D.transform);
+            points.Generate((int)(mapSize * sizePerBlock), map, sizePerBlock, chunkSize, gameObjectMap3D.transform);
 
         Debug.Log("Puntos de Interes Generados");
     }
