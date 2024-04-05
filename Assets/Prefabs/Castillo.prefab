@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 833344657464317248}
   - component: {fileID: 2988603486671821465}
   - component: {fileID: 5460567376484970059}
+  - component: {fileID: -1831497952156909923}
   m_Layer: 0
   m_Name: Castillo
   m_TagString: Untagged
@@ -105,3 +106,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.025799204, y: 0.03874308, z: 0.025799204}
   m_Center: {x: 0.000015225727, y: 0.019371357, z: 0.000009784941}
+--- !u!205 &-1831497952156909923
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6290602745211109076}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.84366864
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: -7511558181221131132, guid: 77c6d2e928dc30d4dbda763c05f286bd,
+        type: 3}
+  - screenRelativeHeight: 0.7169206
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: -7511558181221131132, guid: 77c6d2e928dc30d4dbda763c05f286bd,
+        type: 3}
+  - screenRelativeHeight: 0.63203865
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: -7511558181221131132, guid: 77c6d2e928dc30d4dbda763c05f286bd,
+        type: 3}
+  m_Enabled: 1

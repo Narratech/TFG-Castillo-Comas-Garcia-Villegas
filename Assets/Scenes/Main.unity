@@ -1237,7 +1237,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: drawMode
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1308,11 +1308,11 @@ PrefabInstance:
         type: 3}
       propertyPath: gameObjectMap3D
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 674003568}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: generateObjects
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -2236,7 +2236,7 @@ PrefabInstance:
     - target: {fileID: 8167110233991110101, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8167110233991110101, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}

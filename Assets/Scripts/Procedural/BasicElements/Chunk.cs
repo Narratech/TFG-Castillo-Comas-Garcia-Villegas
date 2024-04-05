@@ -97,6 +97,7 @@ public class Chunk
             verBounds = new Vector2Int(posMap.y * chunkSize, (posMap.y * chunkSize) + chunkSize + 1);
             LODGroup groups = floor.AddComponent<LODGroup>();
             LOD[] lods = new LOD[3];
+            MeshCollider collider = null;
             for (int i = 0; i < lods.Length; i++)
             {
                 GameObject child = new GameObject();
@@ -107,7 +108,11 @@ public class Chunk
 
                 GenerateTerrainMesh_LowPoly(child, mapGenerator.GetMeshSimplificationValue(i));
 
-                if ( i == 0) floor.AddComponent<MeshCollider>();
+                if (i == 0) 
+                { 
+                    collider = child.AddComponent<MeshCollider>(); 
+                }
+
 
                 MeshRenderer[] a = { child.GetComponent<MeshRenderer>() };
 
@@ -115,7 +120,8 @@ public class Chunk
             }
             
             groups.SetLODs(lods);
-           
+            floor.AddComponent<MeshCollider>().sharedMesh = collider.sharedMesh;
+            
         }
        
         GameObjectUtility.SetStaticEditorFlags(floor, StaticEditorFlags.BatchingStatic);
