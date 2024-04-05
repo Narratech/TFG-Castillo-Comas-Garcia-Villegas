@@ -60,7 +60,7 @@ public class MapGenerator : MonoBehaviour
 
     public float sizePerBlock = 1f;
 
-    const float MAXLOD = 5f;
+    const float MAXLOD = 4f;
 
     /// <summary>
     /// La semilla aleatoria utilizada para generar el ruido

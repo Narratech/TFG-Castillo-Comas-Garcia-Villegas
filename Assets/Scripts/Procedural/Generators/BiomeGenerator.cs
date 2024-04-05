@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -19,6 +20,7 @@ public class BiomeGenerator
 
     public void GenerateBiomeMap(int seed, int size, Vector2 offset)
     {
+        biomes = biomes.Where(b => b != null).ToArray();
         NoiseSettings noiseSettings = new()
         {
             noiseScale = noiseSize,
@@ -133,6 +135,7 @@ public class BiomeGenerator
 
     internal float GetMaximumPossibleHeight()
     {
+        biomes = biomes.Where(b => b != null).ToArray();
         float height = 0f;
         foreach (Biome bio in biomes)
         {
