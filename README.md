@@ -166,6 +166,7 @@ Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
 #### **TextureUpdater**
 
 #### **Endless Terrain**
+
 #### **Map Display**
 
 Componente que permite pintar el mapa genrado en 2D
