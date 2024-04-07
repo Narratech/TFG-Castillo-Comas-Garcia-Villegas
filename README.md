@@ -1,7 +1,7 @@
 # TFG-Castillo-Comas-Garcia-Villegas
 <h1 align="center"> Procedural OVO Worlds </h1>
-<p align="center"> Logo e imagen o gif de la interfaz principal de la herramienta</p>
-<p align="center"><img src="https://www.webdevelopersnotes.com/wp-content/uploads/create-a-simple-home-page.png"/></p> 
+<p align="center"><img src=https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/9df05af0-6396-4a3b-b2cb-0b34eca57165
+/></p> 
 
 ## Tabla de contenidos:
 ---
