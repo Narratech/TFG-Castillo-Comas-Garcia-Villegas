@@ -110,7 +110,7 @@ Este objecto determina el comportamiento que va atener el terreno de su bioma, p
 *Biome Generation*
 
 - **Weight**:
-- **Density**:
+- **Density**: Numero que representa la densidad del bioma en el mapa
 
 *Terrain Transformation*
 
@@ -132,10 +132,45 @@ Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
 
 *Prefab Properties*
 
+- **Prefab**: Objecto que se quiere instanciar
+- **Foliage**: Boleando que indiqca si el objecto que queremos instanciar no tenga espacio libre alrededor de este, un ejemploclaro del uso del mismo es la hierba ya que nos da igual que haya hierba alrededor de hierba
+- **Unit Space Separation**: Unidades de unity de separacion que requiere ese objecto con respecto a otros("con el bool Foliage == False")
+  
+*Density Features*
+
+- **Density Curve**: Curva que permite establecer de que parte a que parte hay mas probabilidades de que se genere el objecto
+- **Density**: Densidad del objecto que queremos instanciar
+- **Noise Scale**: 
+
+*Transform Properties*
+
+- Rotation
+  - **Random Rotation**: Si el objecto va a tener rotacion Random
+  - **Min Rotation**: Rotacion minima del objecto
+  - **Max Rotation**: Rotacion maxima del objecto
+  - **Rotation**: Si el objecto no va a tener rotaciones random, que rotacion basica va a tener el objecto
+- Scale
+  - **Random Scale**: Si el objecto va a tener escala Random
+  - **Min Scale**: Escala minima del objecto
+  - **Max Scale**: Escala maxima del objecto
+  - **Scale**: Si el objecto no va a tener escala random, que escala basica va a tener el objecto
+- Height
+  - **Random Height**: Si el ojecto va a tener una altura random
+  - **Min/Max Height**: Altura minima y maxima del objecto
+
+*Advanced Settings*
+
+- **Enviroment Rotation**: Si queremos que el objecto se adapte al terreno, es decir posicionarse correctamente con respecto a este
+- **Subsistence in the ground**: Cantidad del objecto que se puede hundir en el suelo
 
 #### **TextureUpdater**
 
 #### **Endless Terrain**
+#### **Map Display**
+
+Componente que permite pintar el mapa genrado en 2D
+
+- **TextureRenderer**: Render del objecto en el cual se va a pintar el mapa 2D
 
 ## Código de conducta 
 ---
