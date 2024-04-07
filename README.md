@@ -12,7 +12,6 @@
 - [Guía de usuario](#guía-de-usuario)
 - [Código de conducta](#código-de-conducta)
 - [Autor/es](#autores)
-- [Información adicional](#información-adicional)
 - [Licencia](#licencia)
 - [Limitación de responsabilidades - Solo BID](#limitación-de-responsabilidades)
 
@@ -55,7 +54,7 @@ La guía de instalación debe contener de manera específica:
 ## Guía de usuario
 ---
 
-En primer luegar encontramos el prefab **Map Generator**, ene ste podemos encontrar el **componente principal** de la herrmienta que es el **Map Generator**.
+En primer luegar encontramos el prefab **Map Generator**, ene ste podemos encontrar el **componente principal** de la herrmienta que es el ***Map Generator***.
 
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/cb439518-f64e-4b25-8982-0566de622268)
 
@@ -91,10 +90,52 @@ BiomeGenerator es el encargado de la distribucion de forma dinamica de los bioma
 - **Generate Objects**: Booleando que permite la creacion de gameobjects en el mapa
 - **Generate InterestPoints**: Booleando que permite la creacion de los puntos de interes anteriormente establecidos en el mapa.
 
-### Dependencias
-Descripción de los recursos externos que generan una dependencia para la reutilización de la herramienta digital (librerías, frameworks, acceso a bases de datos y licencias de cada recurso). Es una buena práctica describir las últimas versiones en las que ha sido probada la herramienta digital. 
 
-    Puedes usar este estilo de letra diferenciar los comandos de instalación.
+
+#### ***Biome Object***
+
+Este objecto determina el comportamiento que va atener el terreno de su bioma, para ello, dicho comportamiento se establece con los parametros de: 
+
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/ff95e710-a7a1-4873-bdb0-0f4a95e8feda)
+
+*Noise Settings*
+
+- **Noise Scale**:  El factor de escala del ruido generado.Un valor mayor producirá un ruido con detalles más finos
+- **Octaves**: El número de octavas utilizadas en el algoritmo de ruido.Cada octava es una capa de ruido que se suma al resultado final.
+   A medida que se agregan más octavas, el ruido generado se vuelve más detallado.
+- **Persistance**: La persistencia controla la amplitud de cada octava.Un valor más bajo reducirá el efecto de las octavas posteriores de las octavas posteriores
+- **Lacunarity**: Un multiplicador que determina qué tan rápido aumenta la frecuencia para cada octava sucesiva en una función de ruido de Perlin
+- **Offset**: Desplazamiento del ruido generado
+
+*Biome Generation*
+
+- **Weight**:
+- **Density**:
+
+*Terrain Transformation*
+
+- **Max Height**: Altura maxima del terreno que puede llegar a generar el bioma
+- **Min Height**: Altura minima del terreno que puede llegar a generar el bioma
+
+*Foliage Settings*
+
+- **Foliages**: Conjunto de objectos que se pueden generar en el bioma
+
+*Test values*
+
+- **Color**: ?¿
+  
+#### **Foliage Object**
+
+Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/aadda348-f124-4c7f-9c4b-24cdefe2e06a)
+
+*Prefab Properties*
+
+
+#### **TextureUpdater**
+
+#### **Endless Terrain**
 
 ## Código de conducta 
 ---
@@ -104,11 +145,13 @@ La plataforma Github premia y ayuda a los repositorios dispongan de este archivo
 
 ## Autor/es
 ---
-Nombra a el/los autor/es original/es. Consulta con ellos antes de publicar un email o un nombre personal. Una manera muy común es dirigirlos a sus cuentas de redes sociales.
+Javier Comas De Frutos 
 
-## Información adicional
----
-Esta es la sección que permite agregar más información de contexto al proyecto como alguna web de relevancia, proyectos similares o que hayan usado la misma tecnología.
+Sara Isabel Garcia Moral
+
+Javier Enrique Villegas Montelongo
+
+Ingacio del Castillo Rubio
 
 ## Licencia 
 ---
