@@ -17,19 +17,18 @@
 
 ## Badges
 --- 
-- Movimiento y camara de ejemplo para moverse por el mapa: [Modular First Person Controller](https://assetstore.unity.com/packages/3d/characters/modular-first-person-controller-189884)
-- Unity Version 2022.3.1f1 LTS y **Posteriores?¿** [![Made with Unity](https://img.shields.io/badge/Made%20with-Unity-57b9d3.svg?style=flat&logo=unity)](https://unity3d.com)
-- PONER DE DONDE HEMOS SACADO LOS ARBOLE/ PLANTAS Y ANIMALES  
+- Movimiento y camara de ejemplo para moverse por el mapa: [![Static Badge](https://img.shields.io/badge/Unity-Version?style=for-the-badge&label=Modular%20First%20Person%20Controller)
+](https://assetstore.unity.com/packages/3d/characters/modular-first-person-controller-189884)
+- Unity: ![Static Badge](https://img.shields.io/badge/Unity-Version?style=for-the-badge&logo=Unity&label=2022.3.1f1%20LTS)
+- PONER DE DONDE HEMOS SACADO LOS ARBOLE/ PLANTAS Y ANIMALES
+
 ### Badges que solicitamos:
 ---
 Para el mejor y correcto uso de la herramienta solicitamos a los equipos que sumen sus herramientas al catálogo  de sumar el badge por el uso del microservicio de Procedural OVO Worlds.
 
-El badge se ve así y redirige al reporte de evaluación estática del último commit de la herramienta:
-
 **PONER LINKASO A NUESTRO REPO DE DESCARGA, ASSET STORE LO K SEA**
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=EL-BID_Plantilla-de-repositorio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EL-BID_Plantilla-de-repositorio)
-
+![Static Badge](https://img.shields.io/badge/passed-version?style=for-the-badge&label=Procedural%20OVO%20Worlds%201.0.1)
 
 ## Descripción y contexto
 ---
