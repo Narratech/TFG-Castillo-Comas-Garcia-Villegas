@@ -19,7 +19,7 @@
 --- 
 - Movimiento y camara de ejemplo para moverse por el mapa: [Modular First Person Controller](https://assetstore.unity.com/packages/3d/characters/modular-first-person-controller-189884)
 - Unity Version 2022.3.1f1 LTS y **Posteriores?¿** [![Made with Unity](https://img.shields.io/badge/Made%20with-Unity-57b9d3.svg?style=flat&logo=unity)](https://unity3d.com)
-  
+- PONER DE DONDE HEMOS SACADO LOS ARBOLE/ PLANTAS Y ANIMALES  
 ### Badges que solicitamos:
 ---
 Para el mejor y correcto uso de la herramienta solicitamos a los equipos que sumen sus herramientas al catálogo  de sumar el badge por el uso del microservicio de Procedural OVO Worlds.
@@ -42,14 +42,32 @@ sistema de folliage para poblar el mapa generado con estos objectos.
 
 ## Guía de instalación
 ---
-Paso a paso de cómo instalar la herramienta digital. En esta sección es recomendable explicar la arquitectura de carpetas y módulos que componen el sistema.
+**Requisitos Previos:**
+  - Tener instalado Unity cuya version sea superior a 2022.3.1f1 LTS.
+  - Tener descargado el paquete Procedural OVO Worlds.
+    
+Pasos a Seguir:
 
-Según el tipo de herramienta digital, el nivel de complejidad puede variar. En algunas ocasiones puede ser necesario instalar componentes que tienen dependencia con la herramienta digital. Si este es el caso, añade también la siguiente sección.
+**1. Abrir el Proyecto en Unity:**
+- Iniciar Unity Hub.
+- Selecciona el proyecto en el que deseas importar el paquete o crea uno nuevo si es necesario.
 
-La guía de instalación debe contener de manera específica:
-- Los requisitos del sistema operativo para la compilación (versiones específicas de librerías, software de gestión de paquetes y dependencias, SDKs y compiladores, etc.).
-- Las dependencias propias del proyecto, tanto externas como internas (orden de compilación de sub-módulos, configuración de ubicación de librerías dinámicas, etc.).
-- Pasos específicos para la compilación del código fuente y ejecución de tests unitarios en caso de que el proyecto disponga de ellos.
+**2. Importar el Paquete:**
+- En la interfaz de Unity, ve al menu "Assets".
+- Selecciona "Import Package" > "Custom Package".
+- Navega hasta la ubicacion donde descargaste el paquete.
+- Selecciona el paquete y haz clic en "Abrir".
+   
+**3. Confirmar los Elementos a Importar:**
+- Aparecera una ventana que muestra todos los elementos que se importaran del paquete.
+- Puedes desmarcar elementos que no desees importar en este momento.
+  
+**4. Importar los Elementos:**
+- Haz clic en "Import" para comenzar a importar los elementos seleccionados.
+- Espera a que Unity complete el proceso de importacion.
+  
+**5. Verificar la Importacion:**
+- Una vez completada la importación, verifica que todos los elementos se hayan importado correctamente.
 
 ## Guía de usuario
 ---
