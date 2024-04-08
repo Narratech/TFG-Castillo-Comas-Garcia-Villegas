@@ -104,11 +104,8 @@ BiomeGenerator es el encargado de la distribucion de forma dinamica de los bioma
 *Boolean Options*
 - **IsIsland**: Booleano que permita que el mapa generado tenga forma de isla
 - **Auto Update**: Booleando que permite que cualquier cambio realizado en este componete se actualize directamente creando un mapa nueco intsantaneo
-- **Auto Regenerate**: *DEBERIAMOS QUITARLO ?¿*
 - **Generate Objects**: Booleando que permite la creacion de gameobjects en el mapa
 - **Generate InterestPoints**: Booleando que permite la creacion de los puntos de interes anteriormente establecidos en el mapa.
-
-
 
 #### ***Biome Object***
 
