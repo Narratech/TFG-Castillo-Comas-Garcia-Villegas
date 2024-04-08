@@ -653,68 +653,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textureData: {fileID: 11400000, guid: fd21efef6af63d74d9db38465c82ec3d, type: 2}
   terrainMaterial: {fileID: 2100000, guid: 701a0b2d4ae0446439cc2d19371e8682, type: 2}
---- !u!1 &674003568
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 674003569}
-  m_Layer: 0
-  m_Name: Mapa3D
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &674003569
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 674003568}
-  m_LocalRotation: {x: 0, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1874351697}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &731657200
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 731657201}
-  m_Layer: 0
-  m_Name: TrashMaps
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &731657201
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 731657200}
-  m_LocalRotation: {x: 0, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1874351697}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &973946045 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4459864850019384750, guid: 6bacecc4f3df9584198879c73a6b6c36,
@@ -1001,6 +939,37 @@ Texture2D:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1769458156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1769458157}
+  m_Layer: 0
+  m_Name: Mapa3D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1769458157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769458156}
+  m_LocalRotation: {x: 0, y: -0, z: -0.0000000074505797, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1874351697}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1821906454
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1083,29 +1052,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 973946046}
   m_SourcePrefab: {fileID: 100100000, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
---- !u!1 &1874351691 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3386608439140938058, guid: 8472f537986b14f4eb239dfd57fe774d,
-    type: 3}
-  m_PrefabInstance: {fileID: 4100767330253696431}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1874351693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874351691}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecdbc0b46e2186d41aa52a422a8f1014, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  riversMax: 15
-  capaGeneracion: 5
-  riverLength: 150
-  bold: 1
-  converganceOn: 1
 --- !u!4 &1874351697 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5234133774820441089, guid: 8472f537986b14f4eb239dfd57fe774d,
@@ -1118,7 +1064,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4100767330253696431}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874351691}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 143232d3662280b40962f365c271ba4e, type: 3}
@@ -1268,7 +1214,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: drawMode
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1339,7 +1285,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gameObjectMap3D
       value: 
-      objectReference: {fileID: 674003568}
+      objectReference: {fileID: 1769458156}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: generateObjects
@@ -1463,7 +1409,7 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: biomeGenerator.biomes.Array.size
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -1485,24 +1431,25 @@ PrefabInstance:
         type: 3}
       propertyPath: biomeGenerator.biomes.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
-        type: 3}
-      propertyPath: biomeGenerator.biomes.Array.data[2]
-      value: 
       objectReference: {fileID: 11400000, guid: c354ecbb187b1fd419c79003be6d009c,
         type: 2}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
-      propertyPath: biomeGenerator.biomes.Array.data[3]
+      propertyPath: biomeGenerator.biomes.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: 9e9125770c3b92a41960ac28c07bf5e9,
         type: 2}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
-      propertyPath: biomeGenerator.biomes.Array.data[4]
+      propertyPath: biomeGenerator.biomes.Array.data[3]
       value: 
       objectReference: {fileID: 11400000, guid: d63b2d84918e2f043aec5eb7ada2f0bd,
+        type: 2}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: biomeGenerator.biomes.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 8e98e9533c4d1a24280bcfcc53b090ac,
         type: 2}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -2291,14 +2238,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5234133774820441089, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 674003569}
-    - targetCorrespondingSourceObject: {fileID: 5234133774820441089, guid: 8472f537986b14f4eb239dfd57fe774d,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 731657201}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3386608439140938058, guid: 8472f537986b14f4eb239dfd57fe774d,
-        type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 1874351693}
+      addedObject: {fileID: 1769458157}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8472f537986b14f4eb239dfd57fe774d, type: 3}
