@@ -181,6 +181,14 @@ Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
 
 #### **Endless Terrain**
 
+Endless terrain es un componente (Script) que permite mejorar la eficiencia de la escena con el mapa. A pesar de su nombre no genera un mapa infinito. Su funcion consiste en ocultar los chunks que se encuentran a una distancia configurable de la figura del jugador. El mapa que se puede ver ha sido generado previamente siguiendo la configuracion del Map Generator. Pero no se verá hasta ejecutar Unity.
+
+Intrucciones:
+- Si el objeto map3D tiene algo dentro debe ser eliminado
+- En el objeto Map Generator hay que activar el componente Endless Terrain
+- Asegurarse de que el componente anterior tiene asignado un objeto que actue de jugador
+- Dar al play de Unity
+
 #### **Map Display**
 
 Componente que permite pintar el mapa genrado en 2D
