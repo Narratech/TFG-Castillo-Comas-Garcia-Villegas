@@ -411,7 +411,7 @@ public class MapGenerator : MonoBehaviour
                 gameObjectMap3D.transform.SetSiblingIndex(1);
             }
         }
-        else
+        else if(gameObjectMap3D.transform.childCount > 0)
         {
             if (trashMaps == null)
             { //POR SI QUIERES ELIMIANR TODA LA BASURA DE GOLPE Q SEA COMODO
@@ -425,18 +425,17 @@ public class MapGenerator : MonoBehaviour
             }
 
             //Por si queda algo en el hijo
-            if (gameObjectMap3D.transform.childCount > 0)
-            {
-                System.DateTime horaActual = System.DateTime.Now;
-                gameObjectMap3D.name = "MapDeprecated " + horaActual.ToString("HH:mm:ss");
+            
+            System.DateTime horaActual = System.DateTime.Now;
+            gameObjectMap3D.name = "MapDeprecated " + horaActual.ToString("HH:mm:ss");
 
-                gameObjectMap3D.transform.SetParent(trashMaps.transform);
-                var basura = gameObjectMap3D;
-                gameObjectMap3D = new GameObject("Mapa3D");
+            gameObjectMap3D.transform.SetParent(trashMaps.transform);
+            var basura = gameObjectMap3D;
+            gameObjectMap3D = new GameObject("Mapa3D");
                
-                gameObjectMap3D.transform.SetParent(transform);
-                gameObjectMap3D.transform.SetSiblingIndex(1);
-            }
+            gameObjectMap3D.transform.SetParent(transform);
+            gameObjectMap3D.transform.SetSiblingIndex(1);
+            
         }
         // Espera un frame
         yield return new WaitWhile(() => gameObjectMap3D.transform.parent != transform);
