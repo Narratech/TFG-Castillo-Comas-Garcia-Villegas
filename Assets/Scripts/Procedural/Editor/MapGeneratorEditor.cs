@@ -72,7 +72,6 @@ public class MapGeneratorEditor : Editor{
         //Boleanos
         EditorGUILayout.PropertyField(serializedObject.FindProperty("isIsland"), new GUIContent("Is Island"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("autoUpdate"), new GUIContent("Auto Update"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("autoRegenerate"), new GUIContent("Auto Regenerate"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("generateObjects"), new GUIContent("Generate Objects"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("generateInterestPoints"), new GUIContent("Generate Interest Points"));
 

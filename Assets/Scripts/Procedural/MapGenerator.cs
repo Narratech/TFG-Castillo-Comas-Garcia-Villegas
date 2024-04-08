@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -93,10 +92,6 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public bool autoUpdate = false;
     /// <summary>
-    /// Cuando se inicilize este componente autoregenerar el terreno
-    /// </summary>
-    public bool autoRegenerate = false;
-    /// <summary>
     /// Generate Objects
     /// </summary>
     public bool generateObjects = false;
@@ -178,7 +173,7 @@ public class MapGenerator : MonoBehaviour
             MapDisplay display = GetComponent<MapDisplay>();
 
             if (display==null)
-                display = transform.AddComponent<MapDisplay>();
+                display = AddComponent<MapDisplay>();
 
             switch (drawMode)
             {
@@ -227,6 +222,11 @@ public class MapGenerator : MonoBehaviour
                 drawMode == DrawMode.Cartoon ? mapSize - 1 : mapSize
                 ));
 
+    }
+
+    private T AddComponent<T>()
+    {
+        throw new NotImplementedException();
     }
 
     public void GenerateEndlessMap()

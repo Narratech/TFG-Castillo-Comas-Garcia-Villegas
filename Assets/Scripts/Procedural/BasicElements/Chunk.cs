@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -68,7 +67,7 @@ public class Chunk
         }
 
         else
-            bound = new Bounds(posMap.ConvertTo<Vector2>(), Vector2.one * chunkSize);
+            bound = new Bounds(new Vector2(posMap.x,posMap.y), Vector2.one * chunkSize);
         
 
         //Creamos los respectivos materiales para cada malla
