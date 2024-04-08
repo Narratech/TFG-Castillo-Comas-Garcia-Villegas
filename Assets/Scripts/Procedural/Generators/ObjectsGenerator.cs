@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// Generar Objectos en el mapa
+/// Generar Objetos en el mapa
 /// </summary>
 public static class ObjectsGenerator {
     public static IEnumerator GenerateObjects (MapInfo mapInfo, BiomeGenerator biomeGenerator, Dictionary<Vector2, Chunk> chunks,int mapSize)
@@ -27,7 +27,7 @@ public static class ObjectsGenerator {
         {
             for (int x = 0; x < mapSize; x++)
             {
-                //VER EL BIOMA PARA ACCEDER A LSO OBJECTOS DE ESE BIOMA
+                //VER EL BIOMA PARA ACCEDER A LSO OBJETOS DE ESE BIOMA
                 var currentBiome = biomeGenerator.GetBiomeAt(x, y);
                 var objectsToGenerate = currentBiome.getFolliage();
 
@@ -48,10 +48,10 @@ public static class ObjectsGenerator {
 
                             Vector2 chunkPos = new Vector2((int)(x / chunkSize), (int)(y / chunkSize));
 
-                            //instanciamos el objecto teniendo en cuanta el gamobject de objectos del chunk al que pertenece
+                            //instanciamos el objeto teniendo en cuanta el gamobject de objetos del chunk al que pertenece
                             GameObject generated = GameObject.Instantiate(obj.prefab, chunks[chunkPos].objectsGenerated.transform);
 
-                            //POSICIOANR EL OBJECTO
+                            //POSICIOANR EL OBJETO
                             Tuple<Vector3, Quaternion> aux = default(Tuple<Vector3, Quaternion>);
 
                             if (mapInfo.Cartoon)

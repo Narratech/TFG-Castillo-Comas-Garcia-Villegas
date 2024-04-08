@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Un Chunk es una porcion del Mapa que contiene el suelo, objectos y bordes de una porcion del mapa generado
+/// Un Chunk es una porcion del Mapa que contiene el suelo, objetos y bordes de una porcion del mapa generado
 /// (ES NECESARIO PUES UNITY LIMITA LA CREACION DE VERTICES PARA LAS MAYAS)
 /// </summary>
 public class Chunk
@@ -42,7 +42,7 @@ public class Chunk
         chunk = new GameObject("Chunk " + posMap);
         //chunk = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor = new GameObject("Suelo " + posMap);
-        objectsGenerated = new GameObject("Objectos " + posMap);
+        objectsGenerated = new GameObject("Objetos " + posMap);
 
         //Establecemos la jerarquia de padres
         setParent(parent);

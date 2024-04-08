@@ -3,8 +3,8 @@ using UnityEngine;
 
 
 /// <summary>
-/// Algoritmo Poisson Disc sampling usando Bridson,s algorithm 
-/// Adapted from Gregory Schlomoff's: http://gregschlom.com/devlog/2014/06/29/Poisson-disc-sampling-Unity.html
+/// Algoritmo Poisson Disc sampling 
+/// Adapted from Sebastian Lague: https://www.youtube.com/watch?v=7WcmyxyFO7o
 /// </summary>
 public class PoissonDiscSampler 
 {
@@ -15,11 +15,11 @@ public class PoissonDiscSampler
 
     private readonly Rect rect;
     /// <summary>
-    /// Cantidad de objectos que queremos generar
+    /// Cantidad de objetos que queremos generar
     /// </summary>
     private int amount;
     /// <summary>
-    /// radio  generar los objecto con distancia de separacion de maximo radius_
+    /// radio  generar los objeto con distancia de separacion de maximo radius_
     /// </summary>
     private float radius;
     /// <summary>
@@ -29,7 +29,7 @@ public class PoissonDiscSampler
 
 
     /// <summary>
-    /// Lista de posiciones para los objectos generados
+    /// Lista de posiciones para los objetos generados
     /// </summary>
     private List<Vector2> points = new List<Vector2>();
     private List<Vector2> spawnPoints = new List<Vector2>();

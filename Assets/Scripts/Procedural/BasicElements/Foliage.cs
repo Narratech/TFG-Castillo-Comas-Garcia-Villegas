@@ -32,7 +32,7 @@ public class Foliage : ScriptableObject
 
     //ADVANCED SETTINGS
     public bool environment_rotation; //rotacion con el enviroment cuestas y cosas asi
-    public float subsidence_in_the_ground = 0f; // % del objecto que se puede hundir en el suelo
+    public float subsidence_in_the_ground = 0f; // % del objeto que se puede hundir en el suelo
 }
 
 

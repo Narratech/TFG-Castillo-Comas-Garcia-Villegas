@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour
 {
-    public const float maxViewDst = 200; // Distacia maxima a la que ve el jugador
+    [SerializeField] float maxViewDst = 200; // Distacia maxima a la que ve el jugador
     public Transform playerTransform; //Posicion del player
 
     public static Vector2 playerPos; //Static para acceder desde otras clases mejor
@@ -73,5 +73,4 @@ public class EndlessTerrain : MonoBehaviour
         playerPos = new Vector2(playerTransform.position.x, playerTransform.position.z);
         UpdateVisibleChunks();
     }
-
 }
