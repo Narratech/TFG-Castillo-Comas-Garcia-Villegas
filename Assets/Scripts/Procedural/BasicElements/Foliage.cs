@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [CreateAssetMenu(menuName = "Procedural/Foliage")]
 public class Foliage : ScriptableObject
@@ -15,8 +16,8 @@ public class Foliage : ScriptableObject
 
     // PREFAB PROPERTIES
     public GameObject prefab;
-    public bool folliage = false;
-    
+    public bool folliage = false; //Esta variable almacena los objetos que pueden instanciarse CON/SIN necesidad de tener distancia de separación entre ellos.
+
     // TRANSFORM
     public bool randomRotation;
     public Vector3 rotation;
@@ -40,6 +41,7 @@ public class Foliage : ScriptableObject
 [CustomEditor(typeof(Foliage))]
 class FoliageEditor : Editor
 {
+    private readonly string[] opciones = new string[] { " Require Distance Separation", "No Require Distance Separation" };
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
@@ -51,7 +53,9 @@ class FoliageEditor : Editor
         CreateHeader("PREFAB PROPERTIES");
         EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
 
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
+        //EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
+     
+        thisEditor.folliage = GUILayout.SelectionGrid(thisEditor.folliage ? 1 : 0, opciones, 2) == 1;
 
         if (!thisEditor.folliage)
         {
