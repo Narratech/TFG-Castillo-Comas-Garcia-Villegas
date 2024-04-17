@@ -223,10 +223,4 @@ Si desconoces qué tipos de licencias existen y cuál es la mejor para cada caso
 Si la herramienta que estás publicando con la iniciativa Código para el Desarrollo ha sido financiada por el BID, te invitamos a revisar la [licencia oficial del banco para publicar software](https://github.com/EL-BID/Plantilla-de-repositorio/blob/master/LICENSE.md)
 
 ## Limitación de responsabilidades
-Disclaimer: Esta sección es solo para herramientas financiadas por el BID.
-
-El BID no será responsable, bajo circunstancia alguna, de daño ni indemnización, moral o patrimonial; directo o indirecto; accesorio o especial; o por vía de consecuencia, previsto o imprevisto, que pudiese surgir:
-
-i. Bajo cualquier teoría de responsabilidad, ya sea por contrato, infracción de derechos de propiedad intelectual, negligencia o bajo cualquier otra teoría; y/o
-
-ii. A raíz del uso de la Herramienta Digital, incluyendo, pero sin limitación de potenciales defectos en la Herramienta Digital, o la pérdida o inexactitud de los datos de cualquier tipo. Lo anterior incluye los gastos o daños asociados a fallas de comunicación y/o fallas de funcionamiento de computadoras, vinculados con la utilización de la Herramienta Digital.
+No será responsable de ningún daño directo, indirecto, incidental, especial, consecuente o punitivo, incluyendo, pero no limitado a, pérdida de ingresos, pérdida de beneficios, pérdida de datos, interrupción del negocio o cualquier otro daño similar, derivado del uso o la imposibilidad de utilizar la herramienta proporcionada. El usuario reconoce y acepta que la herramienta se proporciona "tal cual" y que Procedural OVO worlds no ofrece garantías de ningún tipo, ya sean expresas o implícitas, incluyendo, pero no limitado a, garantías de comerciabilidad, idoneidad para un propósito particular, o no infracción. Procedural OVO worlds tampoco será responsable de cualquier daño que pueda surgir como resultado de acciones realizadas por terceros. La responsabilidad total de Procedural OVO worlds, ya sea en contrato, agravio (incluyendo negligencia) o de otro modo, no excederá en ningún caso la cantidad pagada por el usuario por el uso de la herramienta.
