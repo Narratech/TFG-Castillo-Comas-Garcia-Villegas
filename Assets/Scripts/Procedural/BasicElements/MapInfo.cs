@@ -36,7 +36,7 @@ public class MapInfo
         objectsInMap = new Dictionary<Vector2, bool>();
     }
 
-    public void SetInfluenceMap(Dictionary<Biome, float>[,] influence) { biomeInfluences = influence; }
+    public void SetInfluenceMap(ref Dictionary<Biome, float>[,] influence) { biomeInfluences = influence; }
     public void SetNoiseMap(float[,] noise) { noiseMap = noise; }
     public void SetHeightMap(float[,] height) { heightMap = height; }
     public void SetObjectsMap(Dictionary<Vector2, bool> objectsInMap){ this.objectsInMap = objectsInMap; }

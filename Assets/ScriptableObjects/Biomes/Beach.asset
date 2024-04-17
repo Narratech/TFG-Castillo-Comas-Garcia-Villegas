@@ -17,11 +17,11 @@ MonoBehaviour:
     octaves: 2
     persistance: 0.174
     lacunarity: 1
-    offset: {x: 150, y: 100}
+    offset: {x: 100, y: 100}
   weight: 1
   density: 1
   maxHeight: 2.5
-  minHeight: 0.51
+  minHeight: 1.5
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:

@@ -17,7 +17,7 @@ MonoBehaviour:
     octaves: 2
     persistance: 0.09
     lacunarity: 10.5
-    offset: {x: 150, y: 100}
+    offset: {x: 100, y: 100}
   weight: 1
   density: 1
   maxHeight: 4

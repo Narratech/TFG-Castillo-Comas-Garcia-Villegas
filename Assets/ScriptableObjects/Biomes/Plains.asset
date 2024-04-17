@@ -17,9 +17,9 @@ MonoBehaviour:
     octaves: 3
     persistance: 0.257
     lacunarity: 4.9
-    offset: {x: 150, y: 100}
+    offset: {x: 100, y: 100}
   weight: 1
-  density: 2
+  density: 1
   maxHeight: 3
   minHeight: 2
   meshHeightCurve:

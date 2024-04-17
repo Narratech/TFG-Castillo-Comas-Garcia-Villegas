@@ -16,11 +16,16 @@ public class BiomeGenerator
     [SerializeField]
     Biome[] biomes = null;
 
-    int[,] biomeMap = null;
+    byte[,] biomeMap = null;
 
     public void GenerateBiomeMap(int seed, int size, Vector2 offset)
     {
         biomes = biomes.Where(b => b != null).ToArray();
+        if (biomes.Length > 255)
+        {
+            Debug.LogError("Maximum number of biomes allowed is 255, please consider reducing the amount, truncating array");
+            Array.Copy(biomes, biomes, 255);
+        }
         NoiseSettings noiseSettings = new()
         {
             noiseScale = noiseSize,
@@ -32,12 +37,12 @@ public class BiomeGenerator
         float[,] heat = Noise.GenerateNoiseMap(size, seed + 1, noiseSettings);
         float[,] moisture = Noise.GenerateNoiseMap(size, seed + 2, noiseSettings);
 
-        biomeMap = new int[size, size];
+        biomeMap = new byte[size, size];
 
 
         //var copyBiomes = ordenarDensity();
 
-        float defaultThreshold = 2 / (float)biomes.Length;
+        float defaultThreshold = 1 / (float)biomes.Length;
 
 
         float[] thresholds = new float[biomes.Length];
@@ -57,8 +62,8 @@ public class BiomeGenerator
                
                 float positionValue = ruido * thresholds[thresholds.Length-1];
 
-                int currentBiomeIndex=0;
-                for (int x = 0; x < biomes.Length; x++)
+                byte currentBiomeIndex = 0;
+                for (byte x = 0; x < biomes.Length; x++)
                 { 
                     if (positionValue  <= thresholds[x])
                     {

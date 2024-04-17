@@ -370,7 +370,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        map.SetInfluenceMap(influences);
+        map.SetInfluenceMap(ref influences);
         map.SetHeightMap(height);
     }
 

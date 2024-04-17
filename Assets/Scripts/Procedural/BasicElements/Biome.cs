@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Procedural/Biome")]
@@ -34,7 +35,8 @@ public class Biome : ScriptableObject
     //Temporal (?)
     public Color color;
 
-    float[,] noiseMap = null;
+
+    byte[,] noiseMap = null;
 
     public void GenerateNoiseMap(int size, int seed, Vector2 offset)
     {
@@ -44,7 +46,16 @@ public class Biome : ScriptableObject
 
         noiseSettings.offset = offset;
 
-        noiseMap = Noise.GenerateNoiseMap(size,seed, noiseSettings);
+        noiseMap = new byte[size, size];
+        float[,] values = Noise.GenerateNoiseMap(size, seed, noiseSettings);
+
+        for (int i = 0; i < values.GetLength(0); ++i) {
+
+            for (int j = 0; j < values.GetLength(1); ++j)
+            {
+                noiseMap[i, j] = (byte)Mathf.RoundToInt(values[i, j] * byte.MaxValue);
+            }
+        }
     }
 
     public float NoiseToHeight(float noise)
@@ -69,7 +80,7 @@ public class Biome : ScriptableObject
 
     public float this[int index, int index2]
     {
-        get { return noiseMap[index, index2]; }
+        get { return noiseMap[index, index2] / (float)byte.MaxValue; }
     }
 
     public Foliage[] getFolliage()
