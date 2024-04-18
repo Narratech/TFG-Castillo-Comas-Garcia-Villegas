@@ -66,6 +66,12 @@ public class MapGeneratorEditor : Editor{
 
         ////
         EditorGUILayout.Space();
+        GUILayout.Label("Material", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
+        ////
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("material"), new GUIContent("Material"));
+
+        ////
+        EditorGUILayout.Space();
         GUILayout.Label("Boolean Options", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
         ////
 
@@ -74,6 +80,8 @@ public class MapGeneratorEditor : Editor{
         EditorGUILayout.PropertyField(serializedObject.FindProperty("autoUpdate"), new GUIContent("Auto Update"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("generateObjects"), new GUIContent("Generate Objects"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("generateInterestPoints"), new GUIContent("Generate Interest Points"));
+
+      
 
         if (GUILayout.Button("Generate"))
         {
