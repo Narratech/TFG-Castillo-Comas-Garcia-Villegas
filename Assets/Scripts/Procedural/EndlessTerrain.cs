@@ -61,7 +61,17 @@ public class EndlessTerrain : MonoBehaviour
                                 mapGenerator.gameObjectMap3D.transform,
                                 mapGenerator.material)
                                );
-
+                        //GENERAR LOS OBJECTOS DEL CHUNK
+                        if (mapGenerator.generateObjects)
+                        {
+                            StartCoroutine(ObjectsGenerator.GenerateObjectsEndLess(mapGenerator.Map,
+                                mapGenerator.GetBiomeGenerator(),
+                                new Vector2Int((int)viewedChunkCoord.x, (int)viewedChunkCoord.y),
+                                map3D[viewedChunkCoord],
+                                mapGenerator.drawMode == MapGenerator.DrawMode.Cartoon ? mapGenerator.mapSize - 1 : mapGenerator.mapSize
+                                ));
+                            //Debug.Log("Generar Objectos Chunk");
+                        }
                     }
                 }
             }

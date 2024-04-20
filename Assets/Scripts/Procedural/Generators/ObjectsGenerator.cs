@@ -95,6 +95,95 @@ public static class ObjectsGenerator {
 
         yield return new WaitWhile(() => done == false);
     }
+
+    public static IEnumerator GenerateObjectsEndLess(MapInfo mapInfo, BiomeGenerator biomeGenerator, Vector2Int posInit, Chunk myChunk, int mapSize)
+    {
+        bool done = false;
+
+        // Espera un frame
+        yield return null; // Tema de que se creen bien los colliders de la malla del mapa
+
+        var chunkSize = mapInfo.ChunkSize;
+        var sizePerBlock = mapInfo.SizePerBlock;
+
+        float topLeftX = (mapSize - 1) / -2f;
+        float topLeftZ = (mapSize - 1) / -2f;
+
+        Dictionary<Vector2, bool> objectsGenerated = mapInfo.getObjects();
+
+        for (int y = posInit.y * chunkSize; y < posInit.y * chunkSize + chunkSize; y++)
+        {
+            for (int x = posInit.x * chunkSize; x < posInit.x * chunkSize + chunkSize; x++)
+            {
+                //VER EL BIOMA PARA ACCEDER A LSO OBJETOS DE ESE BIOMA
+                var currentBiome = biomeGenerator.GetBiomeAt(x, y);
+                var objectsToGenerate = currentBiome.getFolliage();
+
+                //Ordeno por orden de densidad para q sea equivalente
+                foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
+                {
+                    if (!objectsGenerated.ContainsKey(new Vector2(x, y)) || (obj.folliage && objectsGenerated.ContainsKey(new Vector2(x, y)) && !objectsGenerated[new Vector2(x, y)]))
+                    {
+
+                        float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
+
+                        //Aplico un valor Random sobre la densidad para que sea mas aleatorio
+                        float v = UnityEngine.Random.Range(0.0f, obj.density * obj.densityCurve.Evaluate(mapInfo.HeightMap[x, y] - currentBiome.GetMinimumHeight() / (currentBiome.GetMaximumHeight() - currentBiome.GetMinimumHeight())));
+
+                        if (noiseValue < v)
+                        {
+                            Vector3 posHeight = new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1); //calculamos la posicion
+
+                            Vector2 chunkPos = new Vector2((int)(x / chunkSize), (int)(y / chunkSize));
+
+                            //instanciamos el objeto teniendo en cuanta el gamobject de objetos del chunk al que pertenece
+                            GameObject generated = GameObject.Instantiate(obj.prefab, myChunk.objectsGenerated.transform);
+
+                            //POSICIOANR EL OBJETO
+                            Tuple<Vector3, Quaternion> aux = default(Tuple<Vector3, Quaternion>);
+
+                            if (mapInfo.Cartoon)
+                            {
+                                aux = objectFloor(posHeight, obj.subsidence_in_the_ground);
+                                posHeight = aux.Item1;
+                            }
+
+                            //ROTATION
+                            generated.transform.rotation = RandomRotation(obj);
+                            if (mapInfo.Cartoon && obj.environment_rotation) generated.transform.rotation = Quaternion.Slerp(generated.transform.rotation, aux.Item2, Time.deltaTime * 5f);
+
+                            //SCALE
+                            generated.transform.localScale = RandomScale(obj); //calculamos primero la escala pq luego la hemos de tener en cuenta en el posicionamiento
+
+                            //HEIGHT
+                            if (obj.useRandomHeight)
+                                generated.transform.localScale = new Vector3(generated.transform.localScale.x, UnityEngine.Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
+
+                            if (!mapInfo.Cartoon)
+                            {
+                                posHeight.x += sizePerBlock / 2f;
+                                posHeight.z -= sizePerBlock / 2f - 1;
+                            }
+                            generated.transform.position = posHeight;
+
+
+                            //ADD TO LIST
+                            OccupySpace(new Vector2(x, y), obj.unitSpace, obj.folliage, objectsGenerated);
+                            objectsGenerated[new Vector2(x, y)] = true;
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        mapInfo.SetObjectsMap(objectsGenerated);
+        done = true;
+
+        yield return new WaitWhile(() => done == false);
+    }
+
     public static void OccupySpace(Vector2 pos,int unitSpace,bool anyMore, Dictionary<Vector2,bool> objectsGenerated){
         if (unitSpace<0||objectsGenerated.ContainsKey(pos)) return;
         objectsGenerated.Add(pos, anyMore);

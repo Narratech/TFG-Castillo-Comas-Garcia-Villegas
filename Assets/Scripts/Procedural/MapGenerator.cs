@@ -217,10 +217,7 @@ public class MapGenerator : MonoBehaviour
         if (!endlessActive)
             map.setChunkSize(chunkSize);
 
-        if (generateObjects)
-            StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D,
-                drawMode == DrawMode.Cartoon ? mapSize - 1 : mapSize
-                ));
+        GenerateObjects();
 
     }
 
@@ -258,7 +255,10 @@ public class MapGenerator : MonoBehaviour
             BuildMap(true);
         }
 
-        calculateChunkSize();
+        //calculateChunkSize();
+
+        map.setChunkSize(chunkSize);
+
         GenerateInterestPoints();
     }
 
@@ -514,6 +514,14 @@ public class MapGenerator : MonoBehaviour
         return map.BiomeInfluences[indexX, indexY];
     }
 
+    void GenerateObjects()
+    {
+        if (generateObjects)
+            StartCoroutine(ObjectsGenerator.GenerateObjects(map, biomeGenerator, map3D,
+                drawMode == DrawMode.Cartoon ? mapSize - 1 : mapSize
+                ));
+    }
+
     /// <summary>
     /// Generar los puntos de interes si estan activos
     /// </summary>
@@ -553,4 +561,5 @@ public class MapGenerator : MonoBehaviour
 
         return div.ToArray();
     }
+    public BiomeGenerator GetBiomeGenerator() { return biomeGenerator; }
 }
