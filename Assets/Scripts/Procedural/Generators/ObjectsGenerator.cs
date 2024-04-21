@@ -21,7 +21,7 @@ public static class ObjectsGenerator {
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / -2f;
 
-        Dictionary<Vector2,bool> objectsGenerated = mapInfo.getObjects();
+        List<Vector2> objectsGenerated = mapInfo.getObjects();
 
         for (int y = 0; y <  mapSize; y++)
         {
@@ -34,7 +34,7 @@ public static class ObjectsGenerator {
                 //Ordeno por orden de densidad para q sea equivalente
                 foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                 {
-                    if (!objectsGenerated.ContainsKey(new Vector2(x, y)) || ( obj.folliage && objectsGenerated.ContainsKey(new Vector2(x, y)) && !objectsGenerated[new Vector2(x, y)]) )
+                    if (!objectsGenerated.Contains(new Vector2(x, y)))
                     {
                         
                         float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
@@ -81,7 +81,7 @@ public static class ObjectsGenerator {
 
                             //ADD TO LIST
                             OccupySpace(new Vector2(x, y), obj.unitSpace, obj.folliage, objectsGenerated);
-                            objectsGenerated[new Vector2(x, y)] = true;
+                            objectsGenerated.Add(new Vector2(x, y));
 
                             break;
                         }
@@ -109,7 +109,7 @@ public static class ObjectsGenerator {
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / -2f;
 
-        Dictionary<Vector2, bool> objectsGenerated = mapInfo.getObjects();
+        List<Vector2> objectsGenerated = mapInfo.getObjects();
 
         for (int y = posInit.y * chunkSize; y < posInit.y * chunkSize + chunkSize; y++)
         {
@@ -122,7 +122,7 @@ public static class ObjectsGenerator {
                 //Ordeno por orden de densidad para q sea equivalente
                 foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                 {
-                    if (!objectsGenerated.ContainsKey(new Vector2(x, y)) || (obj.folliage && objectsGenerated.ContainsKey(new Vector2(x, y)) && !objectsGenerated[new Vector2(x, y)]))
+                    if (!objectsGenerated.Contains(new Vector2(x, y)))
                     {
 
                         float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
@@ -169,7 +169,7 @@ public static class ObjectsGenerator {
 
                             //ADD TO LIST
                             OccupySpace(new Vector2(x, y), obj.unitSpace, obj.folliage, objectsGenerated);
-                            objectsGenerated[new Vector2(x, y)] = true;
+                            objectsGenerated.Add(new Vector2(x, y));
 
                             break;
                         }
@@ -184,9 +184,9 @@ public static class ObjectsGenerator {
         yield return new WaitWhile(() => done == false);
     }
 
-    public static void OccupySpace(Vector2 pos,int unitSpace,bool anyMore, Dictionary<Vector2,bool> objectsGenerated){
-        if (unitSpace<0||objectsGenerated.ContainsKey(pos)) return;
-        objectsGenerated.Add(pos, anyMore);
+    public static void OccupySpace(Vector2 pos,int unitSpace,bool anyMore, List<Vector2> objectsGenerated){
+        if (unitSpace<=0||objectsGenerated.Contains(pos)) return;
+        objectsGenerated.Add(pos);
         OccupySpace(pos + Vector2.up,    unitSpace - 1, anyMore, objectsGenerated);
         OccupySpace(pos + Vector2.down,  unitSpace - 1, anyMore, objectsGenerated);
         OccupySpace(pos + Vector2.left,  unitSpace - 1, anyMore, objectsGenerated);
