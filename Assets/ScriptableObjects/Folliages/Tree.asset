@@ -47,9 +47,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   density: 0.2
   noiseScale: 0.75
-  unitSpace: 2
+  unitSpace: 10
   prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
-  folliage: 0
+  requireDistance: 1
   randomRotation: 1
   rotation: {x: -20, y: 0, z: -20}
   maxRotation: {x: 20, y: 360, z: 20}
@@ -58,5 +58,5 @@ MonoBehaviour:
   maxScale: {x: 1.2, y: 1.2, z: 1.2}
   useRandomHeight: 1
   minMaxHeight: {x: 0.8, y: 1.2}
-  environment_rotation: 0
+  environment_rotation: 1
   subsidence_in_the_ground: 0
