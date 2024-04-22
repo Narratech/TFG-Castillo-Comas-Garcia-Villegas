@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// Generar Objetos en el mapa
@@ -39,8 +38,9 @@ public static class ObjectsGenerator {
                 {
                     bool AUX = SeeOccupySpace(pos, obj.unitSpace, objectsGenerated);
 
-                    if ((!obj.requireDistance && !objectsGenerated.Contains(pos)) || !AUX)
+                    if ((!obj.requireDistance && !objectsGenerated.Contains(pos)) || (obj.requireDistance && !AUX))
                     {
+
 
                         float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
 
@@ -131,7 +131,8 @@ public static class ObjectsGenerator {
                 //Ordeno por orden de densidad para q sea equivalente
                 foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                 {
-                    if ((!obj.requireDistance && !objectsGenerated.Contains(pos)) || !SeeOccupySpace(pos, obj.unitSpace, objectsGenerated)) {
+
+                    if ((!obj.requireDistance && !objectsGenerated.Contains(pos)) || (obj.requireDistance && !SeeOccupySpace(pos, obj.unitSpace, objectsGenerated))) {
 
                        
                         float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
@@ -204,14 +205,13 @@ public static class ObjectsGenerator {
 
     public static bool SeeOccupySpace(Vector2 pos, int unitSpace, HashSet<Vector2> objectsGenerated)
     {
-        //if (unitSpace > 0) Debug.Log(unitSpace);
         if (unitSpace <= 0) return false;
         else if (objectsGenerated.Contains(pos)) return true;
 
         return SeeOccupySpace(pos + Vector2.up, unitSpace - 1, objectsGenerated) &&
-        SeeOccupySpace(pos + Vector2.down, unitSpace - 1, objectsGenerated) &&
-        SeeOccupySpace(pos + Vector2.left, unitSpace - 1, objectsGenerated) &&
-        SeeOccupySpace(pos + Vector2.right, unitSpace - 1, objectsGenerated);
+            SeeOccupySpace(pos + Vector2.down, unitSpace - 1, objectsGenerated) &&
+            SeeOccupySpace(pos + Vector2.left, unitSpace - 1, objectsGenerated) &&
+            SeeOccupySpace(pos + Vector2.right, unitSpace - 1, objectsGenerated);
     }
 
 
