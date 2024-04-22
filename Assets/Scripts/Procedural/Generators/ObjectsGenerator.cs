@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 /// <summary>
 /// Generar Objetos en el mapa
@@ -21,12 +22,14 @@ public static class ObjectsGenerator {
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / -2f;
 
-        List<Vector2> objectsGenerated = mapInfo.getObjects();
+        HashSet<Vector2> objectsGenerated = mapInfo.getObjects();
 
         for (int y = 0; y <  mapSize; y++)
         {
             for (int x = 0; x < mapSize; x++)
             {
+                var pos = new Vector2(x, y);
+               
                 //VER EL BIOMA PARA ACCEDER A LSO OBJETOS DE ESE BIOMA
                 var currentBiome = biomeGenerator.GetBiomeAt(x, y);
                 var objectsToGenerate = currentBiome.getFolliage();
@@ -34,9 +37,11 @@ public static class ObjectsGenerator {
                 //Ordeno por orden de densidad para q sea equivalente
                 foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                 {
-                    if (!objectsGenerated.Contains(new Vector2(x, y)))
+                    bool AUX = SeeOccupySpace(pos, obj.unitSpace, objectsGenerated);
+
+                    if ((!obj.requireDistance && !objectsGenerated.Contains(pos)) || !AUX)
                     {
-                        
+
                         float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
 
                         //Aplico un valor Random sobre la densidad para que sea mas aleatorio
@@ -44,6 +49,8 @@ public static class ObjectsGenerator {
 
                         if (noiseValue < v)
                         {
+                            if (obj.requireDistance && !AUX) Debug.Log(obj.name + " Creado");
+
                             Vector3 posHeight = new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1); //calculamos la posicion
 
                             Vector2 chunkPos = new Vector2((int)(x / chunkSize), (int)(y / chunkSize));
@@ -56,7 +63,7 @@ public static class ObjectsGenerator {
 
                             if (mapInfo.Cartoon)
                             {
-                                aux = objectFloor(posHeight, obj.subsidence_in_the_ground);
+                                aux = ObjectFloor(posHeight, obj.subsidence_in_the_ground);
                                 posHeight = aux.Item1;
                             }
 
@@ -80,12 +87,13 @@ public static class ObjectsGenerator {
 
 
                             //ADD TO LIST
-                            OccupySpace(new Vector2(x, y), obj.unitSpace, obj.folliage, objectsGenerated);
-                            objectsGenerated.Add(new Vector2(x, y));
+                            if (obj.requireDistance) OccupySpace(pos, obj.unitSpace, objectsGenerated);
+                            objectsGenerated.Add(pos);
 
                             break;
                         }
                     }
+                    
                 }
             }
         }
@@ -109,12 +117,13 @@ public static class ObjectsGenerator {
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / -2f;
 
-        List<Vector2> objectsGenerated = mapInfo.getObjects();
+        HashSet<Vector2> objectsGenerated = mapInfo.getObjects();
 
         for (int y = posInit.y * chunkSize; y < posInit.y * chunkSize + chunkSize; y++)
         {
             for (int x = posInit.x * chunkSize; x < posInit.x * chunkSize + chunkSize; x++)
             {
+                var pos = new Vector2(x, y);
                 //VER EL BIOMA PARA ACCEDER A LSO OBJETOS DE ESE BIOMA
                 var currentBiome = biomeGenerator.GetBiomeAt(x, y);
                 var objectsToGenerate = currentBiome.getFolliage();
@@ -122,9 +131,9 @@ public static class ObjectsGenerator {
                 //Ordeno por orden de densidad para q sea equivalente
                 foreach (var obj in objectsToGenerate.OrderBy(o => o.density))
                 {
-                    if (!objectsGenerated.Contains(new Vector2(x, y)))
-                    {
+                    if ((!obj.requireDistance && !objectsGenerated.Contains(pos)) || !SeeOccupySpace(pos, obj.unitSpace, objectsGenerated)) {
 
+                       
                         float noiseValue = Mathf.PerlinNoise(x * obj.noiseScale, y * obj.noiseScale);
 
                         //Aplico un valor Random sobre la densidad para que sea mas aleatorio
@@ -142,9 +151,9 @@ public static class ObjectsGenerator {
                             //POSICIOANR EL OBJETO
                             Tuple<Vector3, Quaternion> aux = default(Tuple<Vector3, Quaternion>);
 
-                            if (mapInfo.Cartoon)
+                            if (mapInfo.Cartoon && obj.environment_rotation)
                             {
-                                aux = objectFloor(posHeight, obj.subsidence_in_the_ground);
+                                aux = ObjectFloor(posHeight, obj.subsidence_in_the_ground);
                                 posHeight = aux.Item1;
                             }
 
@@ -168,8 +177,8 @@ public static class ObjectsGenerator {
 
 
                             //ADD TO LIST
-                            OccupySpace(new Vector2(x, y), obj.unitSpace, obj.folliage, objectsGenerated);
-                            objectsGenerated.Add(new Vector2(x, y));
+                            if (obj.requireDistance) OccupySpace(pos, obj.unitSpace, objectsGenerated);
+                            objectsGenerated.Add(pos);
 
                             break;
                         }
@@ -184,16 +193,29 @@ public static class ObjectsGenerator {
         yield return new WaitWhile(() => done == false);
     }
 
-    public static void OccupySpace(Vector2 pos,int unitSpace,bool anyMore, List<Vector2> objectsGenerated){
-        if (unitSpace<=0||objectsGenerated.Contains(pos)) return;
-        objectsGenerated.Add(pos);
-        OccupySpace(pos + Vector2.up,    unitSpace - 1, anyMore, objectsGenerated);
-        OccupySpace(pos + Vector2.down,  unitSpace - 1, anyMore, objectsGenerated);
-        OccupySpace(pos + Vector2.left,  unitSpace - 1, anyMore, objectsGenerated);
-        OccupySpace(pos + Vector2.right, unitSpace - 1, anyMore, objectsGenerated);
+    public static void OccupySpace(Vector2 pos,int unitSpace, HashSet<Vector2> objectsGenerated){
+        if (unitSpace<=0) return;
+        if(!objectsGenerated.Contains(pos)) objectsGenerated.Add(pos);
+        OccupySpace(pos + Vector2.up,    unitSpace - 1, objectsGenerated);
+        OccupySpace(pos + Vector2.down,  unitSpace - 1, objectsGenerated);
+        OccupySpace(pos + Vector2.left,  unitSpace - 1, objectsGenerated);
+        OccupySpace(pos + Vector2.right, unitSpace - 1, objectsGenerated);
     }
 
-    public static Tuple<Vector3,Quaternion> objectFloor(Vector3 pos, float subsidence_in_the_ground)
+    public static bool SeeOccupySpace(Vector2 pos, int unitSpace, HashSet<Vector2> objectsGenerated)
+    {
+        //if (unitSpace > 0) Debug.Log(unitSpace);
+        if (unitSpace <= 0) return false;
+        else if (objectsGenerated.Contains(pos)) return true;
+
+        return SeeOccupySpace(pos + Vector2.up, unitSpace - 1, objectsGenerated) &&
+        SeeOccupySpace(pos + Vector2.down, unitSpace - 1, objectsGenerated) &&
+        SeeOccupySpace(pos + Vector2.left, unitSpace - 1, objectsGenerated) &&
+        SeeOccupySpace(pos + Vector2.right, unitSpace - 1, objectsGenerated);
+    }
+
+
+    public static Tuple<Vector3,Quaternion> ObjectFloor(Vector3 pos, float subsidence_in_the_ground)
     {
         Ray ray = new Ray(pos+new Vector3(0,15f,0), Vector3.down*20);
         RaycastHit hitInfo;

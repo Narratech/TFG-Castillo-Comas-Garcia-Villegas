@@ -16,7 +16,7 @@ public class Foliage : ScriptableObject
 
     // PREFAB PROPERTIES
     public GameObject prefab;
-    public bool folliage = false; //Esta variable almacena los objetos que pueden instanciarse CON/SIN necesidad de tener distancia de separación entre ellos.
+    public bool requireDistance = false; //Esta variable almacena los objetos que pueden instanciarse CON/SIN necesidad de tener distancia de separación entre ellos.
 
     // TRANSFORM
     public bool randomRotation;
@@ -41,7 +41,7 @@ public class Foliage : ScriptableObject
 [CustomEditor(typeof(Foliage))]
 class FoliageEditor : Editor
 {
-    private readonly string[] opciones = new string[] { " Require Distance Separation", "No Require Distance Separation" };
+    private readonly string[] opciones = new string[] { "No Require Distance Separation", "Require Distance Separation" };
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
@@ -55,9 +55,9 @@ class FoliageEditor : Editor
 
         //EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
      
-        thisEditor.folliage = GUILayout.SelectionGrid(thisEditor.folliage ? 1 : 0, opciones, 2) == 1;
+        thisEditor.requireDistance = GUILayout.SelectionGrid(thisEditor.requireDistance ? 1 : 0, opciones, 2) == 1;
 
-        if (!thisEditor.folliage)
+        if (thisEditor.requireDistance)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("unitSpace"), new GUIContent("Unit Space Separation"));
         }
