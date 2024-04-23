@@ -18,10 +18,10 @@ MonoBehaviour:
     persistance: 0.09
     lacunarity: 10.5
     offset: {x: 100, y: 100}
-  weight: 1
-  density: 1
-  maxHeight: 4
-  minHeight: 2.5
+  weight: 0.001
+  density: 1.5
+  maxHeight: 3.5
+  minHeight: 3
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
