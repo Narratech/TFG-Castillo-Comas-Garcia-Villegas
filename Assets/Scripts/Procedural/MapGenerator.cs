@@ -74,12 +74,6 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     BiomeGenerator biomeGenerator;
 
-    [SerializeField]
-    AnimationCurve noiseTransition;
-
-    [SerializeField]
-    AnimationCurve heightTransition;
-
     public InterestPoint[] interestPoints;
 
     /// <summary>
@@ -454,7 +448,7 @@ public class MapGenerator : MonoBehaviour
         float maxHeightPossible = 0;
         foreach (var biome in biomeInfluence)
         {
-            float curveResult = heightTransition.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
+            float curveResult = biomeGenerator.BiomeTransitionCurve.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
             actualHeight += biome.Key.NoiseToHeight(noiseValue) * curveResult * (drawMode == DrawMode.Cartoon ? 10 : 1);
             maxHeightPossible += curveResult;
         }
@@ -484,7 +478,7 @@ public class MapGenerator : MonoBehaviour
         float maxNoisePossible = 0;
         foreach (var biome in biomeInfluence)
         {
-            float curveResult = noiseTransition.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
+            float curveResult = biomeGenerator.BiomeTransitionCurve.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
             currentNoise += biome.Key[x, y] * curveResult;
             maxNoisePossible += curveResult;
         }

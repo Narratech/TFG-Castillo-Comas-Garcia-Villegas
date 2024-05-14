@@ -49,15 +49,6 @@ public class MapGeneratorEditor : Editor{
 
         ////
         EditorGUILayout.Space();
-        GUILayout.Label("Curves", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
-        ////
-
-        //Curves
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("noiseTransition"), new GUIContent("Noise Transition"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("heightTransition"), new GUIContent("Height Transition"));
-
-        ////
-        EditorGUILayout.Space();
         GUILayout.Label("InterestPoints", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
         ////
 

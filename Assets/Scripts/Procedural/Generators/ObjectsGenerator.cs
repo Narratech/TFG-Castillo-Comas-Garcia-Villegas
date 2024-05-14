@@ -49,7 +49,7 @@ public static class ObjectsGenerator {
 
                         if (noiseValue < v)
                         {
-                            if (obj.requireDistance && !AUX) Debug.Log(obj.name + " Creado");
+                            //if (obj.requireDistance && !AUX) Debug.Log(obj.name + " Creado");
 
                             Vector3 posHeight = new Vector3(x * sizePerBlock - chunkSize / 2 + 1, mapInfo.HeightMap[x, y], -y * sizePerBlock + chunkSize / 2 - 1); //calculamos la posicion
 

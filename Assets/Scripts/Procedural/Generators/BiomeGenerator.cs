@@ -11,12 +11,16 @@ public class BiomeGenerator
     float noiseSize;
 
     [SerializeField]
-    int influenceRange = 10;
+    AnimationCurve biomeTransition;
+
+    public AnimationCurve BiomeTransitionCurve { get { return biomeTransition; } }
 
     [SerializeField]
     Biome[] biomes = null;
 
     byte[,] biomeMap = null;
+
+    Dictionary<Biome, float>[,] influences;
 
     public void GenerateBiomeMap(int seed, int size, Vector2 offset)
     {
@@ -34,11 +38,11 @@ public class BiomeGenerator
             offset = offset,
             persistance = 1
         };
-        float[,] heat = Noise.GenerateNoiseMap(size, seed + 1, noiseSettings);
-        float[,] moisture = Noise.GenerateNoiseMap(size, seed + 2, noiseSettings);
+        float[,] biomesNoise = Noise.GenerateNoiseMap(size, seed + 1, noiseSettings);
 
         biomeMap = new byte[size, size];
 
+        influences = new Dictionary<Biome, float>[size, size];
 
         //var copyBiomes = ordenarDensity();
 
@@ -58,17 +62,36 @@ public class BiomeGenerator
         {
             for (int j = 0; j < size; j++)
             {
-                var ruido = (heat[i, j] + moisture[i, j]) / 2;
+                var ruido = biomesNoise[i, j];
                
-                float positionValue = ruido * thresholds[thresholds.Length-1];
+                float noiseValue = ruido * thresholds[thresholds.Length-1];
 
                 byte currentBiomeIndex = 0;
+                float biomeInfluence = 0f;
+
                 for (byte x = 0; x < biomes.Length; x++)
                 { 
-                    if (positionValue  <= thresholds[x])
+                    if (noiseValue <= thresholds[x])
                     {
-                        //currentBiomeIndex = biomes[x].Item1;
-                        currentBiomeIndex = x;
+                        float lowerValue = 0f;
+                        if (x > 0)
+                            lowerValue = thresholds[x - 1];
+                        else
+                        {
+                            influences[i, j] = new Dictionary<Biome, float>();
+                            influences[i, j].Add(biomes[x], biomeTransition.Evaluate(1f));
+                            break;
+                        }
+                        float upperValue = thresholds[x];
+
+                        //Normalizamos
+                        biomeInfluence = (noiseValue - lowerValue) / (upperValue - lowerValue);
+
+                        influences[i, j] = new Dictionary<Biome, float>();
+                        influences[i, j].Add(biomes[x], biomeTransition.Evaluate(biomeInfluence));
+                        influences[i, j].Add(biomes[x - 1], biomeTransition.Evaluate(1 - biomeInfluence));
+
+                        currentBiomeIndex = biomeInfluence > 0.5f? x : (byte)(x - 1);
                         break;
                     }
 
@@ -94,48 +117,7 @@ public class BiomeGenerator
 
     internal Dictionary<Biome, float> GenerateBiomeInfluence(int x, int y)
     {
-        Dictionary<Biome, float> result = new Dictionary<Biome, float>();
-
-        int numCells = 0;
-
-        float d, yDiff, threshold, radiusSq;
-        float diameter = (influenceRange * 2) + 1;
-        radiusSq = (diameter * diameter) / 4;
-
-        for (int i = -influenceRange; i <= influenceRange; i++)
-        {
-            int currentY = i + y;
-            if (!(currentY >= 0 && currentY < biomeMap.GetLength(1))) continue;
-
-            yDiff = i;
-            threshold = radiusSq - (yDiff * yDiff);
-
-            for (int j = -influenceRange; j <= influenceRange; j++)
-            {
-                int currentX = j + x;
-                if (!(currentX >= 0 && currentX < biomeMap.GetLength(0))) continue;
-
-                d = j;
-                if ((j * j) <= threshold)
-                {
-                    if (!result.ContainsKey(biomes[biomeMap[currentX, currentY]]))
-                        result.Add(biomes[biomeMap[currentX, currentY]], 0f);
-                    result[biomes[biomeMap[currentX, currentY]]] += 1f;
-                    numCells++;
-                }
-
-            }
-
-        }
-
-        foreach (var biome in biomes)
-        {
-            if (result.ContainsKey(biome))
-            {
-                result[biome] /= (float)numCells;
-            }
-        }
-        return result;
+        return influences[x, y];
     }
 
     internal float GetMaximumPossibleHeight()

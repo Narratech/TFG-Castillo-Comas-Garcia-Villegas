@@ -18,7 +18,6 @@ MonoBehaviour:
     persistance: 0.09
     lacunarity: 10.5
     offset: {x: 100, y: 100}
-  weight: 0.001
   density: 1.5
   maxHeight: 3.5
   minHeight: 3
@@ -49,4 +48,4 @@ MonoBehaviour:
   foliages:
   - {fileID: 11400000, guid: 87c05ff03eaa9a949a38a130cb487c9f, type: 2}
   - {fileID: 11400000, guid: 61c602daff17d9e4fa4be473a9ae386c, type: 2}
-  color: {r: 0.004805972, g: 0.33962262, b: 0.00600305, a: 0}
+  color: {r: 0, g: 0.5566038, b: 0.00647214, a: 0}

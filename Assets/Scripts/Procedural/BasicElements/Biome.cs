@@ -1,5 +1,4 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Procedural/Biome")]
@@ -11,10 +10,7 @@ public class Biome : ScriptableObject
     public NoiseSettings noiseSettings;
 
     [Header("Biome generation")]
-    [SerializeField]
-    [Range(0.001f, 1f)]
-    float weight = 0.5f;
-
+    [Range(0.001f, 2f)]
     public float density = 1;
 
     [Header("Terrain transformation")]
@@ -71,11 +67,6 @@ public class Biome : ScriptableObject
     public float GetMinimumHeight()
     {
         return minHeight;
-    }
-
-    public float GetWeight()
-    {
-        return weight;
     }
 
     public float this[int index, int index2]

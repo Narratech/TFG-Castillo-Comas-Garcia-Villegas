@@ -18,9 +18,8 @@ MonoBehaviour:
     persistance: 0.044
     lacunarity: 24.1
     offset: {x: 100, y: 100}
-  weight: 0.348
   density: 1
-  maxHeight: 6
+  maxHeight: 5.48
   minHeight: 3
   meshHeightCurve:
     serializedVersion: 2
@@ -47,4 +46,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   foliages: []
-  color: {r: 0.254717, g: 0.16264813, b: 0.075694196, a: 0}
+  color: {r: 0.4245283, g: 0.31064746, b: 0.20625669, a: 0}
