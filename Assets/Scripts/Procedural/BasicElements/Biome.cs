@@ -34,13 +34,15 @@ public class Biome : ScriptableObject
 
     byte[,] noiseMap = null;
 
-    public void GenerateNoiseMap(int size, int seed, Vector2 offset)
+    public void GenerateNoiseMap(int size, int noiseScale, int seed, Vector2 offset)
     {
         if (noiseSettings.lacunarity < 1) noiseSettings.lacunarity = 1;
         if (noiseSettings.octaves < 0) noiseSettings.octaves = 0;
         if (noiseSettings.octaves > 6) noiseSettings.octaves = 5;
 
         noiseSettings.offset = offset;
+
+        noiseSettings.noiseScale = noiseScale;
 
         noiseMap = new byte[size, size];
         float[,] values = Noise.GenerateNoiseMap(size, seed, noiseSettings);

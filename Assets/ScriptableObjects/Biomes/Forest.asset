@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Forest
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 225
+    noiseScale: 133
     octaves: 2
     persistance: 0.09
-    lacunarity: 10.5
+    lacunarity: 3.89
     offset: {x: 100, y: 100}
   density: 1.5
   maxHeight: 3.5

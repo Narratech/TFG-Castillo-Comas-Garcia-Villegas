@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Beach
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 149.1
-    octaves: 2
-    persistance: 0.174
+    noiseScale: 133
+    octaves: 1
+    persistance: 0
     lacunarity: 1
     offset: {x: 100, y: 100}
   density: 0.205
-  maxHeight: 2.5
-  minHeight: 1.5
+  maxHeight: 2.48
+  minHeight: 1.98
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:

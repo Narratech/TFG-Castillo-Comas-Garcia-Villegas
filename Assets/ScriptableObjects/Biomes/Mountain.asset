@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mountain
   m_EditorClassIdentifier: 
   noiseSettings:
-    noiseScale: 45
+    noiseScale: 133
     octaves: 2
-    persistance: 0.044
-    lacunarity: 24.1
+    persistance: 0.245
+    lacunarity: 32.5
     offset: {x: 100, y: 100}
   density: 1
   maxHeight: 5.48

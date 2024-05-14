@@ -65,6 +65,11 @@ public class MapGenerator : MonoBehaviour
     public int seed;
 
     /// <summary>
+    /// El tamaño del ruido general en todo el mapa
+    /// </summary>
+    public int noiseSize;
+
+    /// <summary>
     ///  Desplazamiento del ruido generado
     /// </summary>
     public Vector2 offset;
@@ -149,14 +154,14 @@ public class MapGenerator : MonoBehaviour
 
             if (drawMode == DrawMode.Cartoon)
             {
-                biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
+                biomeGenerator.GenerateNoises(mapSize + 1, noiseSize, seed, offset);
 
                 map = new MapInfo(mapSize + 1, true, sizePerBlock);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize + 1, offset);
             }
             else
             {
-                biomeGenerator.GenerateNoises(mapSize, seed, offset);
+                biomeGenerator.GenerateNoises(mapSize, noiseSize, seed, offset);
 
                 map = new MapInfo(mapSize, false, sizePerBlock);
                 biomeGenerator.GenerateBiomeMap(seed, mapSize, offset);
@@ -228,7 +233,7 @@ public class MapGenerator : MonoBehaviour
 
         if (drawMode == DrawMode.Cartoon)
         {
-            biomeGenerator.GenerateNoises(mapSize + 1, seed, offset);
+            biomeGenerator.GenerateNoises(mapSize + 1, noiseSize, seed, offset);
 
             map = new MapInfo(mapSize + 1, true, sizePerBlock);
 
@@ -238,7 +243,7 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            biomeGenerator.GenerateNoises(mapSize, seed, offset);
+            biomeGenerator.GenerateNoises(mapSize, noiseSize, seed, offset);
 
             map = new MapInfo(mapSize, false, sizePerBlock);
 

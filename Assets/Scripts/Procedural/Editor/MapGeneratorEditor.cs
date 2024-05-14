@@ -32,6 +32,7 @@ public class MapGeneratorEditor : Editor{
         //Basic Elements
         EditorGUILayout.PropertyField(serializedObject.FindProperty("mapSize"), new GUIContent("Map Size"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("seed"), new GUIContent("Seed"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("noiseSize"), new GUIContent("Noise Scale"));
 
         if (mapGen.drawMode == MapGenerator.DrawMode.CubicMap)
         {

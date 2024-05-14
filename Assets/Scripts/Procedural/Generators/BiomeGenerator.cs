@@ -111,10 +111,10 @@ public class BiomeGenerator
         return biomes[biomeMap[x, y]];
     }
 
-    internal void GenerateNoises(int mapSize, int seed, Vector2 offset)
+    internal void GenerateNoises(int mapSize, int noiseScale, int seed, Vector2 offset)
     {
         foreach (var biome in biomes)
-            biome.GenerateNoiseMap(mapSize, seed, offset);
+            biome.GenerateNoiseMap(mapSize, noiseScale, seed, offset);
     }
 
     internal float GetMaximumPossibleHeight()

@@ -8,7 +8,7 @@ public class NoiseSettings
     ///  El factor de escala del ruido generado.Un valor mayor producirá un ruido con detalles más finos
     /// </summary>
     [Header("Noise generation")]
-    [SerializeField]
+    [HideInInspector]
     public float noiseScale;
     /// <summary>
     /// El número de octavas utilizadas en el algoritmo de ruido.Cada octava es una capa de ruido que se suma al resultado final.
