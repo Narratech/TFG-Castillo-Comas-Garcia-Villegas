@@ -59,8 +59,6 @@ public class MapGenerator : MonoBehaviour
 
     public float sizePerBlock = 1f;
 
-    const float MAXLOD = 4f;
-
     /// <summary>
     /// La semilla aleatoria utilizada para generar el ruido
     /// </summary>
@@ -327,12 +325,12 @@ public class MapGenerator : MonoBehaviour
         }
 
         float[,] noise = new float[map.Size, map.Size];
-        Dictionary<Biome, float>[,] influences = new Dictionary<Biome, float>[map.Size, map.Size];
+        Dictionary<Biome, float>[,] influences = biomeGenerator.GetInfluences();
         for (int x = 0; x < map.Size; x++)
         {
             for (int y = 0; y < map.Size; y++)
             {
-                influences[x, y] = biomeGenerator.GenerateBiomeInfluence(x, y);
+                influences[x, y] = influences[x, y];
                 noise[x, y] = isIsland ? GetCoordinatesNoise(x, y, influences[x, y]) - fallOffMap[x, y] : GetCoordinatesNoise(x, y, influences[x, y]);
 
             }
@@ -531,6 +529,8 @@ public class MapGenerator : MonoBehaviour
 
     public int GetMeshSimplificationValue(int LODlevel)
     {
+        const float MAXLOD = 4f;
+
         float simplificationRate = LODlevel / MAXLOD;
 
         int[] divisors = GetDivisors(chunkSize);

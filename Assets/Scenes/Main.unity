@@ -241,37 +241,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
---- !u!1 &477173884
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 477173885}
-  m_Layer: 0
-  m_Name: Mapa3D
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &477173885
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 477173884}
-  m_LocalRotation: {x: 0, y: -0, z: -0.0000000074505797, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1874351697}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &574417061
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,6 +370,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textureData: {fileID: 11400000, guid: fd21efef6af63d74d9db38465c82ec3d, type: 2}
   terrainMaterial: {fileID: 2100000, guid: 701a0b2d4ae0446439cc2d19371e8682, type: 2}
+--- !u!1 &668351878
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 668351879}
+  m_Layer: 0
+  m_Name: Mapa3D
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &668351879
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 668351878}
+  m_LocalRotation: {x: 0, y: -0, z: -0.0000000074505797, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1874351697}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &852612057 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4459864851310106424, guid: 6bacecc4f3df9584198879c73a6b6c36,
@@ -591,17 +591,22 @@ PrefabInstance:
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: seed
-      value: 227
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: mapSize
-      value: 100
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: drawMode
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
+        type: 3}
+      propertyPath: chunkSize
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
@@ -612,7 +617,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gameObjectMap3D
       value: 
-      objectReference: {fileID: 477173884}
+      objectReference: {fileID: 668351878}
     - target: {fileID: 1822892296130974850, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       propertyPath: generateObjects
@@ -845,6 +850,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5234133774820441089, guid: 8472f537986b14f4eb239dfd57fe774d,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 477173885}
+      addedObject: {fileID: 668351879}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8472f537986b14f4eb239dfd57fe774d, type: 3}

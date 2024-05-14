@@ -22,6 +22,8 @@ public class BiomeGenerator
 
     Dictionary<Biome, float>[,] influences;
 
+    public Dictionary<Biome, float>[,] BiomeInfluences {  get { return influences; } }
+
     public void GenerateBiomeMap(int seed, int size, Vector2 offset)
     {
         biomes = biomes.Where(b => b != null).ToArray();
@@ -115,11 +117,6 @@ public class BiomeGenerator
             biome.GenerateNoiseMap(mapSize, seed, offset);
     }
 
-    internal Dictionary<Biome, float> GenerateBiomeInfluence(int x, int y)
-    {
-        return influences[x, y];
-    }
-
     internal float GetMaximumPossibleHeight()
     {
         biomes = biomes.Where(b => b != null).ToArray();
@@ -130,5 +127,10 @@ public class BiomeGenerator
                 height = bio.GetMaximumHeight();
         }
         return height;
+    }
+
+    internal Dictionary<Biome, float>[,] GetInfluences()
+    {
+        return influences;
     }
 }
