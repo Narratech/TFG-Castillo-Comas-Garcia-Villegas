@@ -12,7 +12,6 @@
 - [Guía de usuario](#guía-de-usuario)
 - [Código de conducta](#código-de-conducta)
 - [Autor/es](#autores)
-- [Licencia](#licencia)
 - [Limitación de responsabilidades - Solo BID](#limitación-de-responsabilidades)
 
 ## Badges
@@ -142,13 +141,14 @@ Este objecto determina el comportamiento que va atener el terreno de su bioma, p
 #### **Foliage Object**
 
 Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
-![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/aadda348-f124-4c7f-9c4b-24cdefe2e06a)
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/51f04c54-ac98-4bfe-b3aa-ebc6be2ceff7)
+
 
 *Prefab Properties*
 
 - **Prefab**: Objecto que se quiere instanciar
 - **Foliage**: Boleando que indiqca si el objecto que queremos instanciar no tenga espacio libre alrededor de este, un ejemploclaro del uso del mismo es la hierba ya que nos da igual que haya hierba alrededor de hierba
-- **Unit Space Separation**: Unidades de unity de separacion que requiere ese objecto con respecto a otros("con el bool Foliage == False")
+- **Unit Space Separation**: Unidades de unity de separacion que requiere ese objecto con respecto a otros("con el YES")
   
 *Density Features*
 
@@ -210,17 +210,6 @@ Sara Isabel Garcia Moral
 Javier Enrique Villegas Montelongo
 
 Ingacio del Castillo Rubio
-
-## Licencia 
----
-
-La licencia especifica los permisos y las condiciones de uso que el desarrollador otorga a otros desarrolladores que usen y/o modifiquen la herramienta digital.
-
-Incluye en esta sección una nota con el tipo de licencia otorgado a esta herramienta digital. El texto de la licencia debe estar incluído en un archivo *LICENSE.md* o *LICENSE.txt* en la raíz del repositorio.
-
-Si desconoces qué tipos de licencias existen y cuál es la mejor para cada caso, te recomendamos visitar la página https://choosealicense.com/.
-
-Si la herramienta que estás publicando con la iniciativa Código para el Desarrollo ha sido financiada por el BID, te invitamos a revisar la [licencia oficial del banco para publicar software](https://github.com/EL-BID/Plantilla-de-repositorio/blob/master/LICENSE.md)
 
 ## Limitación de responsabilidades
 No será responsable de ningún daño directo, indirecto, incidental, especial, consecuente o punitivo, incluyendo, pero no limitado a, pérdida de ingresos, pérdida de beneficios, pérdida de datos, interrupción del negocio o cualquier otro daño similar, derivado del uso o la imposibilidad de utilizar la herramienta proporcionada. El usuario reconoce y acepta que la herramienta se proporciona "tal cual" y que Procedural OVO worlds no ofrece garantías de ningún tipo, ya sean expresas o implícitas, incluyendo, pero no limitado a, garantías de comerciabilidad, idoneidad para un propósito particular, o no infracción. Procedural OVO worlds tampoco será responsable de cualquier daño que pueda surgir como resultado de acciones realizadas por terceros. La responsabilidad total de Procedural OVO worlds, ya sea en contrato, agravio (incluyendo negligencia) o de otro modo.
