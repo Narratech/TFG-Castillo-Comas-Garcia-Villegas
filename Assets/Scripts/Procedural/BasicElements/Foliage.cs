@@ -41,7 +41,7 @@ public class Foliage : ScriptableObject
 [CustomEditor(typeof(Foliage))]
 class FoliageEditor : Editor
 {
-    private readonly string[] opciones = new string[] { "No Require Distance Separation", "Require Distance Separation" };
+    private readonly string[] opciones = new string[] { "No", "Yes" };
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
@@ -54,7 +54,7 @@ class FoliageEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
 
         //EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
-     
+        CreateHeader("Distance Separation");
         thisEditor.requireDistance = GUILayout.SelectionGrid(thisEditor.requireDistance ? 1 : 0, opciones, 2) == 1;
 
         if (thisEditor.requireDistance)
