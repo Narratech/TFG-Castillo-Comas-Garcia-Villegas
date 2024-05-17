@@ -198,7 +198,8 @@ Tambien es una opcion no asignar un color, en este caso no se modificará el col
 Una vez que el usuario modifica los parametros que vea conveniente, se aplican presionando el boton de "Update" abajo del todo.
 Tambien existe una alternativa que es el "AutoUpdate", que actualiza los valores internos del shader cada vez que se modifica cualquier parametro, esto se usa para hacer pequeños cambios y actualizar el terreno de forma instantanea.
 
-![TextureData](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82290483/bbc19b8d-3550-4c8e-9e57-f48c3681e9b1)
+![TextureData](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82290483/b5b2db79-ae8e-4ce1-ac1d-413c68538db7)
+
 
 
 
