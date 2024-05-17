@@ -195,6 +195,13 @@ Tambien es una opcion no asignar un color, en este caso no se modificará el col
 - **Blend Strenght**: Tambien constituye un valor entre 0 y 1. Define el suavizado de la textura de esta capa con el resto de capas. Si el valor es cercano al 0, el cambio entre las texturas de las capas es inmediato, sin nigun tipo de suavizado, mientras que si es cercano al 1, las demás capas se veran afectadas por esta de forma mas notable.
 - **Texture Scale**: Define la escala con la que se renderizara la textura de esta capa.
 
+Una vez que el usuario modifica los parametros que vea conveniente, se aplican presionando el boton de "Update" abajo del todo.
+Tambien existe una alternativa que es el "AutoUpdate", que actualiza los valores internos del shader cada vez que se modifica cualquier parametro, esto se usa para hacer pequeños cambios y actualizar el terreno de forma instantanea.
+
+![TextureData](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82290483/bbc19b8d-3550-4c8e-9e57-f48c3681e9b1)
+
+
+
 #### **Endless Terrain**
 
 Endless terrain es un componente (Script) que permite mejorar la eficiencia de la escena con el mapa. A pesar de su nombre no genera un mapa infinito. Su funcion consiste en ocultar los chunks que se encuentran a una distancia configurable de la figura del jugador. El mapa que se puede ver ha sido generado previamente siguiendo la configuracion del Map Generator. Pero no se verá hasta ejecutar Unity.
