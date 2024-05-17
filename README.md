@@ -179,6 +179,22 @@ Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
 
 #### **TextureUpdater**
 
+La malla de terreno utiliza un material que utiliza nuestro shader personalizado
+Este componente se encarga de actualizar y modificar los parametros de dicho material.
+El componente obtiene toda esta informacion de un ScriptableObject de tipo TextureData, dentro de este scriptableObject se puede configurar todos los parametros referentes al apartado grafico del terreno.
+De esta forma, el usuario puede tener al mismo tiempo distintos TextureData para definir distintas capas y texturas.
+Cabe resaltar que el terreno solo utiliza un TextureData al mismo tiempo.
+
+El scriptableObject "TextureData" permite definir hasta 8 capas en las que se puede dividir el terreno, cada una de estas capas tiene los siguientes parametros
+- **Texture**: Textura que se va a utilizar en esta sección del terreno, esta textura debe ser tileable y accesible y modificable, por lo que el sprite debe importarse con una configuración especifica, asignando el parámetro ReadOnly a false.
+Cabe resaltar que no es obligatorio asignar una textura, la herramienta entonces tendra en cuenta el color elegido.
+- **Tint**: La herramienta también te da la opción de tintar la capa, combinando el color seleccionado con la textura.
+Tambien es una opcion no asignar un color, en este caso no se modificará el color de la textura.
+- **TintStrenght**: Se constituye como un valor decimal entre 0 y 1, si el valor es cercano al 0, el color tendra menos efecto sobre la textura mientras que si es cercano al 1, la textura se vera mas afectada.
+- **StartHeight**:  Este parámetro se encarga de definir la altura desde la que se empieza a renderizar esta capa. Constituye un valor decimal entre 0 y 1, siendo 0 el punto mas bajo del terreno y 1 el punto mas alto del terreno.
+- **Blend Strenght**: Tambien constituye un valor entre 0 y 1. Define el suavizado de la textura de esta capa con el resto de capas. Si el valor es cercano al 0, el cambio entre las texturas de las capas es inmediato, sin nigun tipo de suavizado, mientras que si es cercano al 1, las demás capas se veran afectadas por esta de forma mas notable.
+- **Texture Scale**: Define la escala con la que se renderizara la textura de esta capa.
+
 #### **Endless Terrain**
 
 Endless terrain es un componente (Script) que permite mejorar la eficiencia de la escena con el mapa. A pesar de su nombre no genera un mapa infinito. Su funcion consiste en ocultar los chunks que se encuentran a una distancia configurable de la figura del jugador. El mapa que se puede ver ha sido generado previamente siguiendo la configuracion del Map Generator. Pero no se verá hasta ejecutar Unity.
