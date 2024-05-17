@@ -80,7 +80,7 @@ En primer luegar encontramos el prefab **Map Generator**, ene ste podemos encont
     - ColorMap: mapa 2D a color
     - CubicMap: mapa 3D al estilo minecraft
     - CartoonMap: mapa 3D al estilo cartoon
-- **GameObject Map3D**: es el gameobject padre en el cual se va a generar todo el mapa, incluyendo objectos.
+- **GameObject Map3D**: Es el gameobject padre en el cual se va a generar todo el mapa, incluyendo objectos.
 - **MapSize**: Tamaño del mapa que se va a generar
 - **Seed**: Este atributo es un entero que se utiliza para **inicializar el generador de números aleatorios utilizado por Unity para la creación del mapa ruido de distribucion de los biomas por el mapa**. Al definir este valor, se especifica el valor inicial de la semilla del generador de números aleatorios, lo que, a su vez, afecta visualmente a la apariencia del ruido creado en la escena. Definiendo de forma diferente este valor, se pueden obtener una variedad de vistas del ruido creado.
 - **Offset**: La propiedad 'offset' representa el desplazamiento del ruido generado, este desplazamiento permite ajustar la posición inicial del ruido en la escena.Este es un vector2 que especifica la cantidad de desplazamiento en las direcciones horizontal y vertical.
@@ -88,16 +88,12 @@ En primer luegar encontramos el prefab **Map Generator**, ene ste podemos encont
 *Biomes*:
 
 BiomeGenerator es el encargado de la distribucion de forma dinamica de los biomas por el mapa utilizando un mapa de ruido cuya semilla es la que se ha establecido enteriormente. En este encontramos:
-- **Noise Size**: es el tamaño del ruido, es decir controla la escala o tamaño de las "caracteristicas" generadas por el ruido de perlin en el espacio, a mayor tamaño menos cambios bruscos habra en el terreno y a mas quequeño habra mas detalles mas finos y cambios de terreno mas bruscos.
-- **Influence Range**:
-- **Biomes**:  Conjunto de biomas que van a conformar el mapa
-  
-*Curves*:
-- **Noise Transition**:
-- **Height Transition**:
+- **Noise Size**: Es el tamaño del ruido del mapa utilizado para generar los biomas, a más pequeño, mas pequeños serán los biomas en general.
+- **Biome Transition**: Una curva de animación de unity que se utiliza para determinar cómo manejar la transición de las características de un bioma a otro.
+- **Biomes**:  Conjunto de biomas que van a conformar el mapa. El órden en el que se colocan es un factor a tener en cuenta, ya que cada bioma aparecerá junto a los biomas que tenga contiguos en este array.
 
 *Interest Points*
-- **Interest Points**:
+- **Interest Points**: Conjunto de los puntos de interés que aparecerán en el mapa, si el check de "Generate Interest Points" está marcado.
 
 *Boolean Options*
 - **IsIsland**: Booleano que permita que el mapa generado tenga forma de isla
@@ -113,17 +109,14 @@ Este objecto determina el comportamiento que va atener el terreno de su bioma, p
 
 *Noise Settings*
 
-- **Noise Scale**:  El factor de escala del ruido generado.Un valor mayor producirá un ruido con detalles más finos
 - **Octaves**: El número de octavas utilizadas en el algoritmo de ruido.Cada octava es una capa de ruido que se suma al resultado final.
    A medida que se agregan más octavas, el ruido generado se vuelve más detallado.
 - **Persistance**: La persistencia controla la amplitud de cada octava.Un valor más bajo reducirá el efecto de las octavas posteriores de las octavas posteriores
 - **Lacunarity**: Un multiplicador que determina qué tan rápido aumenta la frecuencia para cada octava sucesiva en una función de ruido de Perlin
-- **Offset**: Desplazamiento del ruido generado
 
 *Biome Generation*
 
-- **Weight**:
-- **Density**: Numero que representa la densidad del bioma en el mapa
+- **Density**: Numero que representa cuánto va a ocupar el bioma en el mapa total con respecto a otros biomas. 
 
 *Terrain Transformation*
 
@@ -134,9 +127,9 @@ Este objecto determina el comportamiento que va atener el terreno de su bioma, p
 
 - **Foliages**: Conjunto de objectos que se pueden generar en el bioma
 
-*Test values*
+*Color*
 
-- **Color**: ?¿
+- **Color**: Color con el que se representará el bioma cuando se crea en modo "cúbico".
   
 #### **Foliage Object**
 
@@ -154,7 +147,6 @@ Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
 
 - **Density Curve**: Curva que permite establecer de que parte a que parte hay mas probabilidades de que se genere el objecto
 - **Density**: Densidad del objecto que queremos instanciar
-- **Noise Scale**: 
 
 *Transform Properties*
 
@@ -199,7 +191,6 @@ Una vez que el usuario modifica los parametros que vea conveniente, se aplican p
 Tambien existe una alternativa que es el "AutoUpdate", que actualiza los valores internos del shader cada vez que se modifica cualquier parametro, esto se usa para hacer pequeños cambios y actualizar el terreno de forma instantanea.
 
 ![TextureData](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82290483/b5b2db79-ae8e-4ce1-ac1d-413c68538db7)
-
 
 
 
