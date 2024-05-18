@@ -208,7 +208,7 @@ Intrucciones:
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/d7297034-3e80-438c-b48f-df588b70b43e)
 
 #### **Interest Point**
-Este objeto permite definir las caracteristicas y parámetros de un punto de interes.
+Este objeto permite definir las características y parámetros de un punto de interés. Para crear un objeto de este tipo se debe seguir estos pasos: botón derecho > Create > Procedural > Interest Point.
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/99c20a0a-43e0-4ae5-b443-da8944bfc6c3)
 
 
