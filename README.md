@@ -93,7 +93,7 @@ BiomeGenerator es el encargado de la distribucion de forma dinamica de los bioma
 - **Biomes**:  Conjunto de biomas que van a conformar el mapa. El órden en el que se colocan es un factor a tener en cuenta, ya que cada bioma aparecerá junto a los biomas que tenga contiguos en este array.
 
 *Interest Points*
-- **Interest Points**: Conjunto de los puntos de interés que aparecerán en el mapa, si el check de "Generate Interest Points" está marcado.
+- **Interest Points**: Lista de los puntos de interés que aparecerán en el mapa, solo si el check de "Generate Interest Points" está marcado. Deben asociarse "Interrest Point Objects" Los puntos de interes permiten colocar los prefabs que se deseen de manera pseudoaleatoria por el mapa.
 
 *Boolean Options*
 - **IsIsland**: Booleano que permita que el mapa generado tenga forma de isla
@@ -203,6 +203,22 @@ Intrucciones:
 - En el objeto Map Generator hay que activar el componente Endless Terrain
 - Asegurarse de que el componente anterior tiene asignado un objeto que actue de jugador
 - Dar al play de Unity
+
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/e271862a-5e66-499e-bc98-0c7d153a94c3)
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/d7297034-3e80-438c-b48f-df588b70b43e)
+
+#### **Interest Point**
+Este objeto permite definir las caracteristicas y parámetros de un punto de interes.
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/99c20a0a-43e0-4ae5-b443-da8944bfc6c3)
+
+
+*General*
+- **Type of Object**: Permite selecionar un tipo dentro de una seleccion (Resources, Construction, Enemy, Mission, Allies) para hacer una diferenciacion entre ellos.
+- **Object Instance**: Prefab que representa a ese punto de interés (ej: para el caastillo el prefab asociado es una torre).
+- **Amount**: Numero de instancias que se van a generar de este objeto
+
+*Generate Settings*
+- **Radius**: radio de distancia entre los puntos. Sinonimo de dispersión en este caso.
 
 #### **Map Display**
 
