@@ -33,7 +33,7 @@ public class PoissonDiscSampler
     private int minHeight;
     private MapGenerator mapGen;
     private MapInfo mapInfo;
-    private Biome biome;
+    private Biome[] biomes;
     /// <summary>
     /// Lista de posiciones para los objetos generados
     /// </summary>
@@ -45,7 +45,7 @@ public class PoissonDiscSampler
     /// <param name="size"> Anchura del mapa generado</param>
     /// <param name="size"> Longitud de mapa generado</param>
     /// <param name="radius_"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
-    public PoissonDiscSampler(float size, float radius_, int amount, int maxHeight_, int minHeight_, MapInfo mapInfo_, MapGenerator mapGen_, Biome biome_)
+    public PoissonDiscSampler(float size, float radius_, int amount, int maxHeight_, int minHeight_, MapInfo mapInfo_, MapGenerator mapGen_, Biome[] biomes_)
     {
         this.amount = amount;
         rect = new Rect(0, 0, size, size);
@@ -58,7 +58,7 @@ public class PoissonDiscSampler
         mapGen = mapGen_;
 
         spawnPoints.Add(new Vector2(size / 2, size / 2));
-        biome = biome_;
+        biomes = biomes_;
     }
 
     /// <summary>
@@ -136,7 +136,13 @@ public class PoissonDiscSampler
         if (candidate.x >= 0 && candidate.x < rect.width && candidate.y >= 0 && candidate.y < rect.height)
         {
             float z = mapInfo.HeightMap[(int)candidate.x, (int)candidate.y];
-            if (z > maxHeight || z < minHeight || biome != mapGen.biomeGenerator.GetBiomeAt((int)candidate.x, (int)candidate.y)) return false;
+            if (z > maxHeight || z < minHeight) return false;
+            bool posible = false;
+            for (int i = 0; i < biomes.Length && !posible; i++)
+            {
+                if (biomes[i] == mapGen.biomeGenerator.GetBiomeAt((int)candidate.x, (int)candidate.y)) posible = true;
+            }
+            if (!posible) return false;
             int cellX = (int)(candidate.x / cellSize);
             int cellY = (int)(candidate.y / cellSize);
             int searchStartX = Mathf.Max(0, cellX - 2);

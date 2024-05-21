@@ -17,7 +17,9 @@ MonoBehaviour:
     type: 3}
   amount: 3
   radius: 50
-  maxHeight: 3
+  maxHeight: 4
   minHeight: 2
-  biome: {fileID: 11400000, guid: c354ecbb187b1fd419c79003be6d009c, type: 2}
+  biomes:
+  - {fileID: 11400000, guid: 9e9125770c3b92a41960ac28c07bf5e9, type: 2}
+  - {fileID: 11400000, guid: c354ecbb187b1fd419c79003be6d009c, type: 2}
   interpolation: 0

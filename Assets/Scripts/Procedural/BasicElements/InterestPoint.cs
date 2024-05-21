@@ -43,23 +43,17 @@ public class InterestPoint : ScriptableObject
 
     [Tooltip("Bioma en el que aparecerá ese objeto")]
     [SerializeField]
-    public Biome biome;
+    public Biome[] biomes;
 
-    /// <summary>
-    /// Interpolación entre Puntos de Interés
-    /// </summary>
-    [SerializeField]
-    public bool interpolation;
 
     private PoissonDiscSampler poissonDisc;
-
 
     //Se deberia generar el objeto dentro del Chunk correspondiente dependiendo de la posicion
     public void Generate(int mapSize, MapInfo map, float sizePerBlock, int chunkSize, Transform grandParent)
     {
         HashSet<Vector2> objectPositions = map.getObjects();
         MapGenerator mapGen = GameObject.FindGameObjectWithTag("MapGenerator").GetComponent<MapGenerator>();
-        poissonDisc = new PoissonDiscSampler(mapSize, radius,amount, maxHeight, minHeight, map, mapGen, biome);
+        poissonDisc = new PoissonDiscSampler(mapSize, radius,amount, maxHeight, minHeight, map, mapGen, biomes);
         List<Vector2> points = poissonDisc.Samples();
         var parent = new GameObject("InterestPoint_" + this.name);
         parent.transform.parent = grandParent;
