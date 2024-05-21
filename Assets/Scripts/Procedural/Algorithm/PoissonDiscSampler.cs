@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 
 /// <summary>
@@ -27,7 +29,11 @@ public class PoissonDiscSampler
     /// </summary>
     private readonly float cellSize;
 
-
+    private int maxHeight;
+    private int minHeight;
+    private MapGenerator mapGen;
+    private MapInfo mapInfo;
+    private Biome biome;
     /// <summary>
     /// Lista de posiciones para los objetos generados
     /// </summary>
@@ -39,15 +45,20 @@ public class PoissonDiscSampler
     /// <param name="size"> Anchura del mapa generado</param>
     /// <param name="size"> Longitud de mapa generado</param>
     /// <param name="radius_"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
-    public PoissonDiscSampler(float size, float radius_, int amount)
+    public PoissonDiscSampler(float size, float radius_, int amount, int maxHeight_, int minHeight_, MapInfo mapInfo_, MapGenerator mapGen_, Biome biome_)
     {
         this.amount = amount;
         rect = new Rect(0, 0, size, size);
         radius = radius_;
         cellSize = radius_ / Mathf.Sqrt(2);
         grid = new int[Mathf.CeilToInt(size / cellSize), Mathf.CeilToInt(size / cellSize)];
+        maxHeight = maxHeight_*10;
+        minHeight = minHeight_*10;
+        mapInfo = mapInfo_;
+        mapGen = mapGen_;
 
-        spawnPoints.Add(new Vector2(size/2, size/2));
+        spawnPoints.Add(new Vector2(size / 2, size / 2));
+        biome = biome_;
     }
 
     /// <summary>
@@ -84,6 +95,36 @@ public class PoissonDiscSampler
 
         return points;
     }
+
+    public Vector2 NewPoint(Vector2 p)
+    {
+        points.Remove(p);
+        spawnPoints.Remove(p);
+
+        int spawnIndex = Random.Range(0, spawnPoints.Count);
+        Vector2 spawnCentre = spawnPoints[spawnIndex];
+        bool candidateAccepted = false;
+
+        for (int i = 0; i < amount; i++)
+        {
+            float angle = Random.value * Mathf.PI * 2;
+            Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
+            Vector2 candidate = spawnCentre + dir * Random.Range(radius, 2 * radius);
+            if (IsValid(candidate) && points.Count < amount)
+            {
+                points.Add(candidate);
+                spawnPoints.Add(candidate);
+                grid[(int)(candidate.x / cellSize), (int)(candidate.y / cellSize)] = points.Count;
+                candidateAccepted = true;
+                return candidate;
+            }
+        }
+        if (!candidateAccepted)
+        {
+            spawnPoints.RemoveAt(spawnIndex);
+        }
+        return p;
+    }
     /// <summary>
     /// Comprobar la disponibilidad y proximidad de la posicion candidata
     /// </summary>
@@ -91,8 +132,11 @@ public class PoissonDiscSampler
     /// <returns></returns>
     bool IsValid(Vector2 candidate)
     {
+        
         if (candidate.x >= 0 && candidate.x < rect.width && candidate.y >= 0 && candidate.y < rect.height)
         {
+            float z = mapInfo.HeightMap[(int)candidate.x, (int)candidate.y];
+            if (z > maxHeight || z < minHeight || biome != mapGen.biomeGenerator.GetBiomeAt((int)candidate.x, (int)candidate.y)) return false;
             int cellX = (int)(candidate.x / cellSize);
             int cellY = (int)(candidate.y / cellSize);
             int searchStartX = Mathf.Max(0, cellX - 2);

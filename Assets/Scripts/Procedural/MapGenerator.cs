@@ -75,7 +75,7 @@ public class MapGenerator : MonoBehaviour
     public Vector2 offset;
 
     [SerializeField]
-    BiomeGenerator biomeGenerator;
+    public BiomeGenerator biomeGenerator;
 
     public InterestPoint[] interestPoints;
 
