@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour
 {
+    [Tooltip("Distancia maxima visible por el jugador")]
     [SerializeField] float maxViewDst = 200; // Distacia maxima a la que ve el jugador
     public Transform playerTransform; //Posicion del player
 

@@ -7,7 +7,7 @@ public class Foliage : ScriptableObject
 {
     // DENSITY FEATURES
     public AnimationCurve densityCurve;
-
+    [Tooltip("Densidad de las instancias. Cuanto mayor sea, mayor numero de instancias apareceran")]
     public float density = 0.1f;
 
     public float noiseScale = 0.1f;
@@ -15,24 +15,30 @@ public class Foliage : ScriptableObject
     public int unitSpace = 0;
 
     // PREFAB PROPERTIES
+    [Tooltip("Prefab asignado a este objeto")]
     public GameObject prefab;
     public bool requireDistance = false; //Esta variable almacena los objetos que pueden instanciarse CON/SIN necesidad de tener distancia de separación entre ellos.
 
     // TRANSFORM
+    [Tooltip("Si es True la rotacion de las instancias puede variar")]
     public bool randomRotation;
     public Vector3 rotation;
     public Vector3 maxRotation;
-
+   
+    [Tooltip("Si es True la escala de las instancias puede variar")]
     public bool randomScale;
     public Vector3 scale;
     public Vector3 maxScale;
 
     // HEIGHT
-    public bool useRandomHeight;
+    [Tooltip("Si es True la altura de las instancias puede variar")]
+    public bool randomHeight;
     public Vector2 minMaxHeight;
 
     //ADVANCED SETTINGS
+    [Tooltip("Adaptacion a las inclinaciones del terreno")]
     public bool environment_rotation; //rotacion con el enviroment cuestas y cosas asi
+    [Tooltip("Porcentaje del objeto que se puede hundir en el suelo")]
     public float subsidence_in_the_ground = 0f; // % del objeto que se puede hundir en el suelo
 }
 
@@ -101,9 +107,9 @@ class FoliageEditor : Editor
 
         CreateHeader("HEIGHT");
 
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("useRandomHeight"), new GUIContent("Use Random Height"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("randomHeight"), new GUIContent("Random Height"));
 
-        if (thisEditor.useRandomHeight)
+        if (thisEditor.randomHeight)
             EditorGUILayout.PropertyField(serializedObject.FindProperty("minMaxHeight"), new GUIContent("Min / Max Height"));
 
         serializedObject.ApplyModifiedProperties();

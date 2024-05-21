@@ -18,18 +18,21 @@ public class InterestPoint : ScriptableObject
         Allies,
         Construction
     };
-
+    [Header("General")]
     [SerializeField]
     public Type_of_POI typeOfPoint;
 
+    [Tooltip("Modelo u objeto de este punto de interes")]
     [SerializeField]
     public GameObject objectInstance;
 
+    [Tooltip("Numero maximo de instancias")]
     [SerializeField]
     public int amount;
 
 
     [Header("Generate Settings")]
+    [Tooltip("Radio minimo de distancia entre instancias")]
     [SerializeField]
     public float radius;
 
@@ -41,7 +44,7 @@ public class InterestPoint : ScriptableObject
     [SerializeField]
     public int minHeight;
 
-    [Tooltip("Bioma en el que aparecerá ese objeto")]
+    [Tooltip("Biomas en los que aparecera este objeto")]
     [SerializeField]
     public Biome[] biomes;
 

@@ -75,7 +75,7 @@ public static class ObjectsGenerator {
                             generated.transform.localScale = RandomScale(obj); //calculamos primero la escala pq luego la hemos de tener en cuenta en el posicionamiento
 
                             //HEIGHT
-                            if (obj.useRandomHeight)
+                            if (obj.randomHeight)
                                 generated.transform.localScale = new Vector3(generated.transform.localScale.x, UnityEngine.Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
 
                             if (!mapInfo.Cartoon)
@@ -166,7 +166,7 @@ public static class ObjectsGenerator {
                             generated.transform.localScale = RandomScale(obj); //calculamos primero la escala pq luego la hemos de tener en cuenta en el posicionamiento
 
                             //HEIGHT
-                            if (obj.useRandomHeight)
+                            if (obj.randomHeight)
                                 generated.transform.localScale = new Vector3(generated.transform.localScale.x, UnityEngine.Random.Range(obj.minMaxHeight.x, obj.minMaxHeight.y), generated.transform.localScale.z);
 
                             if (!mapInfo.Cartoon)
