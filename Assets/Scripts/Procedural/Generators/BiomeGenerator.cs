@@ -81,17 +81,26 @@ public class BiomeGenerator
                         else
                         {
                             influences[i, j] = new Dictionary<Biome, float>();
-                            influences[i, j].Add(biomes[x], biomeTransition.Evaluate(1f));
+                            influences[i, j].Add(biomes[x], 1f);
                             break;
                         }
                         float upperValue = thresholds[x];
 
-                        //Normalizamos
+                        //Normalizamos para que la influencia del bioma x sea entre 0 y 1 siempre
                         biomeInfluence = (noiseValue - lowerValue) / (upperValue - lowerValue);
 
+                        float firstBiomeInfl = biomeTransition.Evaluate(biomeInfluence);
+                        float secondBiomeInfl = biomeTransition.Evaluate(1 - biomeInfluence);
+
+                        float influenceMagnitude = firstBiomeInfl + secondBiomeInfl;
+
+                        // pasamos un valor normalizado de los resultados de la curva
                         influences[i, j] = new Dictionary<Biome, float>();
-                        influences[i, j].Add(biomes[x], biomeTransition.Evaluate(biomeInfluence));
-                        influences[i, j].Add(biomes[x - 1], biomeTransition.Evaluate(1 - biomeInfluence));
+                        influences[i, j].Add(biomes[x], firstBiomeInfl / influenceMagnitude);
+                        if (biomes[x] == biomes[x - 1])
+                            influences[i, j][biomes[x - 1]] += secondBiomeInfl / influenceMagnitude;
+                        else
+                            influences[i, j].Add(biomes[x - 1], secondBiomeInfl / influenceMagnitude);
 
                         currentBiomeIndex = biomeInfluence > 0.5f? x : (byte)(x - 1);
                         break;

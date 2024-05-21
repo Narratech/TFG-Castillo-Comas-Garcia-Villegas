@@ -359,10 +359,14 @@ public class MapGenerator : MonoBehaviour
         {
             for (int j = 0; j < map.Size; j++)
             {
-                height[i, j] = GetActualHeight(noise[i, j], influences[i, j]);
+                float currentHeight = GetActualHeight(noise[i, j], influences[i, j]) * 10f;
 
                 if (minecraft)
-                    height[i, j] = (float)(Math.Round(height[i, j], 1) * 10 * sizePerBlock);
+                    currentHeight = Mathf.Round(currentHeight) * sizePerBlock;
+                else
+                    currentHeight *= sizePerBlock;
+
+                height[i, j] = currentHeight;
 
             }
         }
@@ -451,8 +455,8 @@ public class MapGenerator : MonoBehaviour
         float maxHeightPossible = 0;
         foreach (var biome in biomeInfluence)
         {
-            float curveResult = biomeGenerator.BiomeTransitionCurve.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
-            actualHeight += biome.Key.NoiseToHeight(noiseValue) * curveResult * (drawMode == DrawMode.Cartoon ? 10 : 1);
+            float curveResult = biome.Value;
+            actualHeight += biome.Key.NoiseToHeight(noiseValue) * curveResult;
             maxHeightPossible += curveResult;
         }
         return actualHeight / maxHeightPossible;
@@ -481,7 +485,7 @@ public class MapGenerator : MonoBehaviour
         float maxNoisePossible = 0;
         foreach (var biome in biomeInfluence)
         {
-            float curveResult = biomeGenerator.BiomeTransitionCurve.Evaluate(biome.Value/* * biome.Key.GetWeight()*/);
+            float curveResult = biome.Value;
             currentNoise += biome.Key[x, y] * curveResult;
             maxNoisePossible += curveResult;
         }
