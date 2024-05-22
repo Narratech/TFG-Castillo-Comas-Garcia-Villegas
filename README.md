@@ -99,7 +99,7 @@ BiomeGenerator es el encargado de la distribucion de forma dinamica de los bioma
 - **IsIsland**: Booleano que permita que el mapa generado tenga forma de isla
 - **Auto Update**: Booleando que permite que cualquier cambio realizado en este componete se actualize directamente creando un mapa nueco intsantaneo
 - **Generate Objects**: Booleando que permite la creacion de gameobjects en el mapa
-- **Generate InterestPoints**: Booleando que permite la creacion de los puntos de interes anteriormente establecidos en el mapa.
+- **Generate InterestPoints**: Booleando que permite la creación de los puntos de interés anteriormente establecidos en el mapa. **Nota**: cada vez que se genere un mapa, los puntos de interés se volverán a generar, al ser aleatorio, su ubicación variará.
 
 #### ***Biome Object***
 
@@ -133,7 +133,7 @@ Este objecto determina el comportamiento que va atener el terreno de su bioma, p
   
 #### **Foliage Object**
 
-Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
+Este objecto, perimite la instaciación de objectos a lo largo del mapa generado.
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/51f04c54-ac98-4bfe-b3aa-ebc6be2ceff7)
 
 
@@ -160,9 +160,6 @@ Este objecto, perimite la instaciacion de objectos a lo largo del mapa generado.
   - **Min Scale**: Escala minima del objecto
   - **Max Scale**: Escala maxima del objecto
   - **Scale**: Si el objecto no va a tener escala random, que escala basica va a tener el objecto
-- Height
-  - **Random Height**: Si el ojecto va a tener una altura random
-  - **Min/Max Height**: Altura minima y maxima del objecto
 
 *Advanced Settings*
 
@@ -215,10 +212,14 @@ Este objeto permite definir las características y parámetros de un punto de in
 *General*
 - **Type of Object**: Permite selecionar un tipo dentro de una seleccion (Resources, Construction, Enemy, Mission, Allies) para hacer una diferenciacion entre ellos.
 - **Object Instance**: Prefab que representa a ese punto de interés (ej: para el caastillo el prefab asociado es una torre).
-- **Amount**: Numero de instancias que se van a generar de este objeto
+- **Amount**: Número de instancias que se van a generar de este objeto.
+- **Attempts**: Número de intentos del algoritmo para encontrar una posición válida para este objeto.
 
 *Generate Settings*
 - **Radius**: radio de distancia entre los puntos. Sinonimo de dispersión en este caso.
+- **Max Height**: altura máxima de generación.
+- **Min Height**: altura mínima de generación.
+- **Biomes**: lista de biomas en los que se genera.
 
 #### **Map Display**
 
