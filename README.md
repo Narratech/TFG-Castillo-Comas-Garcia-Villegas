@@ -93,13 +93,13 @@ BiomeGenerator es el encargado de la distribucion de forma dinamica de los bioma
 - **Biomes**:  Conjunto de biomas que van a conformar el mapa. El órden en el que se colocan es un factor a tener en cuenta, ya que cada bioma aparecerá junto a los biomas que tenga contiguos en este array.
 
 *Interest Points*
-- **Interest Points**: Lista de los puntos de interés que aparecerán en el mapa, solo si el check de "Generate Interest Points" está marcado. Deben asociarse "Interrest Point Objects" Los puntos de interes permiten colocar los prefabs que se deseen de manera pseudoaleatoria por el mapa.
+- **Interest Points**: Lista de los puntos de interés que aparecerán en el mapa, solo si el check de "Generate Interest Points" está marcado. Deben asociarse "Interrest Point Objects". Los puntos de interés permiten colocar los prefabs que se deseen de manera pseudoaleatoria por el mapa. **Nota**: cada vez que se genere un mapa, los puntos de interés se volverán a generar, al ser aleatorio, su ubicación variará.
 
 *Boolean Options*
 - **IsIsland**: Booleano que permita que el mapa generado tenga forma de isla
 - **Auto Update**: Booleando que permite que cualquier cambio realizado en este componete se actualize directamente creando un mapa nueco intsantaneo
 - **Generate Objects**: Booleando que permite la creacion de gameobjects en el mapa
-- **Generate InterestPoints**: Booleando que permite la creación de los puntos de interés anteriormente establecidos en el mapa. **Nota**: cada vez que se genere un mapa, los puntos de interés se volverán a generar, al ser aleatorio, su ubicación variará.
+- **Generate InterestPoints**: Booleando que permite la creación de los puntos de interés anteriormente establecidos en el mapa. 
 
 #### ***Biome Object***
 
