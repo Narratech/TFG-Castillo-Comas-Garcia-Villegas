@@ -19,13 +19,12 @@
 - Movimiento y camara de ejemplo para moverse por el mapa: [![Static Badge](https://img.shields.io/badge/Unity-Version?style=for-the-badge&label=Modular%20First%20Person%20Controller)
 ](https://assetstore.unity.com/packages/3d/characters/modular-first-person-controller-189884)
 - Unity: ![Static Badge](https://img.shields.io/badge/Unity-Version?style=for-the-badge&logo=Unity&label=2022.3.1f1%20LTS)
-- PONER DE DONDE HEMOS SACADO LOS ARBOLE/ PLANTAS Y ANIMALES
+- [Animales](https://assetstore.unity.com/packages/3d/characters/animals/5-animated-voxel-animals-145754)
+- [Arboles](https://assetstore.unity.com/packages/3d/environments/landscapes/low-poly-simple-nature-pack-162153)
 
 ### Badges que solicitamos:
 ---
 Para el mejor y correcto uso de la herramienta solicitamos a los equipos que sumen sus herramientas al catálogo  de sumar el badge por el uso del microservicio de Procedural OVO Worlds.
-
-**PONER LINKASO A NUESTRO REPO DE DESCARGA, ASSET STORE LO K SEA**
 
 ![Static Badge](https://img.shields.io/badge/passed-version?style=for-the-badge&label=Procedural%20OVO%20Worlds%201.0.1)
 
@@ -70,7 +69,8 @@ Pasos a Seguir:
 ## Guía de usuario
 ---
 
-En primer luegar encontramos el prefab **Map Generator**, ene ste podemos encontrar el **componente principal** de la herrmienta que es el ***Map Generator***.
+En primer luegar encontramos el prefab **Map Generator**, en este podemos encontrar el **componente principal** de la herrmienta que es el:
+### ***Map Generator***
 
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/cb439518-f64e-4b25-8982-0566de622268)
 
@@ -101,7 +101,7 @@ BiomeGenerator es el encargado de la distribucion de forma dinamica de los bioma
 - **Generate Objects**: Booleando que permite la creacion de gameobjects en el mapa
 - **Generate InterestPoints**: Booleando que permite la creación de los puntos de interés anteriormente establecidos en el mapa. 
 
-#### ***Biome Object***
+### ***Biome Object***
 
 Este objecto determina el comportamiento que va atener el terreno de su bioma, para ello, dicho comportamiento se establece con los parametros de: 
 
@@ -131,7 +131,7 @@ Este objecto determina el comportamiento que va atener el terreno de su bioma, p
 
 - **Color**: Color con el que se representará el bioma cuando se crea en modo "cúbico".
   
-#### **Foliage Object**
+### **Foliage Object**
 
 Este objecto, perimite la instaciación de objectos a lo largo del mapa generado.
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498887/51f04c54-ac98-4bfe-b3aa-ebc6be2ceff7)
@@ -166,7 +166,7 @@ Este objecto, perimite la instaciación de objectos a lo largo del mapa generado
 - **Enviroment Rotation**: Si queremos que el objecto se adapte al terreno, es decir posicionarse correctamente con respecto a este
 - **Subsistence in the ground**: Cantidad del objecto que se puede hundir en el suelo
 
-#### **TextureUpdater**
+### **TextureUpdater**
 
 La malla de terreno utiliza un material que utiliza nuestro shader personalizado
 Este componente se encarga de actualizar y modificar los parametros de dicho material.
@@ -190,8 +190,7 @@ Tambien existe una alternativa que es el "AutoUpdate", que actualiza los valores
 ![TextureData](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82290483/b5b2db79-ae8e-4ce1-ac1d-413c68538db7)
 
 
-
-#### **Endless Terrain**
+### **Endless Terrain**
 
 Endless terrain es un componente (Script) que permite mejorar la eficiencia de la escena con el mapa. A pesar de su nombre no genera un mapa infinito. Su funcion consiste en ocultar los chunks que se encuentran a una distancia configurable de la figura del jugador. El mapa que se puede ver ha sido generado previamente siguiendo la configuracion del Map Generator. Pero no se verá hasta ejecutar Unity.
 
@@ -204,9 +203,10 @@ Intrucciones:
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/e271862a-5e66-499e-bc98-0c7d153a94c3)
 ![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/d7297034-3e80-438c-b48f-df588b70b43e)
 
-#### **Interest Point**
+### **Interest Point**
 Este objeto permite definir las características y parámetros de un punto de interés. Para crear un objeto de este tipo se debe seguir estos pasos: botón derecho > Create > Procedural > Interest Point.
-![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/99c20a0a-43e0-4ae5-b443-da8944bfc6c3)
+
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/0ccbb9ff-4370-46e2-931d-b26f4877c3f3)
 
 
 *General*
@@ -221,11 +221,26 @@ Este objeto permite definir las características y parámetros de un punto de in
 - **Min Height**: altura mínima de generación.
 - **Biomes**: lista de biomas en los que se genera.
 
-#### **Map Display**
+### **Map Display**
 
 Componente que permite pintar el mapa genrado en 2D
 
 - **TextureRenderer**: Render del objecto en el cual se va a pintar el mapa 2D
+
+### **WindShader**
+Este shader se encuentra en la carpeta Assets del proyecto. Permite dar un efecto de viento a los objetos a los que se aplica.
+Para poder aplicarlo es necesario seguir estos pasos:
+1. Crear un nuevo material.
+2. En el apartado shader seleccionar: Shader Graphs/WindShader.
+3. En el apartado MainColor elegir el color base que se desea que tenga el objeto. Se suma a la textura que posea. Para no interferir en el color de esta, elegir color blanco.
+4. En el apartado MainAlbedo colocar la textura.
+5. En el apartado WindMovement seleccionar en que eje se produce el movimiento. Su valor numerico indicara la frecuencia del movimiento.
+6. Apartado WindDensity para modificar el ruido.
+7. Apartado WindStrengh para modificar la fuerza del viento.
+8. Aplicar ese material al objeto deseado.
+
+![image](https://github.com/Narratech/TFG-Castillo-Comas-Garcia-Villegas/assets/82498555/4ebd7ef7-3ffa-4733-91d8-bb323a9b5f2d)
+
 
 ## Código de conducta 
 ---
