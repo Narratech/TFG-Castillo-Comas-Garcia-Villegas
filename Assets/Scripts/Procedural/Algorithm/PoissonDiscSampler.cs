@@ -11,7 +11,7 @@ using UnityEngine.Profiling;
 public class PoissonDiscSampler 
 {
     /// <summary>
-    /// Grid para este objeto, en este se mirara la colocacion de este objeto en funcion del radius_ y cellSize
+    /// Grid para este objeto, en este se mirara la colocacion de este objeto en funcion del r y cellSize
     /// </summary>
     private int [,] grid;
 
@@ -20,8 +20,9 @@ public class PoissonDiscSampler
     /// Cantidad de objetos que queremos generar
     /// </summary>
     private int amount;
+    private int attemps;
     /// <summary>
-    /// radio  generar los objeto con distancia de separacion de maximo radius_
+    /// radio  generar los objeto con distancia de separacion de maximo r
     /// </summary>
     private float radius;
     /// <summary>
@@ -42,22 +43,23 @@ public class PoissonDiscSampler
     /// <summary>
     /// Crear un Patron de Poisson Disc
     /// </summary>
-    /// <param name="size"> Anchura del mapa generado</param>
-    /// <param name="size"> Longitud de mapa generado</param>
-    /// <param name="radius_"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
-    public PoissonDiscSampler(float size, float radius_, int amount, int maxHeight_, int minHeight_, MapInfo mapInfo_, MapGenerator mapGen_, Biome[] biomes_)
+    /// <param name="s"> Anchura del mapa generado</param>
+    /// <param name="s"> Longitud de mapa generado</param>
+    /// <param name="r"> Cada objeto estará a una distancia mínima de `radio` de cualquier otra muestra, y como máximo a 2 * `radio`.</param>
+    public PoissonDiscSampler(float s, float r, int amount, int att, int maxH, int minH, MapInfo mapInfo_, MapGenerator mapGen_, Biome[] biomes_)
     {
         this.amount = amount;
-        rect = new Rect(0, 0, size, size);
-        radius = radius_;
-        cellSize = radius_ / Mathf.Sqrt(2);
-        grid = new int[Mathf.CeilToInt(size / cellSize), Mathf.CeilToInt(size / cellSize)];
-        maxHeight = maxHeight_*10;
-        minHeight = minHeight_*10;
+        rect = new Rect(0, 0, s, s);
+        radius = r;
+        cellSize = r / Mathf.Sqrt(2);
+        grid = new int[Mathf.CeilToInt(s / cellSize), Mathf.CeilToInt(s / cellSize)];
+        maxHeight = maxH*10;
+        minHeight = minH*10;
         mapInfo = mapInfo_;
         mapGen = mapGen_;
+        attemps = att;
 
-        spawnPoints.Add(new Vector2(size / 2, size / 2));
+        spawnPoints.Add(new Vector2(s / 2, s / 2));
         biomes = biomes_;
     }
 
@@ -73,7 +75,7 @@ public class PoissonDiscSampler
             Vector2 spawnCentre = spawnPoints[spawnIndex];
             bool candidateAccepted = false;
 
-            for (int i = 0; i < amount; i++)
+            for (int i = 0; i < attemps; i++)
             {
                 float angle = Random.value * Mathf.PI * 2;
                 Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
@@ -96,35 +98,6 @@ public class PoissonDiscSampler
         return points;
     }
 
-    public Vector2 NewPoint(Vector2 p)
-    {
-        points.Remove(p);
-        spawnPoints.Remove(p);
-
-        int spawnIndex = Random.Range(0, spawnPoints.Count);
-        Vector2 spawnCentre = spawnPoints[spawnIndex];
-        bool candidateAccepted = false;
-
-        for (int i = 0; i < amount; i++)
-        {
-            float angle = Random.value * Mathf.PI * 2;
-            Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
-            Vector2 candidate = spawnCentre + dir * Random.Range(radius, 2 * radius);
-            if (IsValid(candidate) && points.Count < amount)
-            {
-                points.Add(candidate);
-                spawnPoints.Add(candidate);
-                grid[(int)(candidate.x / cellSize), (int)(candidate.y / cellSize)] = points.Count;
-                candidateAccepted = true;
-                return candidate;
-            }
-        }
-        if (!candidateAccepted)
-        {
-            spawnPoints.RemoveAt(spawnIndex);
-        }
-        return p;
-    }
     /// <summary>
     /// Comprobar la disponibilidad y proximidad de la posicion candidata
     /// </summary>

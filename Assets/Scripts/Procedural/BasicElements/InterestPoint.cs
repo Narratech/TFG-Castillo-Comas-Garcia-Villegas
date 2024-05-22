@@ -30,6 +30,10 @@ public class InterestPoint : ScriptableObject
     [SerializeField]
     public int amount;
 
+    [Tooltip("Numero maximo de intentos de generacion")]
+    [SerializeField]
+    public int attempts;
+
 
     [Header("Generate Settings")]
     [Tooltip("Radio minimo de distancia entre instancias")]
@@ -56,7 +60,7 @@ public class InterestPoint : ScriptableObject
     {
         HashSet<Vector2> objectPositions = map.getObjects();
         MapGenerator mapGen = GameObject.FindGameObjectWithTag("MapGenerator").GetComponent<MapGenerator>();
-        poissonDisc = new PoissonDiscSampler(mapSize, radius,amount, maxHeight, minHeight, map, mapGen, biomes);
+        poissonDisc = new PoissonDiscSampler(mapSize, radius, amount, attempts, maxHeight, minHeight, map, mapGen, biomes);
         List<Vector2> points = poissonDisc.Samples();
         var parent = new GameObject("InterestPoint_" + this.name);
         parent.transform.parent = grandParent;

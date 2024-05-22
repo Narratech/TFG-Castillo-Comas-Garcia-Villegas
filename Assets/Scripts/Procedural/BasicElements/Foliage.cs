@@ -30,10 +30,6 @@ public class Foliage : ScriptableObject
     public Vector3 scale;
     public Vector3 maxScale;
 
-    // HEIGHT
-    [Tooltip("Si es True la altura de las instancias puede variar")]
-    public bool randomHeight;
-    public Vector2 minMaxHeight;
 
     //ADVANCED SETTINGS
     [Tooltip("Adaptacion a las inclinaciones del terreno")]
@@ -102,17 +98,6 @@ class FoliageEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("scale"), new GUIContent("MIN Scale"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("maxScale"), new GUIContent("MAX Scale"));
         }
-
-
-
-        CreateHeader("HEIGHT");
-
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("randomHeight"), new GUIContent("Random Height"));
-
-        if (thisEditor.randomHeight)
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("minMaxHeight"), new GUIContent("Min / Max Height"));
-
-        serializedObject.ApplyModifiedProperties();
 
         CreateHeader("Advanced Settings");
 
