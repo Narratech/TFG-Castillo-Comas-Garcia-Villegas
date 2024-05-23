@@ -39,12 +39,13 @@ public class MapGenerator : MonoBehaviour
         Exponential,
         Logarithmic,
     }
-
+    [Tooltip("Tipo de renderizado de mapa")]
     public DrawMode drawMode;
 
     /// <summary>
     /// GameObject Padre de todo el mapa3D que se va a generar
     /// </summary>
+    [Tooltip("Objeto padre de todo el mapa 3D que se va a generar")]
     public GameObject gameObjectMap3D;
 
     private GameObject trashMaps;
@@ -52,31 +53,35 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     /// Tama�o del Mapa
     /// </summary>
+    [Tooltip("Dimensiones del mapa. Es cuadrado, este valor es el lado")]
     public int mapSize;
 
     [HideInInspector]
     public int chunkSize = 50;
-
+    [Tooltip("Tamaño de los bloques del mapa cúbico")]
     public float sizePerBlock = 1f;
 
     /// <summary>
     /// La semilla aleatoria utilizada para generar el ruido
     /// </summary>
+    [Tooltip("Inicializador de los números aleatorios de Unity, utilizado para generar el ruido aleatoriamente")]
     public int seed;
 
     /// <summary>
     /// El tamaño del ruido general en todo el mapa
     /// </summary>
+    [Tooltip("Escala del mapa de ruido en el que se basa el mapa 3D")]
     public int noiseSize;
 
     /// <summary>
     ///  Desplazamiento del ruido generado
     /// </summary>
+    [Tooltip("Desplazamiento del ruido generado")]
     public Vector2 offset;
 
     [SerializeField]
     public BiomeGenerator biomeGenerator;
-
+    [Tooltip("Lista de tipos de puntos de interes a colocar en el mapa")]
     public InterestPoint[] interestPoints;
 
     /// <summary>
@@ -87,16 +92,21 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     ///  Cuando se realize un cambio des de el editor, auto actualizar el mapa
     /// </summary>
+    [Tooltip("Atualización automatica de la escena si se produce algun cambio en el Map Generator. " +
+        "Tenga en cuenta que la velocidad de carga depende del número de elementos que hay en la escena. " +
+        "No recomendable para escenas con mucha vegetación, puntos de interés y/o mapas mayores de 500")]
     public bool autoUpdate = false;
     /// <summary>
     /// Generate Objects
     /// </summary>
+    [Tooltip("Si es True, se generan los objetos de tipo foliage")]
     public bool generateObjects = false;
     /// <summary>
     /// Generar Puntos de Interes
     /// </summary>
+    [Tooltip("Si es True, se generan los puntos de interes")]
     public bool generateInterestPoints = false;
-
+    [Tooltip("Material que se le aplicara al mapa")]
     public Material material;
 
     //Boleano el cual limpia el terreno cuando se actualiza el mapa(SOLO SE ACTIVA EN EJECUCION)

@@ -15,6 +15,8 @@ public class BiomeGenerator
 
     public AnimationCurve BiomeTransitionCurve { get { return biomeTransition; } }
 
+    [Tooltip("Lista de biomas que se crean en el mapa. El orden de los elementos importa. " +
+        "Los elementos contiguos en la lista, serán contiguos en el mapa")]
     [SerializeField]
     Biome[] biomes = null;
 

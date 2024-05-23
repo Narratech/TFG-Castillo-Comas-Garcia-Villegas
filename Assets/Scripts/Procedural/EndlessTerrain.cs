@@ -1,10 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[Tooltip("Este componente hace que los chunks del mapa dentro de una distancia sean visibles y los que estan fuera invisibles." +
+    "Se hace alrededor de un Transform, usualmente el jugador. Tenga en cuenta que si activa este componente no podrá ver un nuevo mapa generado " +
+    "en la escena, tendra que entrar en modo juego.")]
 public class EndlessTerrain : MonoBehaviour
 {
     [Tooltip("Distancia maxima visible por el jugador")]
     [SerializeField] float maxViewDst = 200; // Distacia maxima a la que ve el jugador
+    [Tooltip("Transform del elemento que se use como centro del Endless Terrain")]
     public Transform playerTransform; //Posicion del player
 
     public static Vector2 playerPos; //Static para acceder desde otras clases mejor
