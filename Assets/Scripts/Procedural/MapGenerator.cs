@@ -126,6 +126,17 @@ public class MapGenerator : MonoBehaviour
     public float maxHeightPossible;
 
 
+    [SerializeField]
+
+    [Tooltip("Componente transform del jugador al que se desea teletransportar")]
+    public Transform playerTransform;
+    [Tooltip("Bioma en el que apareceria el jugador al generar el terreno")]
+    public Biome playerStartingBiome;
+    [Tooltip("Influencia minima que debe haber del bioma seleccionado en un punto para que sea valido")]
+    public float minimunInfluence;
+
+
+
     private void Awake()
     {
         clean = true;
@@ -227,6 +238,27 @@ public class MapGenerator : MonoBehaviour
 
         GenerateObjects();
 
+
+
+        // Posicionar al jugador en el bioma indicado
+
+        for (int i = 0; i < 100; i++)
+        {
+            float x = UnityEngine.Random.Range(0, mapSize);
+            float z = UnityEngine.Random.Range(0, mapSize);
+
+            Dictionary<Biome, float> influencesDictionary = GetBiomeInfluencesAt(x, z);
+
+            // Si tiene la influencia de este tipo de bioma lo suficientemente alta
+            // Elegirlo como casilla de partida
+            float influenceOfBiome = influencesDictionary[playerStartingBiome];
+
+            if (influenceOfBiome > .7f)
+            {
+                // Raycast para saber la altura a la que posicionar el jugador
+                playerTransform.transform.position = new Vector3(x, 0, z);
+            }
+        }
     }
 
     private T AddComponent<T>()

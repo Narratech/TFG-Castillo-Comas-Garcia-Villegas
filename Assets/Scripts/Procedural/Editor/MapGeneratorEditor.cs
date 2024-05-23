@@ -58,6 +58,14 @@ public class MapGeneratorEditor : Editor{
 
         ////
         EditorGUILayout.Space();
+        GUILayout.Label("PlayerInitialPosition", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
+        ////
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("playerTransform"), new GUIContent("playerTransform"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("playerStartingBiome"), new GUIContent("playerStartingBiome"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("minimunInfluence"), new GUIContent("minimunInfluence"));
+
+        ////
+        EditorGUILayout.Space();
         GUILayout.Label("Material", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
         ////
         EditorGUILayout.PropertyField(serializedObject.FindProperty("material"), new GUIContent("Material"));
