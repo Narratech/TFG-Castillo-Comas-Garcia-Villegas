@@ -6,26 +6,28 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class Foliage : ScriptableObject
 {
     // DENSITY FEATURES
+    [Tooltip("Densidad de los objetos dependiendo de la altura. Si es una curva ascendente, habrá más objetos a mayor altura")]
     public AnimationCurve densityCurve;
     [Tooltip("Densidad de las instancias. Cuanto mayor sea, mayor numero de instancias apareceran")]
     public float density = 0.1f;
-
+    [Tooltip("Los objetos se generan mediante ruido. Este valor indica la escala de este")]
     public float noiseScale = 0.1f;
-
+    [Tooltip("Unidades de separacion de este objeto con otros")]
     public int unitSpace = 0;
 
     // PREFAB PROPERTIES
     [Tooltip("Prefab asignado a este objeto")]
     public GameObject prefab;
+    [Tooltip("Indica si el objeto tiene distanciacion con otros")]
     public bool requireDistance = false; //Esta variable almacena los objetos que pueden instanciarse CON/SIN necesidad de tener distancia de separación entre ellos.
 
     // TRANSFORM
-    [Tooltip("Si es True la rotacion de las instancias puede variar")]
+    [Tooltip("Si es True la rotacion de las instancias puede variar entre un minimo y un maximo")]
     public bool randomRotation;
     public Vector3 rotation;
     public Vector3 maxRotation;
    
-    [Tooltip("Si es True la escala de las instancias puede variar")]
+    [Tooltip("Si es True la escala de las instancias puede variar entre un minimo y un maximo")]
     public bool randomScale;
     public Vector3 scale;
     public Vector3 maxScale;

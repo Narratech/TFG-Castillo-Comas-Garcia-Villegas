@@ -15,17 +15,20 @@ public class NoiseSettings
     /// A medida que se agregan más octavas, el ruido generado se vuelve más detallado
     /// </summary>
     [SerializeField]
+    [Tooltip("Complejidad y detallado. Cada octava es una capa. El resultado final es la superposicion de todas.")]
     [Range(0, 5)]
     public int octaves;
     /// <summary>
     ///  La persistencia controla la amplitud de cada octava.Un valor más bajo reducirá el efecto de las octavas posteriores de las octavas posteriores
     /// </summary>
     [SerializeField]
+    [Tooltip("Amplitud de las octavas")]
     [Range(0f, 1f)]
     public float persistance;
     /// <summary>
     ///Un multiplicador que determina qué tan rápido aumenta la frecuencia para cada octava sucesiva en una función de ruido de Perlin
     /// </summary>
+    [Tooltip("Frecuencia de las octavas")]
     [SerializeField]
     public float lacunarity;
 

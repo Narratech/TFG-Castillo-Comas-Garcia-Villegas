@@ -87,6 +87,7 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     ///  Generar el mapa con forma de isla
     /// </summary>
+    [Tooltip("Si es True el terreno se genera como isla")]
     public bool isIsland = false;
     float[,] fallOffMap = null;
     /// <summary>

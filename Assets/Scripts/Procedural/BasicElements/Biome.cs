@@ -10,25 +10,29 @@ public class Biome : ScriptableObject
     public NoiseSettings noiseSettings;
 
     [Header("Biome generation")]
+    [Tooltip("Frecuencia con la que el bioma aparece en el mapa")]
     [Range(0.001f, 2f)]
     public float density = 1;
 
     [Header("Terrain transformation")]
+    [Tooltip("Altura maxima del bioma")]
     [SerializeField]
     float maxHeight = 100f;
+    [Tooltip("Altura minima del bioma")]
     [SerializeField]
     float minHeight = 0f;
-
+    [Tooltip("")]
     [SerializeField]
     AnimationCurve meshHeightCurve;
 
     [Header("Foliage settings")]
+    [Tooltip("Lista de vegetación y objetos que se van a generar dentro de este bioma")]
     [SerializeField]
     Foliage[] foliages = null;
 
     [Header("Test values")]
 
-    //Temporal (?)
+    [Tooltip("Color aplicado solo si el mapa es cúbico")]
     public Color color;
 
 

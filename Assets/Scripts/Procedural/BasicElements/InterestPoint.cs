@@ -19,6 +19,7 @@ public class InterestPoint : ScriptableObject
         Construction
     };
     [Header("General")]
+    [Tooltip("Tipo de objeto")]
     [SerializeField]
     public Type_of_POI typeOfPoint;
 

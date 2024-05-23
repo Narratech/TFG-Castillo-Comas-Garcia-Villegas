@@ -6,11 +6,12 @@ using UnityEngine;
 [Serializable]
 public class BiomeGenerator
 {
-
+    [Tooltip("Los biomas tienen su propio ruido. Esto indica las dimensiones de los biomas")]
     [SerializeField]
     float noiseSize;
 
     [SerializeField]
+    [Tooltip("Forma de la transicion entre los biomas")]
     AnimationCurve biomeTransition;
 
     public AnimationCurve BiomeTransitionCurve { get { return biomeTransition; } }
