@@ -126,19 +126,30 @@ public class MapGenerator : MonoBehaviour
     public float maxHeightPossible;
 
 
-    [SerializeField]
+    /// <summary>
+    /// Posicionar al jugador segun el bioma
+    /// </summary>
 
+    [Tooltip("Indica si se quiere utilizar o no toda esta funcionalidad")]
+    public bool teleportPlayerToBiome = false;
     [Tooltip("Componente transform del jugador al que se desea teletransportar")]
-    public Transform playerTransform;
+    public Transform playerTransform = null;
     [Tooltip("Bioma en el que apareceria el jugador al generar el terreno")]
-    public Biome playerStartingBiome;
-    [Tooltip("Influencia minima que debe haber del bioma seleccionado en un punto para que sea valido")]
-    public float minimunInfluence;
+    public Biome playerStartingBiome = null;
 
-    public bool useGlobalSeed;
     // public float 
     [Tooltip("Influencia minima que debe haber del bioma seleccionado en un punto para que sea valido")]
-    public float minimumInfluence;
+    public float minimumInfluence = .8f;
+
+    public enum SeedType { globalSeed, randomSeed, customizableSeed }
+
+    [Tooltip("GlobalSeed : Se marca true cuando se quiere generar una semilla aleatoria para posicionar al jugador \n" +
+        "RandomSeed : Generar una semilla aleatoria cada vez que se genera el terreno \n" +
+        "CustomizableSeed : Permite elegir una semilla especifica ")]
+    public SeedType seedType;
+
+    [Tooltip("Semilla que define la posicion inicial del jugador decidida aleatoriamente")]
+    public int playerStartPositionSeed;
 
 
 
@@ -163,7 +174,7 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public void GenerateMap()
     {
-        UnityEngine.Random.InitState(seed);
+        SetupSeeds();
 
         //Borro todo lo anterior creado para crear un nuevo mapa
         StartCoroutine(CleanMaps());
@@ -245,13 +256,36 @@ public class MapGenerator : MonoBehaviour
 
         GenerateObjects();
 
-
-        StartCoroutine(TeleportPlayerToStartingBiome());
+        // Posicionar al jugador solo si el usuario lo ha especificado
+        if (teleportPlayerToBiome)
+            StartCoroutine(TeleportPlayerToStartingBiome());
     }
 
+    void SetupSeeds()
+    {
+        Debug.Log("playerStartPositionSeed = " + playerStartPositionSeed);
+        Debug.Log("webos = " + UnityEngine.Random.Range(0, 4444));
+
+        // Si se quiere usar la semilla global para la posicion aleatoria del jugador
+        if (seedType == SeedType.globalSeed)
+            playerStartPositionSeed = seed;
+
+        // Elegir una semilla aleatoria para la posicion inicial del jugador
+        else if (seedType == SeedType.randomSeed)
+            playerStartPositionSeed = UnityEngine.Random.Range(0, 9999);
+
+
+        //// Inicializar la semilla global para generar el terreno
+        //UnityEngine.Random.InitState(seed);
+    }
+
+    // Se encarga de encontrar una posicion aleatoria dentro de un bioma en especifico para el jugador y teletransportarlo ahi
     IEnumerator TeleportPlayerToStartingBiome()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0);
+
+        // Inicializar la semilla global para generar el terreno
+        UnityEngine.Random.InitState(playerStartPositionSeed);
 
         Vector2 playerCoordinatesInBiome = GetPlayerCoordinatesInBiome();
 
@@ -259,6 +293,9 @@ public class MapGenerator : MonoBehaviour
         Vector3 playerPosition = GetPlayerPositionFromCoordinates(playerCoordinatesInBiome);
 
         playerTransform.position = playerPosition;
+
+        // Volver a la semilla global para generar el terreno
+        UnityEngine.Random.InitState(seed);
     }
 
     Vector2 GetPlayerCoordinatesInBiome()
@@ -296,9 +333,13 @@ public class MapGenerator : MonoBehaviour
         Ray ray = new Ray(startPosition, Vector3.down);
         RaycastHit hit;
 
-        // Si el Raycast colisiona con algún objeto
+        playerTransform.gameObject.SetActive(false);
+
+        // Comprobar en que posicion exacta colisiona el raycast
         if (Physics.Raycast(ray, out hit, 500))
         {
+            playerTransform.gameObject.SetActive(true);
+
             // Obtén la posición del punto de impacto
             Vector3 hitPosition = hit.point;
             // Añadir un pequeño offset para el jugador
@@ -307,6 +348,9 @@ public class MapGenerator : MonoBehaviour
         else
         {
             Debug.LogError("No Position Detected for player");
+
+            playerTransform.gameObject.SetActive(true);
+
             return Vector3.zero;
         }
     }

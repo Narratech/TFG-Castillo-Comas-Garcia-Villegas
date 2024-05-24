@@ -3,7 +3,8 @@ using UnityEditor;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(MapGenerator))]
-public class MapGeneratorEditor : Editor{
+public class MapGeneratorEditor : Editor
+{
     public override void OnInspectorGUI()
     {
         MapGenerator mapGen = (MapGenerator)target;
@@ -28,16 +29,14 @@ public class MapGeneratorEditor : Editor{
 
         //GameObjects
         EditorGUILayout.PropertyField(serializedObject.FindProperty("gameObjectMap3D"), new GUIContent("GameObject Map3D"));
-        
+
         //Basic Elements
         EditorGUILayout.PropertyField(serializedObject.FindProperty("mapSize"), new GUIContent("Map Size"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("seed"), new GUIContent("Seed"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("noiseSize"), new GUIContent("Noise Scale"));
 
         if (mapGen.drawMode == MapGenerator.DrawMode.CubicMap)
-        {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("sizePerBlock"), new GUIContent("Size Per Block"));
-        }
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("offset"), new GUIContent("Offset"));
 
@@ -45,7 +44,7 @@ public class MapGeneratorEditor : Editor{
         EditorGUILayout.Space();
         GUILayout.Label("Biomes", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
         ////
-        
+
         EditorGUILayout.PropertyField(serializedObject.FindProperty("biomeGenerator"), new GUIContent("Biome Generator"));
 
         ////
@@ -60,9 +59,19 @@ public class MapGeneratorEditor : Editor{
         EditorGUILayout.Space();
         GUILayout.Label("PlayerInitialPosition", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 14 });
         ////
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("playerTransform"), new GUIContent("playerTransform"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("playerStartingBiome"), new GUIContent("playerStartingBiome"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("minimunInfluence"), new GUIContent("minimunInfluence"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("teleportPlayerToBiome"), new GUIContent("Use Feature"));
+
+        if (mapGen.teleportPlayerToBiome)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("playerTransform"), new GUIContent("Player Transform"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("playerStartingBiome"), new GUIContent("Biome"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("minimumInfluence"), new GUIContent("Minimum Influence"));
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("seedType"), new GUIContent("Seed Type"));
+
+            if (mapGen.seedType == MapGenerator.SeedType.customizableSeed)
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("playerStartPositionSeed"), new GUIContent("Player Position Seed"));
+        }
 
         ////
         EditorGUILayout.Space();
@@ -81,7 +90,7 @@ public class MapGeneratorEditor : Editor{
         EditorGUILayout.PropertyField(serializedObject.FindProperty("generateObjects"), new GUIContent("Generate Objects"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("generateInterestPoints"), new GUIContent("Generate Interest Points"));
 
-      
+
 
         if (GUILayout.Button("Generate"))
         {
