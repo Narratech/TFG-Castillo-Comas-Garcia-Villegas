@@ -135,6 +135,11 @@ public class MapGenerator : MonoBehaviour
     [Tooltip("Influencia minima que debe haber del bioma seleccionado en un punto para que sea valido")]
     public float minimunInfluence;
 
+    public bool useGlobalSeed;
+    // public float 
+    [Tooltip("Influencia minima que debe haber del bioma seleccionado en un punto para que sea valido")]
+    public float minimumInfluence;
+
 
 
     private void Awake()
@@ -158,8 +163,10 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public void GenerateMap()
     {
+        UnityEngine.Random.InitState(seed);
+
         //Borro todo lo anterior creado para crear un nuevo mapa
-       StartCoroutine(CleanMaps());
+        StartCoroutine(CleanMaps());
 
         map3D = new Dictionary<Vector2, Chunk>();
         if (GetComponent<EndlessTerrain>() != null && !GetComponent<EndlessTerrain>().enabled)
@@ -191,7 +198,7 @@ public class MapGenerator : MonoBehaviour
 
             MapDisplay display = GetComponent<MapDisplay>();
 
-            if (display==null)
+            if (display == null)
                 display = AddComponent<MapDisplay>();
 
             switch (drawMode)
@@ -239,27 +246,71 @@ public class MapGenerator : MonoBehaviour
         GenerateObjects();
 
 
+        StartCoroutine(TeleportPlayerToStartingBiome());
+    }
 
+    IEnumerator TeleportPlayerToStartingBiome()
+    {
+        yield return new WaitForSeconds(1);
+
+        Vector2 playerCoordinatesInBiome = GetPlayerCoordinatesInBiome();
+
+        // Obtener la posicion que tendria el jugador, pegado a la superficie
+        Vector3 playerPosition = GetPlayerPositionFromCoordinates(playerCoordinatesInBiome);
+
+        playerTransform.position = playerPosition;
+    }
+
+    Vector2 GetPlayerCoordinatesInBiome()
+    {
         // Posicionar al jugador en el bioma indicado
-
-        for (int i = 0; i < 100; i++)
+        const int maxTries = 100;
+        for (int i = 0; i < maxTries; i++)
         {
             float x = UnityEngine.Random.Range(0, mapSize);
-            float z = UnityEngine.Random.Range(0, mapSize);
+            float z = -UnityEngine.Random.Range(0, mapSize);
 
             Dictionary<Biome, float> influencesDictionary = GetBiomeInfluencesAt(x, z);
 
             // Si tiene la influencia de este tipo de bioma lo suficientemente alta
             // Elegirlo como casilla de partida
-            float influenceOfBiome = influencesDictionary[playerStartingBiome];
-
-            if (influenceOfBiome > .7f)
+            if (influencesDictionary.ContainsKey(playerStartingBiome))
             {
-                // Raycast para saber la altura a la que posicionar el jugador
-                playerTransform.transform.position = new Vector3(x, 0, z);
+                float influenceOfBiome = influencesDictionary[playerStartingBiome];
+
+                if (influenceOfBiome > minimumInfluence)
+                    // Raycast para saber la altura a la que posicionar el jugador
+                    return new Vector2(x, z);
             }
         }
+
+        Debug.LogError("Coordenada no encontrada para el jugador");
+        return new Vector2(0, 0);
     }
+
+    // Obtener la posicion que tendria el jugador, pegado a la superficie
+    Vector3 GetPlayerPositionFromCoordinates(Vector2 coor)
+    {
+        // Lanza el Raycast desde arriba hacia abajo
+        Vector3 startPosition = new Vector3(coor.x, maxHeightPossible + 50, coor.y);
+        Ray ray = new Ray(startPosition, Vector3.down);
+        RaycastHit hit;
+
+        // Si el Raycast colisiona con algún objeto
+        if (Physics.Raycast(ray, out hit, 500))
+        {
+            // Obtén la posición del punto de impacto
+            Vector3 hitPosition = hit.point;
+            // Añadir un pequeño offset para el jugador
+            return hitPosition + new Vector3(0, 3, 0);
+        }
+        else
+        {
+            Debug.LogError("No Position Detected for player");
+            return Vector3.zero;
+        }
+    }
+
 
     private T AddComponent<T>()
     {
@@ -444,18 +495,18 @@ public class MapGenerator : MonoBehaviour
             if (gameObjectMap3D.transform.childCount > 0)
             {
 
-                #if UNITY_EDITOR
-                    UnityEngine.Object.DestroyImmediate(gameObjectMap3D);
-                #else
+#if UNITY_EDITOR
+                UnityEngine.Object.DestroyImmediate(gameObjectMap3D);
+#else
                     UnityEngine.Object.Destroy(gameObjectMap3D);
-                #endif
+#endif
 
                 gameObjectMap3D = new GameObject("Mapa3D");
                 gameObjectMap3D.transform.SetParent(transform);
                 gameObjectMap3D.transform.SetSiblingIndex(1);
             }
         }
-        else if(gameObjectMap3D.transform.childCount > 0)
+        else if (gameObjectMap3D.transform.childCount > 0)
         {
             if (trashMaps == null)
             { //POR SI QUIERES ELIMIANR TODA LA BASURA DE GOLPE Q SEA COMODO
@@ -469,17 +520,17 @@ public class MapGenerator : MonoBehaviour
             }
 
             //Por si queda algo en el hijo
-            
+
             System.DateTime horaActual = System.DateTime.Now;
             gameObjectMap3D.name = "MapDeprecated " + horaActual.ToString("HH:mm:ss");
 
             gameObjectMap3D.transform.SetParent(trashMaps.transform);
             var basura = gameObjectMap3D;
             gameObjectMap3D = new GameObject("Mapa3D");
-               
+
             gameObjectMap3D.transform.SetParent(transform);
             gameObjectMap3D.transform.SetSiblingIndex(1);
-            
+
         }
         // Espera un frame
         yield return new WaitWhile(() => gameObjectMap3D.transform.parent != transform);
