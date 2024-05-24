@@ -215,7 +215,7 @@ public class MapGenerator : MonoBehaviour
             switch (drawMode)
             {
                 case DrawMode.NoiseMap:
-                    BuildMap(false);
+                    BuildMap(true);
                     display.DrawTextureMap(TextureGenerator.TextureFromNoiseMap(map.NoiseMap));
                     display.ActiveMap(true);
                     break;
@@ -254,7 +254,7 @@ public class MapGenerator : MonoBehaviour
         if (!endlessActive)
             map.setChunkSize(chunkSize);
 
-        GenerateObjects();
+       if(drawMode != DrawMode.NoiseMap || drawMode != DrawMode.ColorMap) GenerateObjects();
 
         // Posicionar al jugador solo si el usuario lo ha especificado
         if (teleportPlayerToBiome)
