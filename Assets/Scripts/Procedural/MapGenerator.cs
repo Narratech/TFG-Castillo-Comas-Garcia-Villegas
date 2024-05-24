@@ -263,8 +263,8 @@ public class MapGenerator : MonoBehaviour
 
     void SetupSeeds()
     {
-        Debug.Log("playerStartPositionSeed = " + playerStartPositionSeed);
-        Debug.Log("webos = " + UnityEngine.Random.Range(0, 4444));
+        // Establece una semilla aleatoria
+        SetRandomSeed();
 
         // Si se quiere usar la semilla global para la posicion aleatoria del jugador
         if (seedType == SeedType.globalSeed)
@@ -274,9 +274,15 @@ public class MapGenerator : MonoBehaviour
         else if (seedType == SeedType.randomSeed)
             playerStartPositionSeed = UnityEngine.Random.Range(0, 9999);
 
+        // Inicializar la semilla global para generar el terreno
+        UnityEngine.Random.InitState(seed);
+    }
 
-        //// Inicializar la semilla global para generar el terreno
-        //UnityEngine.Random.InitState(seed);
+    // Establecer una semilla aleatoria basada en el tiempo actual
+    void SetRandomSeed()
+    {
+        int seed = (int)System.DateTime.Now.Ticks;
+        UnityEngine.Random.InitState(seed);
     }
 
     // Se encarga de encontrar una posicion aleatoria dentro de un bioma en especifico para el jugador y teletransportarlo ahi
