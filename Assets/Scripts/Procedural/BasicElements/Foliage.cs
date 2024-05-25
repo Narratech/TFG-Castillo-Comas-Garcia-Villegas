@@ -48,7 +48,6 @@ class FoliageEditor : Editor
     private readonly string[] opciones = new string[] { "No", "Yes" };
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI();
 
         var thisEditor = (Foliage)target;
         if (thisEditor == null)
@@ -57,7 +56,6 @@ class FoliageEditor : Editor
         CreateHeader("PREFAB PROPERTIES");
         EditorGUILayout.PropertyField(serializedObject.FindProperty("prefab"), new GUIContent("prefab"));
 
-        //EditorGUILayout.PropertyField(serializedObject.FindProperty("folliage"), new GUIContent("Folliage"));
         CreateHeader("Distance Separation");
         thisEditor.requireDistance = GUILayout.SelectionGrid(thisEditor.requireDistance ? 1 : 0, opciones, 2) == 1;
 
@@ -105,7 +103,8 @@ class FoliageEditor : Editor
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("environment_rotation"), new GUIContent("Environment Rotation"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("subsidence_in_the_ground"), new GUIContent("Subsidence in the ground"));
-        //DrawDefaultInspector();
+
+        serializedObject.ApplyModifiedProperties();
     }
 
 
