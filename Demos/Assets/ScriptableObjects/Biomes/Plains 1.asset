@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
+  m_Name: Plains 1
+  m_EditorClassIdentifier: 
+  noiseSettings:
+    noiseScale: 294
+    octaves: 1
+    persistance: 0
+    lacunarity: 1
+    offset: {x: 100.44, y: 145.1}
+  density: 1.917
+  maxHeight: 3.2
+  minHeight: 2
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.010985088
+      value: 0.04478395
+      inSlope: 8.271584
+      outSlope: 8.271584
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.08333109
+    - serializedVersion: 3
+      time: 0.41082972
+      value: 0.601767
+      inSlope: -1.3846416
+      outSlope: -1.3846416
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.16910265
+    - serializedVersion: 3
+      time: 0.98461914
+      value: 0.99057007
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  foliages:
+  - {fileID: 11400000, guid: 5c3c8379ab57a484ca3ecdeb14dc978e, type: 2}
+  - {fileID: 11400000, guid: 1c356feff68c20d4baee4e1113aef008, type: 2}
+  color: {r: 0.86226416, g: 1, b: 0.9496735, a: 1}

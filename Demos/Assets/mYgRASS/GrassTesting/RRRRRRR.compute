@@ -1,0 +1,113 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+#include "NMGGrassBladesComputeHelpers.hlsl"
+
+struct SourceVertex {
+	float3 positionOS; // Posicion local
+};
+
+StructuredBuffer<SourceVertex> _SourceVertices;
+StructuredBuffer<int> _SourceTriangles;
+
+struct DrawVertex {
+	float3 positionWS; // Posicion global
+	float height; // Altura de este vertice dentro del aspa de hierba
+};
+
+struct DrawTriangle {
+	float3 lightingNormalWS; // La normal global, para usar en el algoritmo de luz
+	DrawVertex vertices[3]; // Los tres puntos del triangulo
+};
+
+// Este buffer contiene el mesh generado
+AppendStructuredBuffer<DrawTriangle> _DrawTriangles;
+
+// El dibujado indirecto llama a argumentos, rescritos en el script de renderizado
+struct IndirectArgs {
+	uint numVerticesPerInstance;
+	uint numInstances;
+	uint startVertexIndex;
+	uint startInstanceIndex;
+};
+
+RWStructuredBuffer<IndirectArgs> _IndirectArgsBuffer;
+
+// El numero de triangulos en el mesh original
+int _NumSourceTriangles;
+
+float4x4 _LocalToWorld;
+
+
+void GetCenterAndBasis(SourceVertex a, SourceVertex b, SourceVertex c, out float3 positionWS, out float3 normalWS, out float3x3 tsToWs) {
+
+	float3 positionA_WS = mul(_LocalToWorld, float4(a.positionOS, 1)).xyz;
+	float3 positionB_WS = mul(_LocalToWorld, float4(b.positionOS, 1)).xyz;
+	float3 positionC_WS = mul(_LocalToWorld, float4(c.positionOS, 1)).xyz;
+
+	// Obtener el punto central
+	positionWS = GetTriangleCenter(positionA_WS, positionB_WS, positionC_WS);
+
+	GetTriangleNormalAndTSToWSMatrix(positionA_WS, positionB_WS, positionC_WS, normalWS, tsToWs);
+}
+
+// Calcula los valores del punto de salida
+DrawVertex SetupBladePoint(float3 anchorWS, float3x3 tsToWs, float2 uv) {
+
+	//  Calcular el offset en el espacio tangente basandose en el UV y el widht/height
+	float3 offsetTS = float3(uv.x - 0.5f, 0, uv.y); // 0.5 para que se situe en el medio
+
+	// Calcular el offset en "World Space" usando la rotacion
+	float3 offsetWS = mul(tsToWs, offsetTS);
+
+	float3 positionWS = anchorWS + offsetWS;
+
+	DrawVertex output = (DrawVertex)0;
+	output.positionWS = positionWS;
+	output.height = uv.y;
+	return output;
+}
+
+
+
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	// No seguir si ya se han procesado todos los triangulos
+	if ((int)id.x >= _NumSourceTriangles) {
+		return;
+	}
+
+
+	int triStart = id.x * 3;
+
+	float3 positionWS, normalWS;
+	float3x3 tsToWs;
+	GetCenterAndBasis(
+		_SourceVertices[_SourceTriangles[triStart]],
+		_SourceVertices[_SourceTriangles[triStart + 1]],
+		_SourceVertices[_SourceTriangles[triStart + 2]],
+		positionWS, normalWS, tsToWs);
+
+
+
+	// Array para contener los vertices de este aspa
+	DrawVertex vertices[3];
+	vertices[0] = SetupBladePoint(positionWS, tsToWs, float2(0, 0));
+	vertices[1] = SetupBladePoint(positionWS, tsToWs, float2(1, 0));
+	vertices[2] = SetupBladePoint(positionWS, tsToWs, float2(.5, 1));
+
+
+
+	// Añadir triangulos del arrat al drawBuffer
+	DrawTriangle tri = (DrawTriangle)0;
+	tri.lightingNormalWS = normalWS;
+	tri.vertices[0] = vertices[0];
+	tri.vertices[1] = vertices[1];
+	tri.vertices[2] = vertices[2];
+	_DrawTriangles.Append(tri);
+
+	// Se encarga de que solo una instruccion se mete al mismo tiempo al buffer
+	InterlockedAdd(_IndirectArgsBuffer[0].numVerticesPerInstance, 3);
+}

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
+  m_Name: Cactus
+  m_EditorClassIdentifier: 
+  densityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.002193451
+      value: 0.7806244
+      inSlope: -0.4301131
+      outSlope: -0.4301131
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.28812414
+      value: 0.655755
+      inSlope: 0.12136008
+      outSlope: 0.12136008
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24370375
+      outWeight: 0.5779147
+    - serializedVersion: 3
+      time: 0.4812564
+      value: 0.714503
+      inSlope: 0.9134616
+      outSlope: 0.9134616
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.13719568
+      outWeight: 0.14600194
+    - serializedVersion: 3
+      time: 1.001889
+      value: 0.26753008
+      inSlope: -0.85851884
+      outSlope: -0.85851884
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  density: 0.22
+  noiseScale: 0.1
+  unitSpace: 6
+  prefab: {fileID: 100000, guid: c4cca24570a3eb1478f1ede521f132d2, type: 3}
+  requireDistance: 1
+  randomRotation: 0
+  rotation: {x: 0, y: 360, z: 0}
+  maxRotation: {x: 0, y: 0, z: 0}
+  randomScale: 1
+  scale: {x: 0.5, y: 0.5, z: 0.5}
+  maxScale: {x: 2, y: 2, z: 2}
+  environment_rotation: 0
+  subsidence_in_the_ground: 0

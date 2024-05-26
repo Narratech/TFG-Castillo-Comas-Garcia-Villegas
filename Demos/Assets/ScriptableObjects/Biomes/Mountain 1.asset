@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
+  m_Name: Mountain 1
+  m_EditorClassIdentifier: 
+  noiseSettings:
+    noiseScale: 294
+    octaves: 2
+    persistance: 0.245
+    lacunarity: 32.5
+    offset: {x: 100.44, y: 145.1}
+  density: 2
+  maxHeight: 6
+  minHeight: 3
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.006591797
+      value: 0.6786041
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.543136
+      value: 0.27572185
+      inSlope: 0.6262337
+      outSlope: 0.6262337
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.16146521
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  foliages:
+  - {fileID: 11400000, guid: 17ef9efd2bc04e041b2701b9c9078913, type: 2}
+  - {fileID: 11400000, guid: 1c356feff68c20d4baee4e1113aef008, type: 2}
+  - {fileID: 11400000, guid: 2de3ea3e493e90547a57e1ada544f6da, type: 2}
+  - {fileID: 11400000, guid: cf24ebb0b13586c4eaee24b6db4e151e, type: 2}
+  color: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}

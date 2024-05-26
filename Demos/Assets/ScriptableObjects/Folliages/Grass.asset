@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
+  m_Name: Grass
+  m_EditorClassIdentifier: 
+  densityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.004340887
+      value: 0.59812987
+      inSlope: 0.083664045
+      outSlope: 0.083664045
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.5620325
+    - serializedVersion: 3
+      time: 0.20519087
+      value: 0.54455245
+      inSlope: 1.2081215
+      outSlope: 1.2081215
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3921259
+      value: 0.6117854
+      inSlope: 0.099019
+      outSlope: 0.099019
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.28872412
+    - serializedVersion: 3
+      time: 0.67393035
+      value: 0.55276245
+      inSlope: -0.3483649
+      outSlope: -0.3483649
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.22199385
+      outWeight: 0.2620024
+    - serializedVersion: 3
+      time: 0.9982605
+      value: 0.5735855
+      inSlope: -0.07063728
+      outSlope: -0.07063728
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.9336009
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  density: 1
+  noiseScale: 0.75
+  unitSpace: 5
+  prefab: {fileID: 8491970159030730699, guid: 917fb26beee5b5e42b300232f0e81c82, type: 3}
+  requireDistance: 0
+  randomRotation: 0
+  rotation: {x: 0, y: 0, z: 0}
+  maxRotation: {x: 0, y: 360, z: 0}
+  randomScale: 1
+  scale: {x: 2.5, y: 2.5, z: 2.5}
+  maxScale: {x: 3.5, y: 3.5, z: 3.5}
+  environment_rotation: 1
+  subsidence_in_the_ground: 0.05

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
+  m_Name: Bones
+  m_EditorClassIdentifier: 
+  densityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0021781921
+      value: 0.20093918
+      inSlope: 0.073106326
+      outSlope: 0.073106326
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3985024
+      value: 0.23023146
+      inSlope: 0.95268905
+      outSlope: 0.95268905
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.27772453
+      outWeight: 0.15537426
+    - serializedVersion: 3
+      time: 1.0044003
+      value: -0.024443507
+      inSlope: 0.13062203
+      outSlope: 0.13062203
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.071273424
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  density: 0.01
+  noiseScale: 66.7
+  unitSpace: 10
+  prefab: {fileID: 124032, guid: 45b8cac9ed2e6a142ae411672ba866f9, type: 3}
+  requireDistance: 0
+  randomRotation: 1
+  rotation: {x: -20, y: 0, z: -20}
+  maxRotation: {x: 20, y: 360, z: 20}
+  randomScale: 1
+  scale: {x: 1, y: 1, z: 1}
+  maxScale: {x: 1.2, y: 1.2, z: 1.2}
+  environment_rotation: 1
+  subsidence_in_the_ground: 0

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
+  m_Name: Grass 2
+  m_EditorClassIdentifier: 
+  densityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.008749802
+      value: 1.0064514
+      inSlope: -0.085793465
+      outSlope: -0.085793465
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5429398
+      value: 0.96062136
+      inSlope: -0.13004929
+      outSlope: -0.13004929
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.21917507
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.9772735
+      value: 0.54125446
+      inSlope: -0.60945004
+      outSlope: -0.60945004
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  density: 1
+  noiseScale: 0.67
+  unitSpace: 3
+  prefab: {fileID: 8491970159030730699, guid: 917fb26beee5b5e42b300232f0e81c82, type: 3}
+  requireDistance: 1
+  randomRotation: 0
+  rotation: {x: 0, y: 0, z: 0}
+  maxRotation: {x: 0, y: 360, z: 0}
+  randomScale: 1
+  scale: {x: 2.5, y: 2.5, z: 2.5}
+  maxScale: {x: 3.5, y: 3.5, z: 3.5}
+  environment_rotation: 1
+  subsidence_in_the_ground: 0.05

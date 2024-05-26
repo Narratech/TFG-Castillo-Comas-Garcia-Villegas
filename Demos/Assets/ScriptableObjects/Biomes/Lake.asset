@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40347ae779e4ac44a058f8197e63c78, type: 3}
+  m_Name: Lake
+  m_EditorClassIdentifier: 
+  noiseSettings:
+    noiseScale: 35.22
+    octaves: 2
+    persistance: 0.458
+    lacunarity: 1.83
+    offset: {x: 100, y: 100}
+  weight: 0.504
+  density: 1.5
+  maxHeight: 2
+  minHeight: 1
+  meshHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.038240924
+      outSlope: 0.038240924
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.542012
+    - serializedVersion: 3
+      time: 0.45985135
+      value: 0.28737107
+      inSlope: 1.4609034
+      outSlope: 1.4609034
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  foliages: []
+  color: {r: 0.24875402, g: 0.318566, b: 0.8113208, a: 0}
