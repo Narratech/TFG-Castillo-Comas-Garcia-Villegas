@@ -65,4 +65,5 @@ MonoBehaviour:
     m_RotationOrder: 4
   foliages:
   - {fileID: 11400000, guid: 61c602daff17d9e4fa4be473a9ae386c, type: 2}
+  - {fileID: 11400000, guid: 87c05ff03eaa9a949a38a130cb487c9f, type: 2}
   color: {r: 0.9528302, g: 0.7692692, b: 0.21034172, a: 1}

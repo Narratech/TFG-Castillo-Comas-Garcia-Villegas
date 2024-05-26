@@ -20,7 +20,7 @@ MonoBehaviour:
     offset: {x: 104.34, y: 145.1}
   density: 0.373
   maxHeight: 3.2
-  minHeight: 2.8
+  minHeight: 2.3
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:

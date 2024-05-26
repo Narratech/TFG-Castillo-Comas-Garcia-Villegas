@@ -19,37 +19,46 @@ MonoBehaviour:
     lacunarity: 1
     offset: {x: 104.34, y: 145.1}
   density: 1.737
-  maxHeight: 3.2
+  maxHeight: 2.5
   minHeight: 2
   meshHeightCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.010985088
-      value: 0.04478395
-      inSlope: -0.5827317
-      outSlope: -0.5827317
+      time: -0.002196025
+      value: -0.0070475154
+      inSlope: 5.3036604
+      outSlope: 5.3036604
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.51277524
+      outWeight: 0.1506582
     - serializedVersion: 3
-      time: 0.15819609
-      value: 0.5145938
-      inSlope: 1.0100048
-      outSlope: 1.0100048
+      time: 0.039566927
+      value: 0.40149295
+      inSlope: 3.2764046
+      outSlope: 3.2764046
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.10717143
+      outWeight: 0.1791574
     - serializedVersion: 3
-      time: 0.85491693
-      value: 0.6169053
-      inSlope: -0.6276967
-      outSlope: -0.6276967
+      time: 0.2724126
+      value: 0.6701771
+      inSlope: -1.5283014
+      outSlope: -1.5283014
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
+      outWeight: 0.23052348
+    - serializedVersion: 3
+      time: 0.5144081
+      value: 0.43312284
+      inSlope: 0.0344258
+      outSlope: 0.0344258
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4008718
       outWeight: 0.32522172
     - serializedVersion: 3
       time: 0.98461914

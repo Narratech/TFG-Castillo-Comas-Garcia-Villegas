@@ -10,45 +10,45 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a02113d03e6837449a240bca8adb7ae, type: 3}
-  m_Name: Tree
+  m_Name: Tree 1
   m_EditorClassIdentifier: 
   densityCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.004180111
-      value: 0.92838997
-      inSlope: -3.036993
-      outSlope: -3.036993
+      time: 0.0001398772
+      value: -0.010807842
+      inSlope: 4.168793
+      outSlope: 4.168793
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.29775596
-      value: 0.036802173
-      inSlope: 0.01974495
-      outSlope: 0.01974495
+      time: 0.22588082
+      value: 0.93025947
+      inSlope: 0.21943851
+      outSlope: 0.21943851
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.15145275
-      outWeight: 0.15537426
+      inWeight: 0.33333334
+      outWeight: 0.29277146
     - serializedVersion: 3
-      time: 0.9812069
-      value: 0.4932109
-      inSlope: 0.13062203
-      outSlope: 0.13062203
-      tangentMode: 0
+      time: 1
+      value: 1
+      inSlope: 0.09009018
+      outSlope: 0.09009018
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0.071273424
-      outWeight: 0.33333334
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  density: 0.11
-  noiseScale: 0.75
-  unitSpace: 8
-  prefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
+  density: 0.09
+  noiseScale: 0.55
+  unitSpace: 10
+  prefab: {fileID: 145826, guid: 35d82b3ae8f9c4f42b6b11ccb42803cd, type: 3}
   requireDistance: 1
   randomRotation: 1
   rotation: {x: -20, y: 0, z: -20}
